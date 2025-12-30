@@ -1,0 +1,60 @@
+{
+  "regions": [
+    {
+      "id": "region_001",
+      "name": "印前",
+      "erp_column": "印前处理分值",
+      "threshold": 30000,
+      "ladder_rules": [
+        {"min": 0, "max": 30000, "bonus": 50, "description": "不在岗基础"},
+        {"min": 30000, "max": 50000, "bonus": 300, "description": "3-5万"},
+        {"min": 50000, "max": 100000, "bonus": 500, "description": "5-10万"},
+        {"min": 100000, "max": 200000, "bonus": 600, "description": "10-20万"},
+        {"min": 200000, "max": 300000, "bonus": 500, "description": "20-30万"},
+        {"min": 300000, "max": 400000, "bonus": 400, "description": "30-40万"},
+        {"min": 400000, "max": 999999999, "bonus": 300, "description": "40万以上"}
+      ],
+      "created_at": "2024-12-28"
+    },
+    {
+      "id": "region_002",
+      "name": "印中",
+      "erp_column": "印中制作分值",
+      "threshold": 30000,
+      "ladder_rules": [
+        {"min": 0, "max": 30000, "bonus": 50, "description": "不在岗基础"},
+        {"min": 30000, "max": 50000, "bonus": 300, "description": "3-5万"},
+        {"min": 50000, "max": 100000, "bonus": 500, "description": "5-10万"},
+        {"min": 100000, "max": 200000, "bonus": 600, "description": "10-20万"},
+        {"min": 200000, "max": 300000, "bonus": 500, "description": "20-30万"},
+        {"min": 300000, "max": 400000, "bonus": 400, "description": "30-40万"},
+        {"min": 400000, "max": 999999999, "bonus": 300, "description": "40万以上"}
+      ],
+      "created_at": "2024-12-28"
+    },
+    {
+      "id": "region_003",
+      "name": "印后",
+      "erp_column": "印后加工分值",
+      "threshold": 50000,
+      "ladder_rules": [
+        {"min": 0, "max": 50000, "bonus": 50, "description": "不在岗基础"},
+        {"min": 50000, "max": 80000, "bonus": 150, "description": "5-8万"},
+        {"min": 80000, "max": 180000, "bonus": 200, "description": "8-18万"},
+        {"min": 180000, "max": 280000, "bonus": 200, "description": "18-28万"},
+        {"min": 280000, "max": 380000, "bonus": 200, "description": "28-38万"},
+        {"min": 380000, "max": 480000, "bonus": 200, "description": "38-48万"},
+        {"min": 480000, "max": 999999999, "bonus": 200, "description": "48万以上"}
+      ],
+      "created_at": "2024-12-28"
+    },
+    {
+      "id": "region_004",
+      "name": "前台",
+      "erp_column": null,
+      "threshold": 0,
+      "ladder_rules": [],
+      "created_at": "2024-12-28"
+    }
+  ]
+}

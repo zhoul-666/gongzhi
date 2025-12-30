@@ -1,0 +1,140 @@
+{
+  "employees": [
+    {
+      "id": "emp_0001",
+      "name": "张lei",
+      "employee_no": "E0001",
+      "mode_id": "mode_001",
+      "created_at": "2025-12-28 15:29:40",
+      "updated_at": "2025-12-28 15:42:54"
+    },
+    {
+      "id": "emp_0002",
+      "name": "曾云",
+      "employee_no": "E0002",
+      "mode_id": "mode_002",
+      "created_at": "2025-12-28 15:29:40"
+    },
+    {
+      "id": "emp_0003",
+      "name": "陈晓乾",
+      "employee_no": "E0003",
+      "mode_id": "mode_002",
+      "created_at": "2025-12-28 15:29:40"
+    },
+    {
+      "id": "emp_0004",
+      "name": "林芝",
+      "employee_no": "E0004",
+      "mode_id": "mode_002",
+      "created_at": "2025-12-28 15:29:40"
+    },
+    {
+      "id": "emp_0005",
+      "name": "张lei",
+      "employee_no": "E0001",
+      "mode_id": "mode_001",
+      "created_at": "2025-12-28 15:29:40",
+      "updated_at": "2025-12-28 15:43:16"
+    },
+    {
+      "id": "emp_0006",
+      "name": "微店公用账户",
+      "employee_no": "E0006",
+      "mode_id": "mode_002",
+      "created_at": "2025-12-28 15:29:40"
+    },
+    {
+      "id": "emp_0007",
+      "name": "黄荣华",
+      "employee_no": "E0007",
+      "mode_id": "mode_002",
+      "created_at": "2025-12-28 15:29:40"
+    },
+    {
+      "id": "emp_0008",
+      "name": "周行",
+      "employee_no": "E0008",
+      "mode_id": "mode_002",
+      "created_at": "2025-12-28 15:29:40"
+    },
+    {
+      "id": "emp_0009",
+      "name": "陈丹枫",
+      "employee_no": "E0009",
+      "mode_id": "mode_002",
+      "created_at": "2025-12-28 15:29:40"
+    },
+    {
+      "id": "emp_0010",
+      "name": "龙永军",
+      "employee_no": "E0010",
+      "mode_id": "mode_002",
+      "created_at": "2025-12-28 15:29:40"
+    },
+    {
+      "id": "emp_0011",
+      "name": "彭春春",
+      "employee_no": "E0011",
+      "mode_id": "mode_002",
+      "created_at": "2025-12-28 15:29:40"
+    },
+    {
+      "id": "emp_0012",
+      "name": "郜一哲",
+      "employee_no": "E0012",
+      "mode_id": "mode_002",
+      "created_at": "2025-12-28 15:29:40"
+    },
+    {
+      "id": "emp_0013",
+      "name": "韩思逸",
+      "employee_no": "E0013",
+      "mode_id": "mode_002",
+      "created_at": "2025-12-28 15:29:40"
+    },
+    {
+      "id": "emp_0014",
+      "name": "赵健",
+      "employee_no": "E0014",
+      "mode_id": "mode_002",
+      "created_at": "2025-12-28 15:29:40"
+    },
+    {
+      "id": "emp_0015",
+      "name": "周浪",
+      "employee_no": "E0015",
+      "mode_id": "mode_002",
+      "created_at": "2025-12-28 15:29:40"
+    },
+    {
+      "id": "emp_0016",
+      "name": "黄静波",
+      "employee_no": "E0016",
+      "mode_id": "mode_002",
+      "created_at": "2025-12-28 15:29:40"
+    },
+    {
+      "id": "emp_0017",
+      "name": "晏丽",
+      "employee_no": "E0017",
+      "mode_id": "mode_002",
+      "created_at": "2025-12-28 15:29:40"
+    },
+    {
+      "id": "emp_0018",
+      "name": "黄莎",
+      "employee_no": "E0018",
+      "mode_id": "mode_002",
+      "created_at": "2025-12-28 15:29:40"
+    },
+    {
+      "id": "emp_0019",
+      "name": "田凤娟",
+      "employee_no": "E0019",
+      "mode_id": "mode_002",
+      "created_at": "2025-12-28 15:29:40"
+    }
+  ],
+  "next_id": 20
+}

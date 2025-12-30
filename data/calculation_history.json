@@ -1,0 +1,772 @@
+{
+  "calculations": [
+    {
+      "month": "2025-12",
+      "calculated_at": "2025-12-29 00:00:11",
+      "employee_count": 19,
+      "total_salary": 21884.310000000005,
+      "results": [
+        {
+          "employee_id": "emp_0017",
+          "employee_name": "晏丽",
+          "regions": {
+            "region_001": {
+              "name": "印前",
+              "score": 0.0,
+              "is_on_duty": false,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            },
+            "region_002": {
+              "name": "印中",
+              "score": 348052.75,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 2142.21,
+              "total": 2142.21
+            },
+            "region_003": {
+              "name": "印后",
+              "score": 275817.17,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 591.63,
+              "total": 591.63
+            },
+            "region_004": {
+              "name": "前台",
+              "score": 0,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            }
+          },
+          "total_salary": 2733.84,
+          "month": "2025-12"
+        },
+        {
+          "employee_id": "emp_0009",
+          "employee_name": "陈丹枫",
+          "regions": {
+            "region_001": {
+              "name": "印前",
+              "score": 290075.91,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 1900.38,
+              "total": 1900.38
+            },
+            "region_002": {
+              "name": "印中",
+              "score": 38828.0,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 182.42,
+              "total": 182.42
+            },
+            "region_003": {
+              "name": "印后",
+              "score": 175519.7,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 391.04,
+              "total": 391.04
+            },
+            "region_004": {
+              "name": "前台",
+              "score": 0,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            }
+          },
+          "total_salary": 2473.84,
+          "month": "2025-12"
+        },
+        {
+          "employee_id": "emp_0018",
+          "employee_name": "黄莎",
+          "regions": {
+            "region_001": {
+              "name": "印前",
+              "score": 0.0,
+              "is_on_duty": false,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            },
+            "region_002": {
+              "name": "印中",
+              "score": 171724.54,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 1280.35,
+              "total": 1280.35
+            },
+            "region_003": {
+              "name": "印后",
+              "score": 326928.62,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 693.86,
+              "total": 693.86
+            },
+            "region_004": {
+              "name": "前台",
+              "score": 0,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            }
+          },
+          "total_salary": 1974.21,
+          "month": "2025-12"
+        },
+        {
+          "employee_id": "emp_0012",
+          "employee_name": "郜一哲",
+          "regions": {
+            "region_001": {
+              "name": "印前",
+              "score": 0.0,
+              "is_on_duty": false,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            },
+            "region_002": {
+              "name": "印中",
+              "score": 131267.11,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 1037.6,
+              "total": 1037.6
+            },
+            "region_003": {
+              "name": "印后",
+              "score": 372957.96,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 785.92,
+              "total": 785.92
+            },
+            "region_004": {
+              "name": "前台",
+              "score": 0,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            }
+          },
+          "total_salary": 1823.52,
+          "month": "2025-12"
+        },
+        {
+          "employee_id": "emp_0007",
+          "employee_name": "黄荣华",
+          "regions": {
+            "region_001": {
+              "name": "印前",
+              "score": 102775.75,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 866.65,
+              "total": 866.65
+            },
+            "region_002": {
+              "name": "印中",
+              "score": 12401.0,
+              "is_on_duty": false,
+              "skill_salary": 0,
+              "ladder_bonus": 20.67,
+              "total": 20.67
+            },
+            "region_003": {
+              "name": "印后",
+              "score": 395681.75,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 831.36,
+              "total": 831.36
+            },
+            "region_004": {
+              "name": "前台",
+              "score": 0,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            }
+          },
+          "total_salary": 1718.68,
+          "month": "2025-12"
+        },
+        {
+          "employee_id": "emp_0016",
+          "employee_name": "黄静波",
+          "regions": {
+            "region_001": {
+              "name": "印前",
+              "score": 0.0,
+              "is_on_duty": false,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            },
+            "region_002": {
+              "name": "印中",
+              "score": 110878.12,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 915.27,
+              "total": 915.27
+            },
+            "region_003": {
+              "name": "印后",
+              "score": 320584.18,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 681.17,
+              "total": 681.17
+            },
+            "region_004": {
+              "name": "前台",
+              "score": 0,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            }
+          },
+          "total_salary": 1596.44,
+          "month": "2025-12"
+        },
+        {
+          "employee_id": "emp_0015",
+          "employee_name": "周浪",
+          "regions": {
+            "region_001": {
+              "name": "印前",
+              "score": 0.0,
+              "is_on_duty": false,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            },
+            "region_002": {
+              "name": "印中",
+              "score": 88758.38,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 737.58,
+              "total": 737.58
+            },
+            "region_003": {
+              "name": "印后",
+              "score": 406513.82,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 853.03,
+              "total": 853.03
+            },
+            "region_004": {
+              "name": "前台",
+              "score": 0,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            }
+          },
+          "total_salary": 1590.61,
+          "month": "2025-12"
+        },
+        {
+          "employee_id": "emp_0004",
+          "employee_name": "林芝",
+          "regions": {
+            "region_001": {
+              "name": "印前",
+              "score": 0.0,
+              "is_on_duty": false,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            },
+            "region_002": {
+              "name": "印中",
+              "score": 62966.9,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 479.67,
+              "total": 479.67
+            },
+            "region_003": {
+              "name": "印后",
+              "score": 799686.1,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 1000.06,
+              "total": 1000.06
+            },
+            "region_004": {
+              "name": "前台",
+              "score": 0,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            }
+          },
+          "total_salary": 1479.73,
+          "month": "2025-12"
+        },
+        {
+          "employee_id": "emp_0014",
+          "employee_name": "赵健",
+          "regions": {
+            "region_001": {
+              "name": "印前",
+              "score": 14005.0,
+              "is_on_duty": false,
+              "skill_salary": 0,
+              "ladder_bonus": 23.34,
+              "total": 23.34
+            },
+            "region_002": {
+              "name": "印中",
+              "score": 61807.63,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 468.08,
+              "total": 468.08
+            },
+            "region_003": {
+              "name": "印后",
+              "score": 381666.47,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 803.33,
+              "total": 803.33
+            },
+            "region_004": {
+              "name": "前台",
+              "score": 0,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            }
+          },
+          "total_salary": 1294.75,
+          "month": "2025-12"
+        },
+        {
+          "employee_id": "emp_0006",
+          "employee_name": "微店公用账户",
+          "regions": {
+            "region_001": {
+              "name": "印前",
+              "score": 35793.0,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 136.9,
+              "total": 136.9
+            },
+            "region_002": {
+              "name": "印中",
+              "score": 107613.27,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 895.68,
+              "total": 895.68
+            },
+            "region_003": {
+              "name": "印后",
+              "score": 230.0,
+              "is_on_duty": false,
+              "skill_salary": 0,
+              "ladder_bonus": 0.23,
+              "total": 0.23
+            },
+            "region_004": {
+              "name": "前台",
+              "score": 0,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            }
+          },
+          "total_salary": 1032.81,
+          "month": "2025-12"
+        },
+        {
+          "employee_id": "emp_0011",
+          "employee_name": "彭春春",
+          "regions": {
+            "region_001": {
+              "name": "印前",
+              "score": 2519.07,
+              "is_on_duty": false,
+              "skill_salary": 0,
+              "ladder_bonus": 4.2,
+              "total": 4.2
+            },
+            "region_002": {
+              "name": "印中",
+              "score": 32591.8,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 88.88,
+              "total": 88.88
+            },
+            "region_003": {
+              "name": "印后",
+              "score": 369570.94,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 779.14,
+              "total": 779.14
+            },
+            "region_004": {
+              "name": "前台",
+              "score": 0,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            }
+          },
+          "total_salary": 872.22,
+          "month": "2025-12"
+        },
+        {
+          "employee_id": "emp_0003",
+          "employee_name": "陈晓乾",
+          "regions": {
+            "region_001": {
+              "name": "印前",
+              "score": 11958.0,
+              "is_on_duty": false,
+              "skill_salary": 0,
+              "ladder_bonus": 19.93,
+              "total": 19.93
+            },
+            "region_002": {
+              "name": "印中",
+              "score": 8828.87,
+              "is_on_duty": false,
+              "skill_salary": 0,
+              "ladder_bonus": 14.71,
+              "total": 14.71
+            },
+            "region_003": {
+              "name": "印后",
+              "score": 391847.38,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 823.69,
+              "total": 823.69
+            },
+            "region_004": {
+              "name": "前台",
+              "score": 0,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            }
+          },
+          "total_salary": 858.33,
+          "month": "2025-12"
+        },
+        {
+          "employee_id": "emp_0002",
+          "employee_name": "曾云",
+          "regions": {
+            "region_001": {
+              "name": "印前",
+              "score": 88260.04,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 732.6,
+              "total": 732.6
+            },
+            "region_002": {
+              "name": "印中",
+              "score": 3546.1,
+              "is_on_duty": false,
+              "skill_salary": 0,
+              "ladder_bonus": 5.91,
+              "total": 5.91
+            },
+            "region_003": {
+              "name": "印后",
+              "score": 56945.58,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 84.73,
+              "total": 84.73
+            },
+            "region_004": {
+              "name": "前台",
+              "score": 0,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            }
+          },
+          "total_salary": 823.24,
+          "month": "2025-12"
+        },
+        {
+          "employee_id": "emp_0008",
+          "employee_name": "周行",
+          "regions": {
+            "region_001": {
+              "name": "印前",
+              "score": 58451.74,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 434.52,
+              "total": 434.52
+            },
+            "region_002": {
+              "name": "印中",
+              "score": 9874.5,
+              "is_on_duty": false,
+              "skill_salary": 0,
+              "ladder_bonus": 16.46,
+              "total": 16.46
+            },
+            "region_003": {
+              "name": "印后",
+              "score": 118511.2,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 277.02,
+              "total": 277.02
+            },
+            "region_004": {
+              "name": "前台",
+              "score": 0,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            }
+          },
+          "total_salary": 728.0,
+          "month": "2025-12"
+        },
+        {
+          "employee_id": "emp_0013",
+          "employee_name": "韩思逸",
+          "regions": {
+            "region_001": {
+              "name": "印前",
+              "score": 57163.0,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 421.63,
+              "total": 421.63
+            },
+            "region_002": {
+              "name": "印中",
+              "score": 4620.0,
+              "is_on_duty": false,
+              "skill_salary": 0,
+              "ladder_bonus": 7.7,
+              "total": 7.7
+            },
+            "region_003": {
+              "name": "印后",
+              "score": 27720.72,
+              "is_on_duty": false,
+              "skill_salary": 0,
+              "ladder_bonus": 27.72,
+              "total": 27.72
+            },
+            "region_004": {
+              "name": "前台",
+              "score": 0,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            }
+          },
+          "total_salary": 457.05,
+          "month": "2025-12"
+        },
+        {
+          "employee_id": "emp_0019",
+          "employee_name": "田凤娟",
+          "regions": {
+            "region_001": {
+              "name": "印前",
+              "score": 0.0,
+              "is_on_duty": false,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            },
+            "region_002": {
+              "name": "印中",
+              "score": 0.0,
+              "is_on_duty": false,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            },
+            "region_003": {
+              "name": "印后",
+              "score": 87812.5,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 215.62,
+              "total": 215.62
+            },
+            "region_004": {
+              "name": "前台",
+              "score": 0,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            }
+          },
+          "total_salary": 215.62,
+          "month": "2025-12"
+        },
+        {
+          "employee_id": "emp_0001",
+          "employee_name": "张lei",
+          "regions": {
+            "region_001": {
+              "name": "印前",
+              "score": 0.0,
+              "is_on_duty": false,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            },
+            "region_002": {
+              "name": "印中",
+              "score": 40.0,
+              "is_on_duty": false,
+              "skill_salary": 0,
+              "ladder_bonus": 0.07,
+              "total": 0.07
+            },
+            "region_003": {
+              "name": "印后",
+              "score": 75042.26,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 175.21,
+              "total": 175.21
+            },
+            "region_004": {
+              "name": "前台",
+              "score": 0,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            }
+          },
+          "total_salary": 175.28,
+          "month": "2025-12"
+        },
+        {
+          "employee_id": "emp_0010",
+          "employee_name": "龙永军",
+          "regions": {
+            "region_001": {
+              "name": "印前",
+              "score": 0.0,
+              "is_on_duty": false,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            },
+            "region_002": {
+              "name": "印中",
+              "score": 760.8,
+              "is_on_duty": false,
+              "skill_salary": 0,
+              "ladder_bonus": 1.27,
+              "total": 1.27
+            },
+            "region_003": {
+              "name": "印后",
+              "score": 25410.7,
+              "is_on_duty": false,
+              "skill_salary": 0,
+              "ladder_bonus": 25.41,
+              "total": 25.41
+            },
+            "region_004": {
+              "name": "前台",
+              "score": 0,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            }
+          },
+          "total_salary": 26.68,
+          "month": "2025-12"
+        },
+        {
+          "employee_id": "emp_0005",
+          "employee_name": "李林",
+          "regions": {
+            "region_001": {
+              "name": "印前",
+              "score": 0.0,
+              "is_on_duty": false,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            },
+            "region_002": {
+              "name": "印中",
+              "score": 62.0,
+              "is_on_duty": false,
+              "skill_salary": 0,
+              "ladder_bonus": 0.1,
+              "total": 0.1
+            },
+            "region_003": {
+              "name": "印后",
+              "score": 9363.6,
+              "is_on_duty": false,
+              "skill_salary": 0,
+              "ladder_bonus": 9.36,
+              "total": 9.36
+            },
+            "region_004": {
+              "name": "前台",
+              "score": 0,
+              "is_on_duty": true,
+              "skill_salary": 0,
+              "ladder_bonus": 0,
+              "total": 0
+            }
+          },
+          "total_salary": 9.46,
+          "month": "2025-12"
+        }
+      ]
+    }
+  ]
+}

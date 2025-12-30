@@ -1,0 +1,196 @@
+"""
+小技能管理页面 - 支持批量编辑
+"""
+import streamlit as st
+import pandas as pd
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+from app.data_manager import (
+    get_skills, add_skill, update_skill, batch_update_skills,
+    get_modes, get_mode_by_id, get_regions, get_region_by_id,
+    save_json, load_json
+)
+
+
+def render():
+    st.title("🔧 小技能管理")
+    st.markdown("---")
+
+    skills = get_skills()
+    modes = get_modes()
+    regions = get_regions()
+
+    mode_options = {m["id"]: m["name"] for m in modes}
+    region_options = {r["id"]: r["name"] for r in regions}
+
+    # 添加新技能
+    with st.expander("➕ 添加新技能", expanded=False):
+        col1, col2 = st.columns(2)
+        with col1:
+            new_name = st.text_input("技能名称", key="new_skill_name")
+            new_mode = st.selectbox(
+                "所属模式",
+                options=list(mode_options.keys()),
+                format_func=lambda x: mode_options.get(x, x),
+                key="new_skill_mode"
+            )
+        with col2:
+            new_region = st.selectbox(
+                "所属大区域",
+                options=list(region_options.keys()),
+                format_func=lambda x: region_options.get(x, x),
+                key="new_skill_region"
+            )
+            col_a, col_b = st.columns(2)
+            with col_a:
+                new_on_duty = st.number_input("在岗工资", value=200, min_value=0, key="new_on_duty")
+            with col_b:
+                new_off_duty = st.number_input("不在岗工资", value=100, min_value=0, key="new_off_duty")
+
+        if st.button("添加技能", type="primary"):
+            if new_name:
+                result = add_skill(new_name, new_mode, new_region, new_on_duty, new_off_duty)
+                if result:
+                    st.success(f"添加成功：{new_name}")
+                    st.rerun()
+            else:
+                st.error("请输入技能名称")
+
+    st.markdown("---")
+
+    # 筛选条件
+    st.subheader("技能列表")
+
+    mode_filter_options = ["全部"] + [m["name"] for m in modes]
+    filter_mode = st.segmented_control(
+        "按模式筛选",
+        options=mode_filter_options,
+        default="全部",
+        key="filter_skill_mode"
+    )
+
+    region_filter_options = ["全部"] + [r["name"] for r in regions]
+    filter_region = st.segmented_control(
+        "按区域筛选",
+        options=region_filter_options,
+        default="全部",
+        key="filter_skill_region"
+    )
+
+    # 筛选数据
+    filtered_skills = skills.copy()
+    if filter_mode != "全部":
+        mode_id = next((m["id"] for m in modes if m["name"] == filter_mode), None)
+        filtered_skills = [s for s in filtered_skills if s.get("mode_id") == mode_id]
+    if filter_region != "全部":
+        region_id = next((r["id"] for r in regions if r["name"] == filter_region), None)
+        filtered_skills = [s for s in filtered_skills if s.get("region_id") == region_id]
+
+    if not filtered_skills:
+        st.info("暂无技能数据，请添加技能")
+        return
+
+    # 初始化选中状态
+    if "selected_skills" not in st.session_state:
+        st.session_state.selected_skills = set()
+
+    # 批量操作区
+    st.markdown("**批量操作：**")
+    col1, col2, col3, col4 = st.columns([1, 1, 1, 2])
+
+    with col1:
+        if st.button("全选"):
+            st.session_state.selected_skills = set(s["id"] for s in filtered_skills)
+            st.rerun()
+    with col2:
+        if st.button("取消全选"):
+            st.session_state.selected_skills = set()
+            st.rerun()
+    with col3:
+        batch_on_duty = st.number_input("批量设置在岗", value=200, min_value=0, key="batch_on")
+    with col4:
+        if st.button("应用在岗工资"):
+            if st.session_state.selected_skills:
+                count = batch_update_skills(
+                    list(st.session_state.selected_skills),
+                    {"salary_on_duty": batch_on_duty}
+                )
+                st.success(f"已更新 {count} 个技能的在岗工资")
+                st.rerun()
+            else:
+                st.warning("请先选择技能")
+
+    col1, col2, col3, col4 = st.columns([1, 1, 1, 2])
+    with col3:
+        batch_off_duty = st.number_input("批量设置不在岗", value=100, min_value=0, key="batch_off")
+    with col4:
+        if st.button("应用不在岗工资"):
+            if st.session_state.selected_skills:
+                count = batch_update_skills(
+                    list(st.session_state.selected_skills),
+                    {"salary_off_duty": batch_off_duty}
+                )
+                st.success(f"已更新 {count} 个技能的不在岗工资")
+                st.rerun()
+            else:
+                st.warning("请先选择技能")
+
+    st.markdown("---")
+
+    # 技能列表（带勾选框）
+    for skill in filtered_skills:
+        mode = get_mode_by_id(skill.get("mode_id", ""))
+        region = get_region_by_id(skill.get("region_id", ""))
+
+        col_check, col_name, col_mode, col_region, col_on, col_off, col_action = st.columns([0.5, 2, 1.5, 1.5, 1, 1, 1])
+
+        with col_check:
+            is_selected = skill["id"] in st.session_state.selected_skills
+            if st.checkbox("", value=is_selected, key=f"check_{skill['id']}", label_visibility="collapsed"):
+                st.session_state.selected_skills.add(skill["id"])
+            else:
+                st.session_state.selected_skills.discard(skill["id"])
+
+        with col_name:
+            st.markdown(f"**{skill['name']}**")
+
+        with col_mode:
+            st.caption(mode["name"] if mode else "-")
+
+        with col_region:
+            st.caption(region["name"] if region else "-")
+
+        with col_on:
+            new_on = st.number_input(
+                "在岗",
+                value=skill.get("salary_on_duty", 200),
+                min_value=0,
+                step=50,
+                key=f"on_{skill['id']}",
+                label_visibility="collapsed"
+            )
+
+        with col_off:
+            new_off = st.number_input(
+                "不在岗",
+                value=skill.get("salary_off_duty", 100),
+                min_value=0,
+                step=50,
+                key=f"off_{skill['id']}",
+                label_visibility="collapsed"
+            )
+
+        with col_action:
+            if st.button("保存", key=f"save_{skill['id']}"):
+                update_skill(skill["id"], {
+                    "salary_on_duty": new_on,
+                    "salary_off_duty": new_off
+                })
+                st.success("已保存")
+                st.rerun()
+
+    # 统计信息
+    st.markdown("---")
+    st.caption(f"共 {len(filtered_skills)} 个技能，已选中 {len(st.session_state.selected_skills)} 个")

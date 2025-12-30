@@ -1,0 +1,8 @@
+{
+  "version": "1.0.0",
+  "default_salary_on_duty": 200,
+  "default_salary_off_duty": 100,
+  "default_threshold": 30000,
+  "backup_enabled": true,
+  "backup_dir": "./backup"
+}
