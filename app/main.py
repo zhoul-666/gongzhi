@@ -30,7 +30,21 @@ def check_password():
     """
     检查用户是否已通过密码验证
     返回 True 表示已验证，False 表示未验证
+
+    本地开发时：secrets.toml 中设置 require_password = false，跳过密码
+    线上部署时：Streamlit Cloud 的 Secrets 中设置 require_password = true
     """
+    # 检查是否需要密码验证
+    try:
+        require_password = st.secrets.get("require_password", False)
+    except:
+        require_password = False
+
+    # 本地开发不需要密码
+    if not require_password:
+        print("本地模式，跳过密码验证")
+        return True
+
     # 初始化登录状态
     if "authenticated" not in st.session_state:
         st.session_state.authenticated = False
@@ -47,7 +61,7 @@ def check_password():
     password = st.text_input("密码", type="password", key="password_input")
 
     if st.button("登录", type="primary"):
-        # 从 secrets 获取密码，如果没有配置则使用默认密码
+        # 从 secrets 获取密码
         try:
             correct_password = st.secrets.get("password", "123456")
         except:

@@ -123,7 +123,7 @@ def render():
 
             with col1:
                 new_min = st.number_input(
-                    "最小值",
+                    "从",
                     value=rule.get("min", 0),
                     min_value=0,
                     step=10000,
@@ -133,7 +133,7 @@ def render():
 
             with col2:
                 new_max = st.number_input(
-                    "最大值",
+                    "到",
                     value=rule.get("max", 0),
                     min_value=0,
                     step=10000,

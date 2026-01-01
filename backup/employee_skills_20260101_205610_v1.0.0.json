@@ -35,7 +35,7 @@
     {
       "employee_id": "emp_0009",
       "skill_id": "skill_015",
-      "passed_exam": true,
+      "passed_exam": false,
       "use_system_threshold": true,
       "custom_threshold": null,
       "created_at": "2026-01-01 20:50:46"
@@ -43,7 +43,7 @@
     {
       "employee_id": "emp_0009",
       "skill_id": "skill_016",
-      "passed_exam": true,
+      "passed_exam": false,
       "use_system_threshold": true,
       "custom_threshold": null,
       "created_at": "2026-01-01 20:50:58"
@@ -51,7 +51,7 @@
     {
       "employee_id": "emp_0009",
       "skill_id": "skill_017",
-      "passed_exam": true,
+      "passed_exam": false,
       "use_system_threshold": true,
       "custom_threshold": null,
       "created_at": "2026-01-01 20:50:58"
@@ -59,7 +59,7 @@
     {
       "employee_id": "emp_0009",
       "skill_id": "skill_018",
-      "passed_exam": true,
+      "passed_exam": false,
       "use_system_threshold": true,
       "custom_threshold": null,
       "created_at": "2026-01-01 20:50:58"
@@ -67,7 +67,7 @@
     {
       "employee_id": "emp_0009",
       "skill_id": "skill_019",
-      "passed_exam": true,
+      "passed_exam": false,
       "use_system_threshold": true,
       "custom_threshold": null,
       "created_at": "2026-01-01 20:51:00"
@@ -75,7 +75,7 @@
     {
       "employee_id": "emp_0009",
       "skill_id": "skill_020",
-      "passed_exam": true,
+      "passed_exam": false,
       "use_system_threshold": true,
       "custom_threshold": null,
       "created_at": "2026-01-01 20:51:00"
@@ -83,7 +83,7 @@
     {
       "employee_id": "emp_0009",
       "skill_id": "skill_021",
-      "passed_exam": true,
+      "passed_exam": false,
       "use_system_threshold": true,
       "custom_threshold": null,
       "created_at": "2026-01-01 20:51:00"
@@ -91,7 +91,7 @@
     {
       "employee_id": "emp_0009",
       "skill_id": "skill_022",
-      "passed_exam": true,
+      "passed_exam": false,
       "use_system_threshold": true,
       "custom_threshold": null,
       "created_at": "2026-01-01 20:51:00"
@@ -99,7 +99,7 @@
     {
       "employee_id": "emp_0009",
       "skill_id": "skill_023",
-      "passed_exam": true,
+      "passed_exam": false,
       "use_system_threshold": true,
       "custom_threshold": null,
       "created_at": "2026-01-01 20:51:01"
@@ -107,7 +107,7 @@
     {
       "employee_id": "emp_0009",
       "skill_id": "skill_024",
-      "passed_exam": true,
+      "passed_exam": false,
       "use_system_threshold": true,
       "custom_threshold": null,
       "created_at": "2026-01-01 20:51:01"
@@ -115,7 +115,7 @@
     {
       "employee_id": "emp_0009",
       "skill_id": "skill_025",
-      "passed_exam": true,
+      "passed_exam": false,
       "use_system_threshold": true,
       "custom_threshold": null,
       "created_at": "2026-01-01 20:51:01"
@@ -123,7 +123,7 @@
     {
       "employee_id": "emp_0009",
       "skill_id": "skill_026",
-      "passed_exam": true,
+      "passed_exam": false,
       "use_system_threshold": true,
       "custom_threshold": null,
       "created_at": "2026-01-01 20:51:02"
@@ -131,7 +131,7 @@
     {
       "employee_id": "emp_0009",
       "skill_id": "skill_027",
-      "passed_exam": true,
+      "passed_exam": false,
       "use_system_threshold": true,
       "custom_threshold": null,
       "created_at": "2026-01-01 20:51:02"
@@ -139,7 +139,7 @@
     {
       "employee_id": "emp_0009",
       "skill_id": "skill_028",
-      "passed_exam": true,
+      "passed_exam": false,
       "use_system_threshold": true,
       "custom_threshold": null,
       "created_at": "2026-01-01 20:51:02"
@@ -147,7 +147,7 @@
     {
       "employee_id": "emp_0009",
       "skill_id": "skill_029",
-      "passed_exam": true,
+      "passed_exam": false,
       "use_system_threshold": true,
       "custom_threshold": null,
       "created_at": "2026-01-01 20:51:02"

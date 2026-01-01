@@ -6,9 +6,51 @@ import pandas as pd
 import io
 import sys
 from pathlib import Path
+from st_aggrid import AgGrid, GridOptionsBuilder, JsCode
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from app.data_manager import get_regions, load_json
+
+
+def display_employee_detail(result: dict, regions: list):
+    """显示单个员工的计算明细"""
+    emp_name = result.get("employee_name", "")
+    total_salary = result.get("total_salary", 0)
+
+    st.markdown(f"### 📋 {emp_name} 的计算明细")
+
+    detail_lines = []
+    total_parts = []
+
+    for region in regions:
+        region_id = region["id"]
+        region_name = region["name"]
+
+        if region_id in result.get("regions", {}):
+            rd = result["regions"][region_id]
+            score = rd.get("score", 0)
+            skill_salary = rd.get("skill_salary", 0)
+            ladder_bonus = rd.get("ladder_bonus", 0)
+            total = rd.get("total", 0)
+
+            if total > 0:
+                status = "在岗" if rd.get("is_on_duty") else "不在岗"
+                detail_lines.append(
+                    f"**{region_name}小计** {total:.0f} = 技能工资 {skill_salary:.0f} + 阶梯奖金 {ladder_bonus:.0f}（绩效 {score:,.0f}，{status}）"
+                )
+                total_parts.append(f"{region_name} {total:.0f}")
+            else:
+                detail_lines.append(f"**{region_name}小计** 0（无绩效）")
+
+    for line in detail_lines:
+        st.markdown(line)
+
+    st.markdown("---")
+    if total_parts:
+        total_formula = " + ".join(total_parts)
+        st.markdown(f"**总工资 {total_salary:.2f}** = {total_formula}")
+    else:
+        st.markdown("**总工资 0**")
 
 
 def render():
@@ -36,7 +78,7 @@ def render():
             "月份": calc.get("month", ""),
             "计算时间": calc.get("calculated_at", ""),
             "员工人数": calc.get("employee_count", 0),
-            "工资总额": f"¥{calc.get('total_salary', 0):,.2f}"
+            "工资总额": f"{calc.get('total_salary', 0):,.2f}"
         })
 
     overview_df = pd.DataFrame(overview_data)
@@ -58,28 +100,108 @@ def render():
         regions = get_regions()
 
         if results:
-            # 显示详细数据
+            # 构建表格数据，包含详情信息
             display_data = []
-
             for r in results:
-                row = {
-                    "姓名": r.get("employee_name", ""),
-                }
-
+                # 构建详情数据
+                detail_rows = []
+                total_parts = []
                 for region in regions:
                     region_id = region["id"]
                     region_name = region["name"]
                     if region_id in r.get("regions", {}):
                         rd = r["regions"][region_id]
-                        row[f"{region_name}绩效分"] = f"{rd.get('score', 0):,.0f}"
-                        row[f"{region_name}状态"] = "在岗" if rd.get("is_on_duty") else "不在岗"
-                        row[f"{region_name}小计"] = f"{rd.get('total', 0):.0f}"
+                        score = rd.get("score", 0)
+                        skill_salary = rd.get("skill_salary", 0)
+                        ladder_bonus = rd.get("ladder_bonus", 0)
+                        total = rd.get("total", 0)
+                        status = "在岗" if rd.get("is_on_duty") else "不在岗"
 
-                row["总工资"] = f"{r.get('total_salary', 0):.2f}"
+                        if total > 0:
+                            detail_rows.append({
+                                "项目": f"{region_name}小计",
+                                "计算公式": f"技能工资 {skill_salary:.0f} + 阶梯奖金 {ladder_bonus:.0f}",
+                                "绩效分": f"{score:,.0f}",
+                                "状态": status,
+                                "金额": f"{total:.0f}"
+                            })
+                            total_parts.append(f"{region_name} {total:.0f}")
+
+                # 添加总计行
+                total_formula = " + ".join(total_parts) if total_parts else "无"
+                detail_rows.append({
+                    "项目": "【总工资】",
+                    "计算公式": total_formula,
+                    "绩效分": "",
+                    "状态": "",
+                    "金额": f"{r.get('total_salary', 0):.2f}"
+                })
+
+                # 主行数据
+                row = {"姓名": r.get("employee_name", "")}
+                for region in regions:
+                    region_id = region["id"]
+                    region_name = region["name"]
+                    if region_id in r.get("regions", {}):
+                        rd = r["regions"][region_id]
+                        row[f"{region_name}绩效分"] = rd.get("score", 0)
+                        row[f"{region_name}小计"] = rd.get("total", 0)
+                row["总工资"] = r.get("total_salary", 0)
+                row["detail_data"] = detail_rows
                 display_data.append(row)
 
             df = pd.DataFrame(display_data)
-            st.dataframe(df, use_container_width=True, hide_index=True)
+
+            # 配置 AgGrid
+            column_defs = [
+                {
+                    "field": "姓名",
+                    "cellRenderer": "agGroupCellRenderer",
+                    "width": 150,
+                    "pinned": "left"
+                }
+            ]
+
+            for region in regions:
+                region_name = region["name"]
+                column_defs.append({"field": f"{region_name}绩效分", "width": 100})
+                column_defs.append({"field": f"{region_name}小计", "width": 100})
+
+            column_defs.append({"field": "总工资", "width": 100, "pinned": "right"})
+
+            grid_options = {
+                "columnDefs": column_defs,
+                "rowData": display_data,
+                "masterDetail": True,
+                "detailRowHeight": 150,
+                "detailCellRendererParams": {
+                    "detailGridOptions": {
+                        "columnDefs": [
+                            {"field": "项目", "width": 120},
+                            {"field": "计算公式", "width": 250},
+                            {"field": "绩效分", "width": 100},
+                            {"field": "状态", "width": 80},
+                            {"field": "金额", "width": 100},
+                        ],
+                        "defaultColDef": {"flex": 1},
+                    },
+                    "getDetailRowData": JsCode("""function(params) {
+                        params.successCallback(params.data.detail_data);
+                    }"""),
+                },
+                "defaultColDef": {
+                    "resizable": True,
+                    "sortable": True,
+                }
+            }
+
+            AgGrid(
+                df.drop(columns=["detail_data"]),
+                gridOptions=grid_options,
+                height=400,
+                allow_unsafe_jscode=True,
+                theme="streamlit"
+            )
 
             # 统计信息
             col1, col2, col3 = st.columns(3)
@@ -87,10 +209,10 @@ def render():
             with col1:
                 st.metric("总人数", len(results))
             with col2:
-                st.metric("工资总额", f"¥{total:,.2f}")
+                st.metric("工资总额", f"{total:,.2f}")
             with col3:
                 avg = total / len(results) if results else 0
-                st.metric("人均工资", f"¥{avg:,.2f}")
+                st.metric("人均工资", f"{avg:,.2f}")
 
             # 导出功能
             st.markdown("---")
@@ -161,18 +283,18 @@ def render():
                 with col1:
                     st.markdown(f"**{compare_month1}**")
                     st.write(f"人数: {calc1.get('employee_count', 0)}")
-                    st.write(f"总额: ¥{calc1.get('total_salary', 0):,.2f}")
+                    st.write(f"总额: {calc1.get('total_salary', 0):,.2f}")
 
                 with col2:
                     st.markdown(f"**{compare_month2}**")
                     st.write(f"人数: {calc2.get('employee_count', 0)}")
-                    st.write(f"总额: ¥{calc2.get('total_salary', 0):,.2f}")
+                    st.write(f"总额: {calc2.get('total_salary', 0):,.2f}")
 
                 with col3:
                     st.markdown("**变化**")
                     diff_count = calc1.get('employee_count', 0) - calc2.get('employee_count', 0)
                     diff_total = calc1.get('total_salary', 0) - calc2.get('total_salary', 0)
                     st.write(f"人数: {'+' if diff_count >= 0 else ''}{diff_count}")
-                    st.write(f"总额: {'+' if diff_total >= 0 else ''}¥{diff_total:,.2f}")
+                    st.write(f"总额: {'+' if diff_total >= 0 else ''}{diff_total:,.2f}")
     else:
         st.info("需要至少两个月的数据才能进行对比")
