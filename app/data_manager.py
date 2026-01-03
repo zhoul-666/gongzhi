@@ -87,7 +87,13 @@ def get_employees() -> list:
 
 
 def add_employee(name: str, employee_no: str = None, mode_id: str = None) -> dict:
-    """添加员工"""
+    """添加员工
+
+    Args:
+        name: 员工姓名
+        employee_no: 工号（可选）
+        mode_id: 所属模式ID
+    """
     data = load_json("employees.json")
     employees = data.get("employees", [])
     next_id = data.get("next_id", 1)

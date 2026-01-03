@@ -47,6 +47,7 @@ def render():
 
     # 显示员工基本信息
     mode = get_mode_by_id(selected_emp.get("mode_id", ""))
+
     with col2:
         if mode:
             st.info(f"所属模式：**{mode['name']}**")
@@ -79,15 +80,18 @@ def render():
 
                 region = get_region_by_id(skill.get("region_id", ""))
                 region_name = region["name"] if region else "-"
+                system_threshold = region.get("threshold", 30000) if region else 30000
+                current_use_system = assignment.get("use_system_threshold", True)
+                current_custom = assignment.get("custom_threshold") or system_threshold
 
                 with st.container():
-                    col1, col2, col3 = st.columns([3, 2, 1])
+                    # 技能信息
+                    st.markdown(f"**{skill['name']}** ({region_name})")
+                    st.caption(f"在岗: {skill.get('salary_on_duty', 0)}元 | 不在岗: {skill.get('salary_off_duty', 0)}元")
+
+                    col1, col2, col3 = st.columns([1.5, 2, 1.5])
 
                     with col1:
-                        st.markdown(f"**{skill['name']}**")
-                        st.caption(f"区域: {region_name} | 在岗: {skill.get('salary_on_duty', 0)}元 | 不在岗: {skill.get('salary_off_duty', 0)}元")
-
-                    with col2:
                         # 考核状态
                         passed = assignment.get("passed_exam", False)
                         new_passed = st.checkbox(
@@ -103,14 +107,41 @@ def render():
                             )
                             st.rerun()
 
-                    with col3:
-                        # 自定义达标值
-                        use_system = assignment.get("use_system_threshold", True)
-                        if not use_system:
-                            custom_val = assignment.get("custom_threshold", 0)
-                            st.caption(f"自定义达标值: {custom_val:,}")
+                    with col2:
+                        # 达标值设置
+                        threshold_option = st.radio(
+                            "达标值",
+                            options=[f"系统({system_threshold:,})", "自定义"],
+                            index=0 if current_use_system else 1,
+                            key=f"threshold_{selected_emp_id}_{skill['id']}",
+                            horizontal=True,
+                            label_visibility="collapsed"
+                        )
+                        use_system = threshold_option.startswith("系统")
 
-                    st.markdown("---")
+                    with col3:
+                        # 自定义达标值输入
+                        custom_val = st.number_input(
+                            "自定义值",
+                            value=current_custom,
+                            min_value=0,
+                            step=5000,
+                            key=f"custom_{selected_emp_id}_{skill['id']}",
+                            disabled=use_system,
+                            label_visibility="collapsed"
+                        )
+
+                    # 检测变化并保存
+                    if use_system != current_use_system or (not use_system and custom_val != current_custom):
+                        if use_system:
+                            update_employee_skill(selected_emp_id, skill["id"],
+                                {"use_system_threshold": True, "custom_threshold": None})
+                        else:
+                            update_employee_skill(selected_emp_id, skill["id"],
+                                {"use_system_threshold": False, "custom_threshold": custom_val})
+                        st.rerun()
+
+                    st.divider()
 
     with col_right:
         st.subheader("可分配技能")
@@ -180,63 +211,3 @@ def render():
                 st.success(f"已通过 {count} 个技能的考核")
                 st.rerun()
 
-    # 自定义达标值设置
-    st.markdown("---")
-    with st.expander("⚙️ 自定义达标值设置（兼职员工使用）"):
-        st.caption("对于兼职员工，可以为某些技能设置较低的达标值")
-
-        if assigned:
-            for assignment in assigned:
-                skill = next((s for s in all_skills if s["id"] == assignment["skill_id"]), None)
-                if not skill:
-                    continue
-
-                region = get_region_by_id(skill.get("region_id", ""))
-                system_threshold = region.get("threshold", 30000) if region else 30000
-
-                col1, col2, col3 = st.columns([3, 2, 2])
-
-                with col1:
-                    st.markdown(f"**{skill['name']}**")
-
-                with col2:
-                    use_system = st.checkbox(
-                        "使用系统达标值",
-                        value=assignment.get("use_system_threshold", True),
-                        key=f"system_threshold_{selected_emp_id}_{skill['id']}"
-                    )
-
-                with col3:
-                    if not use_system:
-                        custom_val = st.number_input(
-                            "自定义达标值",
-                            value=assignment.get("custom_threshold", system_threshold),
-                            min_value=0,
-                            step=10000,
-                            key=f"custom_threshold_{selected_emp_id}_{skill['id']}"
-                        )
-
-                        if st.button("保存", key=f"save_threshold_{selected_emp_id}_{skill['id']}"):
-                            update_employee_skill(
-                                selected_emp_id,
-                                skill["id"],
-                                {
-                                    "use_system_threshold": False,
-                                    "custom_threshold": custom_val
-                                }
-                            )
-                            st.success("已保存")
-                            st.rerun()
-                    else:
-                        st.caption(f"系统值: {system_threshold:,}")
-                        if not assignment.get("use_system_threshold", True):
-                            # 从自定义切回系统
-                            update_employee_skill(
-                                selected_emp_id,
-                                skill["id"],
-                                {
-                                    "use_system_threshold": True,
-                                    "custom_threshold": None
-                                }
-                            )
-                            st.rerun()

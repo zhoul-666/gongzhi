@@ -1,5 +1,5 @@
 """
-小技能管理页面 - 支持批量编辑
+工作技能管理页面 - 支持批量编辑
 """
 import streamlit as st
 import pandas as pd
@@ -15,7 +15,7 @@ from app.data_manager import (
 
 
 def render():
-    st.title("🔧 小技能管理")
+    st.title("🔧 工作技能管理")
     st.markdown("---")
 
     skills = get_skills()
@@ -95,6 +95,8 @@ def render():
     # 初始化选中状态
     if "selected_skills" not in st.session_state:
         st.session_state.selected_skills = set()
+    if "checkbox_version" not in st.session_state:
+        st.session_state.checkbox_version = 0
 
     # 批量操作区
     st.markdown("**批量操作：**")
@@ -103,10 +105,12 @@ def render():
     with col1:
         if st.button("全选"):
             st.session_state.selected_skills = set(s["id"] for s in filtered_skills)
+            st.session_state.checkbox_version += 1
             st.rerun()
     with col2:
         if st.button("取消全选"):
             st.session_state.selected_skills = set()
+            st.session_state.checkbox_version += 1
             st.rerun()
     with col3:
         batch_on_duty = st.number_input("批量设置在岗", value=200, min_value=0, key="batch_on")
@@ -148,7 +152,8 @@ def render():
 
         with col_check:
             is_selected = skill["id"] in st.session_state.selected_skills
-            if st.checkbox("", value=is_selected, key=f"check_{skill['id']}", label_visibility="collapsed"):
+            version = st.session_state.checkbox_version
+            if st.checkbox("", value=is_selected, key=f"check_v{version}_{skill['id']}", label_visibility="collapsed"):
                 st.session_state.selected_skills.add(skill["id"])
             else:
                 st.session_state.selected_skills.discard(skill["id"])

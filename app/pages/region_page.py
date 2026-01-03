@@ -1,5 +1,5 @@
 """
-大区域管理页面 - 含阶梯规则配置
+工作区域管理页面 - 含阶梯规则配置
 """
 import streamlit as st
 import pandas as pd
@@ -11,7 +11,7 @@ from app.data_manager import get_regions, update_region, add_region, save_json, 
 
 
 def render():
-    st.title("🗺️ 大区域管理")
+    st.title("🗺️ 工作区域管理")
     st.markdown("---")
 
     regions = get_regions()
