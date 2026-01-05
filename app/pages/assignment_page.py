@@ -28,11 +28,34 @@ def render():
         st.warning("暂无员工数据，请先添加员工或导入绩效数据")
         return
 
-    # 选择员工
-    emp_options = {e["id"]: f"{e['name']} ({e.get('employee_no', '')})" for e in employees}
+    # 两列布局：所属模式筛选 + 选择员工
+    col1, col2 = st.columns(2)
 
-    col1, col2 = st.columns([2, 3])
     with col1:
+        # 模式筛选选项
+        mode_options = {"all": "全部模式"}
+        for m in modes:
+            mode_options[m["id"]] = m["name"]
+
+        selected_mode_filter = st.selectbox(
+            "所属模式",
+            options=list(mode_options.keys()),
+            format_func=lambda x: mode_options.get(x, x),
+            key="mode_filter"
+        )
+
+    # 根据模式筛选员工列表
+    if selected_mode_filter == "all":
+        filtered_employees = employees
+    else:
+        filtered_employees = [e for e in employees if e.get("mode_id") == selected_mode_filter]
+
+    with col2:
+        if not filtered_employees:
+            st.warning("该模式下暂无员工")
+            return
+
+        emp_options = {e["id"]: f"{e['name']} ({e.get('employee_no', '')})" for e in filtered_employees}
         selected_emp_id = st.selectbox(
             "选择员工",
             options=list(emp_options.keys()),
@@ -45,15 +68,11 @@ def render():
     if not selected_emp:
         return
 
-    # 显示员工基本信息
+    # 获取员工所属模式
     mode = get_mode_by_id(selected_emp.get("mode_id", ""))
-
-    with col2:
-        if mode:
-            st.info(f"所属模式：**{mode['name']}**")
-        else:
-            st.warning("该员工尚未指定所属模式，请先在员工管理中设置")
-            return
+    if not mode:
+        st.warning("该员工尚未指定所属模式，请先在员工管理中设置")
+        return
 
     st.markdown("---")
 
@@ -68,83 +87,139 @@ def render():
     col_left, col_right = st.columns(2)
 
     with col_left:
-        st.subheader("已分配技能")
+        st.subheader(f"已分配技能 ({len(assigned)}个)")
 
         if not assigned:
             st.info("该员工暂未分配任何技能")
         else:
+            # 按区域分组
+            assigned_by_region = {}
             for assignment in assigned:
                 skill = next((s for s in all_skills if s["id"] == assignment["skill_id"]), None)
                 if not skill:
                     continue
+                region_id = skill.get("region_id", "unknown")
+                if region_id not in assigned_by_region:
+                    assigned_by_region[region_id] = []
+                assigned_by_region[region_id].append((assignment, skill))
 
-                region = get_region_by_id(skill.get("region_id", ""))
-                region_name = region["name"] if region else "-"
+            for region_id, items in assigned_by_region.items():
+                region = get_region_by_id(region_id)
+                region_name = region["name"] if region else "未分类"
                 system_threshold = region.get("threshold", 30000) if region else 30000
-                current_use_system = assignment.get("use_system_threshold", True)
-                current_custom = assignment.get("custom_threshold") or system_threshold
 
-                with st.container():
-                    # 技能信息
-                    st.markdown(f"**{skill['name']}** ({region_name})")
-                    st.caption(f"在岗: {skill.get('salary_on_duty', 0)}元 | 不在岗: {skill.get('salary_off_duty', 0)}元")
+                st.markdown(f"**{region_name}** ({len(items)}个)")
 
-                    col1, col2, col3 = st.columns([1.5, 2, 1.5])
+                # 三列网格布局
+                cols = st.columns(3)
+                for idx, (assignment, skill) in enumerate(items):
+                    col_idx = idx % 3
+                    current_use_system = assignment.get("use_system_threshold", True)
+                    current_custom = assignment.get("custom_threshold") or system_threshold
 
-                    with col1:
-                        # 考核状态
-                        passed = assignment.get("passed_exam", False)
-                        new_passed = st.checkbox(
-                            "已通过考核",
-                            value=passed,
-                            key=f"exam_{selected_emp_id}_{skill['id']}"
-                        )
-                        if new_passed != passed:
-                            update_employee_skill(
-                                selected_emp_id,
-                                skill["id"],
-                                {"passed_exam": new_passed}
+                    with cols[col_idx]:
+                        with st.container(border=True):
+                            # 考核状态 + 技能名称
+                            passed = assignment.get("passed_exam", False)
+                            new_passed = st.checkbox(
+                                skill['name'],
+                                value=passed,
+                                key=f"exam_{selected_emp_id}_{skill['id']}"
                             )
-                            st.rerun()
+                            if new_passed != passed:
+                                update_employee_skill(selected_emp_id, skill["id"], {"passed_exam": new_passed})
+                                st.rerun()
 
-                    with col2:
-                        # 达标值设置
-                        threshold_option = st.radio(
-                            "达标值",
-                            options=[f"系统({system_threshold:,})", "自定义"],
-                            index=0 if current_use_system else 1,
-                            key=f"threshold_{selected_emp_id}_{skill['id']}",
-                            horizontal=True,
-                            label_visibility="collapsed"
-                        )
-                        use_system = threshold_option.startswith("系统")
+                            # 获取当前价格设置
+                            current_use_system_price = assignment.get("use_system_price", True)
+                            default_price = skill.get('salary_on_duty', 0)
+                            current_custom_price = assignment.get("custom_price_on_duty") or default_price
 
-                    with col3:
-                        # 自定义达标值输入
-                        custom_val = st.number_input(
-                            "自定义值",
-                            value=current_custom,
-                            min_value=0,
-                            step=5000,
-                            key=f"custom_{selected_emp_id}_{skill['id']}",
-                            disabled=use_system,
-                            label_visibility="collapsed"
-                        )
+                            # 工资信息
+                            st.caption(f"默认: 在岗{default_price} / 不在岗{skill.get('salary_off_duty', 0)}")
 
-                    # 检测变化并保存
-                    if use_system != current_use_system or (not use_system and custom_val != current_custom):
-                        if use_system:
-                            update_employee_skill(selected_emp_id, skill["id"],
-                                {"use_system_threshold": True, "custom_threshold": None})
-                        else:
-                            update_employee_skill(selected_emp_id, skill["id"],
-                                {"use_system_threshold": False, "custom_threshold": custom_val})
-                        st.rerun()
+                            # 分值设置（一行：标签 + 选项）
+                            th_col1, th_col2 = st.columns([1, 2])
+                            with th_col1:
+                                st.markdown("**分值**")
+                            with th_col2:
+                                threshold_option = st.radio(
+                                    "分值",
+                                    options=["默认", "自定义"],
+                                    index=0 if current_use_system else 1,
+                                    key=f"th_{selected_emp_id}_{skill['id']}",
+                                    horizontal=True,
+                                    label_visibility="collapsed"
+                                )
+                            use_system = threshold_option == "默认"
 
-                    st.divider()
+                            if not use_system:
+                                custom_val = st.number_input(
+                                    "自定义分值",
+                                    value=current_custom,
+                                    min_value=0,
+                                    step=5000,
+                                    key=f"cv_{selected_emp_id}_{skill['id']}",
+                                    label_visibility="collapsed"
+                                )
+                            else:
+                                custom_val = current_custom
+
+                            # 检测达标值变化并保存
+                            if use_system != current_use_system or (not use_system and custom_val != current_custom):
+                                if use_system:
+                                    update_employee_skill(selected_emp_id, skill["id"],
+                                        {"use_system_threshold": True, "custom_threshold": None})
+                                else:
+                                    update_employee_skill(selected_emp_id, skill["id"],
+                                        {"use_system_threshold": False, "custom_threshold": custom_val})
+                                st.rerun()
+
+                            # 奖金设置（一行：标签 + 选项）
+                            pr_col1, pr_col2 = st.columns([1, 2])
+                            with pr_col1:
+                                st.markdown("**奖金**")
+                            with pr_col2:
+                                price_option = st.radio(
+                                    "奖金",
+                                    options=["默认", "自定义"],
+                                    index=0 if current_use_system_price else 1,
+                                    key=f"price_{selected_emp_id}_{skill['id']}",
+                                    horizontal=True,
+                                    label_visibility="collapsed"
+                                )
+                            use_system_price = price_option == "默认"
+
+                            if not use_system_price:
+                                custom_price = st.number_input(
+                                    "自定义奖金",
+                                    value=current_custom_price,
+                                    min_value=0,
+                                    step=50,
+                                    key=f"cp_{selected_emp_id}_{skill['id']}",
+                                    label_visibility="collapsed"
+                                )
+                            else:
+                                custom_price = current_custom_price
+
+                            # 检测价格变化并保存
+                            if use_system_price != current_use_system_price or (not use_system_price and custom_price != current_custom_price):
+                                if use_system_price:
+                                    update_employee_skill(selected_emp_id, skill["id"],
+                                        {"use_system_price": True, "custom_price_on_duty": None})
+                                else:
+                                    update_employee_skill(selected_emp_id, skill["id"],
+                                        {"use_system_price": False, "custom_price_on_duty": custom_price})
+                                st.rerun()
+
+                    # 每3个重新创建列
+                    if col_idx == 2 and idx < len(items) - 1:
+                        cols = st.columns(3)
+
+                st.markdown("")  # 区域之间的间隔
 
     with col_right:
-        st.subheader("可分配技能")
+        st.subheader(f"可分配技能 ({len([s for s in available_skills if s['id'] not in assigned_skill_ids])}个)")
 
         # 未分配的技能
         unassigned_skills = [s for s in available_skills if s["id"] not in assigned_skill_ids]
@@ -164,21 +239,29 @@ def render():
                 region = get_region_by_id(region_id)
                 region_name = region["name"] if region else "未分类"
 
-                with st.expander(f"📁 {region_name} ({len(skills)}个)", expanded=True):
-                    for skill in skills:
-                        col1, col2 = st.columns([3, 1])
-                        with col1:
+                st.markdown(f"**{region_name}** ({len(skills)}个)")
+
+                # 三列网格布局
+                cols = st.columns(3)
+                for idx, skill in enumerate(skills):
+                    col_idx = idx % 3
+                    with cols[col_idx]:
+                        with st.container(border=True):
                             st.markdown(f"**{skill['name']}**")
-                            st.caption(f"在岗: {skill.get('salary_on_duty', 0)}元 | 不在岗: {skill.get('salary_off_duty', 0)}元")
-                        with col2:
-                            if st.button("分配", key=f"assign_{selected_emp_id}_{skill['id']}"):
+                            st.caption(f"在岗{skill.get('salary_on_duty', 0)} / 不在岗{skill.get('salary_off_duty', 0)}")
+                            if st.button("分配", key=f"assign_{selected_emp_id}_{skill['id']}", use_container_width=True):
                                 assign_skill_to_employee(
                                     selected_emp_id,
                                     skill["id"],
                                     passed_exam=False
                                 )
-                                st.success(f"已分配: {skill['name']}")
                                 st.rerun()
+
+                    # 每3个重新创建列
+                    if col_idx == 2 and idx < len(skills) - 1:
+                        cols = st.columns(3)
+
+                st.markdown("")  # 区域之间的间隔
 
     # 批量分配功能
     st.markdown("---")

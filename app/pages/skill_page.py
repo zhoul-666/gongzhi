@@ -100,22 +100,26 @@ def render():
 
     # 批量操作区
     st.markdown("**批量操作：**")
-    col1, col2, col3, col4 = st.columns([1, 1, 1, 2])
 
+    # 第一行：全选/取消全选
+    col1, col2 = st.columns(2)
     with col1:
-        if st.button("全选"):
+        if st.button("全选", use_container_width=True):
             st.session_state.selected_skills = set(s["id"] for s in filtered_skills)
             st.session_state.checkbox_version += 1
             st.rerun()
     with col2:
-        if st.button("取消全选"):
+        if st.button("取消全选", use_container_width=True):
             st.session_state.selected_skills = set()
             st.session_state.checkbox_version += 1
             st.rerun()
-    with col3:
-        batch_on_duty = st.number_input("批量设置在岗", value=200, min_value=0, key="batch_on")
-    with col4:
-        if st.button("应用在岗工资"):
+
+    # 第二行：批量设置工资（四列对齐）
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        batch_on_duty = st.number_input("批量在岗", value=200, min_value=0, key="batch_on")
+    with col2:
+        if st.button("应用在岗", use_container_width=True):
             if st.session_state.selected_skills:
                 count = batch_update_skills(
                     list(st.session_state.selected_skills),
@@ -125,12 +129,10 @@ def render():
                 st.rerun()
             else:
                 st.warning("请先选择技能")
-
-    col1, col2, col3, col4 = st.columns([1, 1, 1, 2])
     with col3:
-        batch_off_duty = st.number_input("批量设置不在岗", value=100, min_value=0, key="batch_off")
+        batch_off_duty = st.number_input("批量不在岗", value=100, min_value=0, key="batch_off")
     with col4:
-        if st.button("应用不在岗工资"):
+        if st.button("应用不在岗", use_container_width=True):
             if st.session_state.selected_skills:
                 count = batch_update_skills(
                     list(st.session_state.selected_skills),
@@ -143,58 +145,59 @@ def render():
 
     st.markdown("---")
 
-    # 技能列表（带勾选框）
-    for skill in filtered_skills:
+    # 技能列表（两列网格布局）
+    cols = st.columns(2)
+    for idx, skill in enumerate(filtered_skills):
+        col_idx = idx % 2
         mode = get_mode_by_id(skill.get("mode_id", ""))
         region = get_region_by_id(skill.get("region_id", ""))
 
-        col_check, col_name, col_mode, col_region, col_on, col_off, col_action = st.columns([0.5, 2, 1.5, 1.5, 1, 1, 1])
+        with cols[col_idx]:
+            with st.container(border=True):
+                # 第一行：勾选框 + 技能名 + 模式/区域
+                c1, c2 = st.columns([0.15, 0.85])
+                with c1:
+                    is_selected = skill["id"] in st.session_state.selected_skills
+                    version = st.session_state.checkbox_version
+                    if st.checkbox("", value=is_selected, key=f"check_v{version}_{skill['id']}", label_visibility="collapsed"):
+                        st.session_state.selected_skills.add(skill["id"])
+                    else:
+                        st.session_state.selected_skills.discard(skill["id"])
+                with c2:
+                    mode_name = mode["name"] if mode else "-"
+                    region_name = region["name"] if region else "-"
+                    st.markdown(f"**{skill['name']}** ({mode_name}/{region_name})")
 
-        with col_check:
-            is_selected = skill["id"] in st.session_state.selected_skills
-            version = st.session_state.checkbox_version
-            if st.checkbox("", value=is_selected, key=f"check_v{version}_{skill['id']}", label_visibility="collapsed"):
-                st.session_state.selected_skills.add(skill["id"])
-            else:
-                st.session_state.selected_skills.discard(skill["id"])
+                # 第二行：在岗、不在岗、保存
+                c1, c2, c3 = st.columns([1, 1, 0.8])
+                with c1:
+                    new_on = st.number_input(
+                        "在岗",
+                        value=skill.get("salary_on_duty", 200),
+                        min_value=0,
+                        step=50,
+                        key=f"on_{skill['id']}"
+                    )
+                with c2:
+                    new_off = st.number_input(
+                        "不在岗",
+                        value=skill.get("salary_off_duty", 100),
+                        min_value=0,
+                        step=50,
+                        key=f"off_{skill['id']}"
+                    )
+                with c3:
+                    st.markdown("<br>", unsafe_allow_html=True)
+                    if st.button("保存", key=f"save_{skill['id']}", use_container_width=True):
+                        update_skill(skill["id"], {
+                            "salary_on_duty": new_on,
+                            "salary_off_duty": new_off
+                        })
+                        st.rerun()
 
-        with col_name:
-            st.markdown(f"**{skill['name']}**")
-
-        with col_mode:
-            st.caption(mode["name"] if mode else "-")
-
-        with col_region:
-            st.caption(region["name"] if region else "-")
-
-        with col_on:
-            new_on = st.number_input(
-                "在岗",
-                value=skill.get("salary_on_duty", 200),
-                min_value=0,
-                step=50,
-                key=f"on_{skill['id']}",
-                label_visibility="collapsed"
-            )
-
-        with col_off:
-            new_off = st.number_input(
-                "不在岗",
-                value=skill.get("salary_off_duty", 100),
-                min_value=0,
-                step=50,
-                key=f"off_{skill['id']}",
-                label_visibility="collapsed"
-            )
-
-        with col_action:
-            if st.button("保存", key=f"save_{skill['id']}"):
-                update_skill(skill["id"], {
-                    "salary_on_duty": new_on,
-                    "salary_off_duty": new_off
-                })
-                st.success("已保存")
-                st.rerun()
+        # 每两个重新创建列
+        if col_idx == 1 and idx < len(filtered_skills) - 1:
+            cols = st.columns(2)
 
     # 统计信息
     st.markdown("---")

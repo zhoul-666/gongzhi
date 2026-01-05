@@ -68,7 +68,7 @@ def render():
             erp_column = st.text_input(
                 "对应ERP列名",
                 value=selected_region.get("erp_column", "") or "",
-                key="edit_erp_column",
+                key=f"erp_{selected_region_id}",
                 help="导入绩效时匹配的Excel列名"
             )
         with col2:
@@ -77,7 +77,7 @@ def render():
                 value=selected_region.get("threshold", 30000),
                 min_value=0,
                 step=10000,
-                key="edit_threshold",
+                key=f"threshold_{selected_region_id}",
                 help="绩效分达到此值算在岗"
             )
 

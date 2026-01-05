@@ -103,7 +103,11 @@ def calculate_employee_salary(emp_id: str, emp_name: str, scores: dict,
                 if es and es.get("passed_exam", False):
                     # 通过考核才算工资
                     if is_on_duty:
-                        skill_salary += skill.get("salary_on_duty", 200)
+                        # 检查是否有自定义在岗价格
+                        if es.get("use_system_price", True):
+                            skill_salary += skill.get("salary_on_duty", 200)
+                        else:
+                            skill_salary += es.get("custom_price_on_duty") or skill.get("salary_on_duty", 200)
                     else:
                         skill_salary += skill.get("salary_off_duty", 100)
 

@@ -340,6 +340,8 @@ def assign_skill_to_employee(emp_id: str, skill_id: str, passed_exam: bool = Fal
         "passed_exam": passed_exam,
         "use_system_threshold": custom_threshold is None,
         "custom_threshold": custom_threshold,
+        "use_system_price": True,  # 默认使用系统价格
+        "custom_price_on_duty": None,  # 自定义在岗价格
         "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
 

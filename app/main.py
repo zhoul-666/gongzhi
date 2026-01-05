@@ -197,6 +197,12 @@ def inject_custom_css():
     [data-testid="stMetricValue"] {
         color: #1E88E5;
     }
+
+    /* 禁用 selectbox 输入编辑功能 - 只能选择不能输入 */
+    div[data-baseweb="select"] input {
+        caret-color: transparent !important;
+        pointer-events: none !important;
+    }
     </style>
     """, unsafe_allow_html=True)
 
