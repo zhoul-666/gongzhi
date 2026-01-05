@@ -101,4 +101,32 @@ gongzhi/
 
 ---
 
+## 六、Streamlit 开发规范
+
+### 1. 修改代码后必须重启
+修改代码后，**必须主动重启 Streamlit**，不能只让用户刷新页面：
+
+```bash
+# 正确做法：杀掉进程并重启
+pkill -f "streamlit" 2>/dev/null
+sleep 1
+nohup python3 -m streamlit run app/main.py --server.port 8501 > /tmp/streamlit.log 2>&1 &
+sleep 3
+# 验证启动成功
+curl -s -o /dev/null -w "%{http_code}" http://localhost:8501
+```
+
+### 2. 启动命令
+本机没有 `streamlit` 命令，必须用模块方式：
+```bash
+python3 -m streamlit run app/main.py
+```
+
+### 3. 线上更新
+- 代码推送到 GitHub 后，Streamlit Cloud 会自动更新（1-2分钟）
+- 如果没更新，去 https://share.streamlit.io 手动点 "Reboot app"
+
+---
+
 *文档创建时间：2024年12月30日*
+*最后更新：2026年01月05日*
