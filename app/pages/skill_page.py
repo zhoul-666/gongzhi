@@ -145,16 +145,14 @@ def render():
 
     st.markdown("---")
 
-    # 技能列表（两列网格布局）
-    cols = st.columns(2)
+    # 技能列表（三列网格布局）
+    cols = st.columns(3)
     for idx, skill in enumerate(filtered_skills):
-        col_idx = idx % 2
-        mode = get_mode_by_id(skill.get("mode_id", ""))
-        region = get_region_by_id(skill.get("region_id", ""))
+        col_idx = idx % 3
 
         with cols[col_idx]:
             with st.container(border=True):
-                # 第一行：勾选框 + 技能名 + 模式/区域
+                # 第一行：勾选框 + 技能名
                 c1, c2 = st.columns([0.15, 0.85])
                 with c1:
                     is_selected = skill["id"] in st.session_state.selected_skills
@@ -164,19 +162,18 @@ def render():
                     else:
                         st.session_state.selected_skills.discard(skill["id"])
                 with c2:
-                    mode_name = mode["name"] if mode else "-"
-                    region_name = region["name"] if region else "-"
-                    st.markdown(f"**{skill['name']}** ({mode_name}/{region_name})")
+                    st.markdown(f"**{skill['name']}**")
 
-                # 第二行：在岗、不在岗、保存
-                c1, c2, c3 = st.columns([1, 1, 0.8])
+                # 第二行：在岗/不在岗 + 保存按钮
+                c1, c2, c3 = st.columns([1, 1, 0.6])
                 with c1:
                     new_on = st.number_input(
                         "在岗",
                         value=skill.get("salary_on_duty", 200),
                         min_value=0,
                         step=50,
-                        key=f"on_{skill['id']}"
+                        key=f"on_{skill['id']}",
+                        label_visibility="collapsed"
                     )
                 with c2:
                     new_off = st.number_input(
@@ -184,20 +181,20 @@ def render():
                         value=skill.get("salary_off_duty", 100),
                         min_value=0,
                         step=50,
-                        key=f"off_{skill['id']}"
+                        key=f"off_{skill['id']}",
+                        label_visibility="collapsed"
                     )
                 with c3:
-                    st.markdown("<br>", unsafe_allow_html=True)
-                    if st.button("保存", key=f"save_{skill['id']}", use_container_width=True):
+                    if st.button("保存", key=f"save_{skill['id']}"):
                         update_skill(skill["id"], {
                             "salary_on_duty": new_on,
                             "salary_off_duty": new_off
                         })
                         st.rerun()
 
-        # 每两个重新创建列
-        if col_idx == 1 and idx < len(filtered_skills) - 1:
-            cols = st.columns(2)
+        # 每三个重新创建列
+        if col_idx == 2 and idx < len(filtered_skills) - 1:
+            cols = st.columns(3)
 
     # 统计信息
     st.markdown("---")

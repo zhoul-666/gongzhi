@@ -203,8 +203,212 @@ def inject_custom_css():
         caret-color: transparent !important;
         pointer-events: none !important;
     }
+
+    /* 顶部方案工具栏 - 固定定位 */
+    .scheme-toolbar {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        z-index: 999;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-bottom: 2px solid #1E88E5;
+        padding: 8px 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .scheme-toolbar .scheme-label {
+        font-weight: 600;
+        color: #1565C0;
+        white-space: nowrap;
+    }
+
+    .scheme-toolbar .scheme-name {
+        background: white;
+        padding: 6px 15px;
+        border-radius: 20px;
+        border: 2px solid #1E88E5;
+        font-weight: 500;
+        color: #1565C0;
+    }
+
+    .scheme-toolbar .modified-badge {
+        background: #ff9800;
+        color: white;
+        padding: 3px 10px;
+        border-radius: 12px;
+        font-size: 0.8em;
+        font-weight: 500;
+    }
+
+    /* 为工具栏留出顶部空间 */
+    .main-content-with-toolbar {
+        padding-top: 60px;
+    }
+
+    /* 工具栏按钮样式 */
+    .toolbar-btn {
+        background: #1E88E5;
+        color: white !important;
+        border: none;
+        padding: 6px 15px;
+        border-radius: 6px;
+        font-size: 0.9em;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+    }
+
+    .toolbar-btn:hover {
+        background: #1565C0;
+        transform: translateY(-1px);
+    }
+
+    .toolbar-btn-secondary {
+        background: white;
+        color: #1E88E5 !important;
+        border: 2px solid #1E88E5;
+    }
+
+    .toolbar-btn-secondary:hover {
+        background: #E3F2FD;
+    }
     </style>
     """, unsafe_allow_html=True)
+
+# ==================== 顶部方案工具栏 ====================
+def render_scheme_toolbar():
+    """渲染顶部方案工具栏"""
+    from app.data_manager import get_active_scheme, get_schemes, is_config_modified, save_as_scheme, update_scheme_snapshot
+
+    # 获取当前方案信息
+    active_scheme = get_active_scheme()
+    schemes = get_schemes()
+    is_modified = is_config_modified()
+
+    # 使用 Streamlit 容器
+    toolbar = st.container()
+
+    with toolbar:
+        cols = st.columns([1.5, 3, 1, 1, 1, 2])
+
+        with cols[0]:
+            st.markdown("**当前方案：**")
+
+        with cols[1]:
+            # 方案选择下拉框
+            scheme_options = {s["id"]: s["name"] for s in schemes}
+            scheme_ids = list(scheme_options.keys())
+            scheme_names = list(scheme_options.values())
+
+            current_idx = 0
+            if active_scheme:
+                try:
+                    current_idx = scheme_ids.index(active_scheme["id"])
+                except ValueError:
+                    current_idx = 0
+
+            # 显示方案名称和修改状态
+            display_name = active_scheme["name"] if active_scheme else "无方案"
+            if is_modified:
+                display_name += " ⚠️已修改"
+
+            selected_name = st.selectbox(
+                "方案",
+                scheme_names,
+                index=current_idx,
+                key="scheme_selector",
+                label_visibility="collapsed"
+            )
+
+            # 处理方案切换
+            selected_idx = scheme_names.index(selected_name)
+            selected_id = scheme_ids[selected_idx]
+
+            if active_scheme and selected_id != active_scheme["id"]:
+                # 切换方案前检查是否有未保存的修改
+                if is_modified:
+                    st.session_state.pending_scheme_switch = selected_id
+                    st.session_state.show_switch_confirm = True
+                else:
+                    from app.data_manager import load_scheme_to_current
+                    load_scheme_to_current(selected_id)
+                    st.rerun()
+
+        with cols[2]:
+            # 保存按钮
+            if st.button("💾 保存", key="toolbar_save", help="保存到当前方案"):
+                if active_scheme:
+                    update_scheme_snapshot(active_scheme["id"])
+                    st.success("已保存!")
+                    st.rerun()
+
+        with cols[3]:
+            # 另存为按钮
+            if st.button("📑 另存为", key="toolbar_save_as", help="另存为新方案"):
+                st.session_state.show_save_as_dialog = True
+
+        with cols[4]:
+            # 管理方案按钮
+            if st.button("⚙️ 管理", key="toolbar_manage", help="管理所有方案"):
+                st.session_state.current_page = "scheme"
+                st.rerun()
+
+        with cols[5]:
+            # 显示修改状态
+            if is_modified:
+                st.markdown('<span style="color: #ff9800; font-weight: 500;">● 有未保存的修改</span>', unsafe_allow_html=True)
+
+    # 分隔线
+    st.markdown("---")
+
+    # 另存为对话框
+    if st.session_state.get("show_save_as_dialog"):
+        with st.expander("📑 另存为新方案", expanded=True):
+            new_name = st.text_input("方案名称", key="new_scheme_name", placeholder="例如：2025年2月测试版")
+            new_desc = st.text_input("方案描述（可选）", key="new_scheme_desc", placeholder="简要描述此方案")
+
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button("确定保存", key="confirm_save_as"):
+                    if new_name:
+                        save_as_scheme(new_name, new_desc)
+                        st.session_state.show_save_as_dialog = False
+                        st.success(f"已保存为：{new_name}")
+                        st.rerun()
+                    else:
+                        st.warning("请输入方案名称")
+            with col2:
+                if st.button("取消", key="cancel_save_as"):
+                    st.session_state.show_save_as_dialog = False
+                    st.rerun()
+
+    # 切换确认对话框
+    if st.session_state.get("show_switch_confirm"):
+        st.warning("⚠️ 当前有未保存的修改，切换方案后将丢失！")
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            if st.button("保存后切换", key="save_then_switch"):
+                if active_scheme:
+                    update_scheme_snapshot(active_scheme["id"])
+                from app.data_manager import load_scheme_to_current
+                load_scheme_to_current(st.session_state.pending_scheme_switch)
+                st.session_state.show_switch_confirm = False
+                st.rerun()
+        with col2:
+            if st.button("放弃修改并切换", key="discard_and_switch"):
+                from app.data_manager import load_scheme_to_current
+                load_scheme_to_current(st.session_state.pending_scheme_switch)
+                st.session_state.show_switch_confirm = False
+                st.rerun()
+        with col3:
+            if st.button("取消切换", key="cancel_switch"):
+                st.session_state.show_switch_confirm = False
+                st.rerun()
+
 
 # ==================== 密码验证 ====================
 def check_password():
@@ -349,11 +553,9 @@ def render_home():
             st.rerun()
 
     with col4:
-        st.markdown(f"""
-        <div style="text-align: center; padding: 20px; color: #666;">
-            <p style="font-size: 0.9em;">版本 {__version__}</p>
-        </div>
-        """, unsafe_allow_html=True)
+        if st.button("📁\n\n方案管理", key="btn_scheme", use_container_width=True, help="管理配置方案"):
+            st.session_state.current_page = "scheme"
+            st.rerun()
 
 # ==================== 返回按钮 ====================
 def render_back_button():
@@ -377,6 +579,10 @@ if "current_page" not in st.session_state:
 
 # 根据页面状态显示内容
 current_page = st.session_state.current_page
+
+# 在所有页面（除首页外）显示顶部方案工具栏
+if current_page != "home":
+    render_scheme_toolbar()
 
 if current_page == "home":
     render_home()
@@ -415,6 +621,11 @@ elif current_page == "history":
     render_back_button()
     from app.pages import history_page
     history_page.render()
+
+elif current_page == "scheme":
+    render_back_button()
+    from app.pages import scheme_page
+    scheme_page.render()
 
 else:
     st.session_state.current_page = "home"

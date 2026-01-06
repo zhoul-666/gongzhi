@@ -366,6 +366,197 @@ def update_employee_skill(emp_id: str, skill_id: str, updates: dict) -> bool:
     return False
 
 
+# ============ 方案管理 ============
+
+def get_schemes() -> list:
+    """获取所有方案"""
+    data = load_json("schemes.json")
+    return data.get("schemes", [])
+
+
+def get_active_scheme() -> dict:
+    """获取当前激活的方案"""
+    schemes = get_schemes()
+    for scheme in schemes:
+        if scheme.get("is_active"):
+            return scheme
+    return None
+
+
+def get_scheme_by_id(scheme_id: str) -> dict:
+    """根据ID获取方案"""
+    schemes = get_schemes()
+    for scheme in schemes:
+        if scheme["id"] == scheme_id:
+            return scheme
+    return None
+
+
+def create_config_snapshot() -> dict:
+    """创建当前配置的快照"""
+    return {
+        "skills": get_skills(),
+        "regions": get_regions(),
+        "employee_skills": get_employee_skills()
+    }
+
+
+def save_as_scheme(name: str, description: str = "") -> dict:
+    """将当前配置保存为新方案"""
+    data = load_json("schemes.json")
+    schemes = data.get("schemes", [])
+    next_id = data.get("next_id", 1)
+
+    # 创建快照
+    snapshot = create_config_snapshot()
+
+    new_scheme = {
+        "id": f"scheme_{next_id:03d}",
+        "name": name,
+        "is_active": False,
+        "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "updated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "description": description,
+        "snapshot": snapshot
+    }
+
+    schemes.append(new_scheme)
+    data["schemes"] = schemes
+    data["next_id"] = next_id + 1
+
+    save_json("schemes.json", data, backup=False)
+    print(f"[方案] 已保存方案: {name}")
+    return new_scheme
+
+
+def update_scheme_snapshot(scheme_id: str) -> bool:
+    """更新方案的快照为当前配置"""
+    data = load_json("schemes.json")
+    schemes = data.get("schemes", [])
+
+    for scheme in schemes:
+        if scheme["id"] == scheme_id:
+            scheme["snapshot"] = create_config_snapshot()
+            scheme["updated_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            save_json("schemes.json", data, backup=False)
+            print(f"[方案] 已更新方案快照: {scheme['name']}")
+            return True
+
+    return False
+
+
+def load_scheme_to_current(scheme_id: str) -> bool:
+    """将方案加载到当前配置（覆盖当前数据）"""
+    scheme = get_scheme_by_id(scheme_id)
+    if not scheme or not scheme.get("snapshot"):
+        print(f"[错误] 方案不存在或无快照: {scheme_id}")
+        return False
+
+    snapshot = scheme["snapshot"]
+
+    # 恢复技能数据
+    skills_data = load_json("skills.json")
+    skills_data["skills"] = snapshot.get("skills", [])
+    save_json("skills.json", skills_data)
+
+    # 恢复区域数据
+    regions_data = load_json("regions.json")
+    regions_data["regions"] = snapshot.get("regions", [])
+    save_json("regions.json", regions_data)
+
+    # 恢复员工技能数据
+    emp_skills_data = load_json("employee_skills.json")
+    emp_skills_data["employee_skills"] = snapshot.get("employee_skills", [])
+    save_json("employee_skills.json", emp_skills_data)
+
+    # 设置为激活方案
+    set_active_scheme(scheme_id)
+
+    print(f"[方案] 已加载方案: {scheme['name']}")
+    return True
+
+
+def set_active_scheme(scheme_id: str) -> bool:
+    """设置激活方案"""
+    data = load_json("schemes.json")
+    schemes = data.get("schemes", [])
+
+    found = False
+    for scheme in schemes:
+        if scheme["id"] == scheme_id:
+            scheme["is_active"] = True
+            found = True
+        else:
+            scheme["is_active"] = False
+
+    if found:
+        save_json("schemes.json", data, backup=False)
+        return True
+    return False
+
+
+def update_scheme_info(scheme_id: str, updates: dict) -> bool:
+    """更新方案基本信息（名称、描述）"""
+    data = load_json("schemes.json")
+    schemes = data.get("schemes", [])
+
+    for scheme in schemes:
+        if scheme["id"] == scheme_id:
+            if "name" in updates:
+                scheme["name"] = updates["name"]
+            if "description" in updates:
+                scheme["description"] = updates["description"]
+            scheme["updated_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            save_json("schemes.json", data, backup=False)
+            print(f"[方案] 已更新方案信息: {scheme['name']}")
+            return True
+
+    return False
+
+
+def delete_scheme(scheme_id: str) -> bool:
+    """删除方案"""
+    data = load_json("schemes.json")
+    schemes = data.get("schemes", [])
+
+    for i, scheme in enumerate(schemes):
+        if scheme["id"] == scheme_id:
+            # 不允许删除激活的方案
+            if scheme.get("is_active"):
+                print(f"[错误] 不能删除当前使用中的方案")
+                return False
+            deleted = schemes.pop(i)
+            save_json("schemes.json", data, backup=False)
+            print(f"[方案] 已删除方案: {deleted['name']}")
+            return True
+
+    return False
+
+
+def get_config_hash() -> str:
+    """获取当前配置的哈希值（用于判断是否修改）"""
+    import hashlib
+    snapshot = create_config_snapshot()
+    content = json.dumps(snapshot, sort_keys=True, ensure_ascii=False)
+    return hashlib.md5(content.encode()).hexdigest()[:8]
+
+
+def is_config_modified() -> bool:
+    """检查当前配置是否与激活方案不同"""
+    active = get_active_scheme()
+    if not active or not active.get("snapshot"):
+        return False
+
+    current_hash = get_config_hash()
+
+    # 计算激活方案的哈希
+    import hashlib
+    snapshot_content = json.dumps(active["snapshot"], sort_keys=True, ensure_ascii=False)
+    active_hash = hashlib.md5(snapshot_content.encode()).hexdigest()[:8]
+
+    return current_hash != active_hash
+
+
 if __name__ == "__main__":
     # 测试
     print("=== 数据管理模块测试 ===")

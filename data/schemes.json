@@ -1,0 +1,2924 @@
+{
+  "schemes": [
+    {
+      "id": "scheme_001",
+      "name": "默认方案",
+      "is_active": false,
+      "created_at": "2026-01-06 21:50:00",
+      "updated_at": "2026-01-06 22:03:00",
+      "description": "系统初始方案",
+      "snapshot": {
+        "skills": [
+          {
+            "id": "skill_001",
+            "name": "文本标准化",
+            "mode_id": "mode_001",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_002",
+            "name": "基础CAD标准化",
+            "mode_id": "mode_001",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_003",
+            "name": "高级CAD标准化",
+            "mode_id": "mode_001",
+            "region_id": "region_001",
+            "salary_on_duty": 300,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_004",
+            "name": "初级仿制",
+            "mode_id": "mode_001",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_005",
+            "name": "操机打印",
+            "mode_id": "mode_001",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_006",
+            "name": "设备维护",
+            "mode_id": "mode_001",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_007",
+            "name": "图纸处理",
+            "mode_id": "mode_001",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_008",
+            "name": "简装精装",
+            "mode_id": "mode_001",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_009",
+            "name": "特殊工艺",
+            "mode_id": "mode_001",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_010",
+            "name": "接待票据",
+            "mode_id": "mode_001",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_011",
+            "name": "CAD导pdf",
+            "mode_id": "mode_002",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_012",
+            "name": "拼板",
+            "mode_id": "mode_002",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_013",
+            "name": "特殊装订文本",
+            "mode_id": "mode_002",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_014",
+            "name": "刀板",
+            "mode_id": "mode_002",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_015",
+            "name": "初级仿制",
+            "mode_id": "mode_002",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_016",
+            "name": "文本",
+            "mode_id": "mode_002",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_017",
+            "name": "图纸",
+            "mode_id": "mode_002",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_018",
+            "name": "设备维护",
+            "mode_id": "mode_002",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_019",
+            "name": "图纸处理",
+            "mode_id": "mode_002",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_020",
+            "name": "软装",
+            "mode_id": "mode_002",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_021",
+            "name": "裁切",
+            "mode_id": "mode_002",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_022",
+            "name": "硬装",
+            "mode_id": "mode_002",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_023",
+            "name": "设备简单处理",
+            "mode_id": "mode_002",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_024",
+            "name": "网络/现场接单",
+            "mode_id": "mode_002",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_025",
+            "name": "收银结算开票",
+            "mode_id": "mode_002",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_026",
+            "name": "快印物料",
+            "mode_id": "mode_002",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_027",
+            "name": "图纸业务",
+            "mode_id": "mode_002",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_028",
+            "name": "商务业务",
+            "mode_id": "mode_002",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_029",
+            "name": "印刷/快印业务",
+            "mode_id": "mode_002",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_030",
+            "name": "cdr/pdf导图",
+            "mode_id": "mode_003",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_031",
+            "name": "AI导图",
+            "mode_id": "mode_003",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_032",
+            "name": "文件拼版及生成刀版",
+            "mode_id": "mode_003",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_033",
+            "name": "cdr简单排版",
+            "mode_id": "mode_003",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_034",
+            "name": "发图",
+            "mode_id": "mode_003",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_035",
+            "name": "常规打印",
+            "mode_id": "mode_003",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_036",
+            "name": "覆膜",
+            "mode_id": "mode_003",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_037",
+            "name": "裱板",
+            "mode_id": "mode_003",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_038",
+            "name": "雕刻",
+            "mode_id": "mode_003",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_039",
+            "name": "木工拼版雕刻",
+            "mode_id": "mode_003",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_040",
+            "name": "激光拼版雕刻",
+            "mode_id": "mode_003",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_041",
+            "name": "后期粘接",
+            "mode_id": "mode_003",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_042",
+            "name": "广告物料个性美陈组合",
+            "mode_id": "mode_003",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_043",
+            "name": "全品类个性方案",
+            "mode_id": "mode_003",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_044",
+            "name": "接单",
+            "mode_id": "mode_003",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_045",
+            "name": "票据整理",
+            "mode_id": "mode_003",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_046",
+            "name": "广告物料报价",
+            "mode_id": "mode_003",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_047",
+            "name": "数码印刷物料接单",
+            "mode_id": "mode_003",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_048",
+            "name": "广告门头/定制类标识报价",
+            "mode_id": "mode_003",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          }
+        ],
+        "regions": [
+          {
+            "id": "region_001",
+            "name": "印前",
+            "erp_column": "印前处理分值",
+            "threshold": 30000,
+            "ladder_rules": [
+              {
+                "min": 0,
+                "max": 30000,
+                "bonus": 50,
+                "description": "不在岗基础"
+              },
+              {
+                "min": 30000,
+                "max": 50000,
+                "bonus": 300,
+                "description": "3-5万"
+              },
+              {
+                "min": 50000,
+                "max": 100000,
+                "bonus": 500,
+                "description": "5-10万"
+              },
+              {
+                "min": 100000,
+                "max": 200000,
+                "bonus": 600,
+                "description": "10-20万"
+              },
+              {
+                "min": 200000,
+                "max": 300000,
+                "bonus": 500,
+                "description": "20-30万"
+              },
+              {
+                "min": 300000,
+                "max": 400000,
+                "bonus": 400,
+                "description": "30-40万"
+              },
+              {
+                "min": 400000,
+                "max": 999999999,
+                "bonus": 300,
+                "description": "40万以上"
+              }
+            ],
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "region_002",
+            "name": "印中",
+            "erp_column": "印中制作分值",
+            "threshold": 30000,
+            "ladder_rules": [
+              {
+                "min": 0,
+                "max": 30000,
+                "bonus": 50,
+                "description": "不在岗基础"
+              },
+              {
+                "min": 30000,
+                "max": 50000,
+                "bonus": 300,
+                "description": "3-5万"
+              },
+              {
+                "min": 50000,
+                "max": 100000,
+                "bonus": 500,
+                "description": "5-10万"
+              },
+              {
+                "min": 100000,
+                "max": 200000,
+                "bonus": 600,
+                "description": "10-20万"
+              },
+              {
+                "min": 200000,
+                "max": 300000,
+                "bonus": 500,
+                "description": "20-30万"
+              },
+              {
+                "min": 300000,
+                "max": 400000,
+                "bonus": 400,
+                "description": "30-40万"
+              },
+              {
+                "min": 400000,
+                "max": 999999999,
+                "bonus": 300,
+                "description": "40万以上"
+              }
+            ],
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "region_003",
+            "name": "印后",
+            "erp_column": "印后加工分值",
+            "threshold": 50000,
+            "ladder_rules": [
+              {
+                "min": 0,
+                "max": 50000,
+                "bonus": 50,
+                "description": "不在岗基础"
+              },
+              {
+                "min": 50000,
+                "max": 80000,
+                "bonus": 150,
+                "description": "5-8万"
+              },
+              {
+                "min": 80000,
+                "max": 180000,
+                "bonus": 200,
+                "description": "8-18万"
+              },
+              {
+                "min": 180000,
+                "max": 280000,
+                "bonus": 200,
+                "description": "18-28万"
+              },
+              {
+                "min": 280000,
+                "max": 380000,
+                "bonus": 200,
+                "description": "28-38万"
+              },
+              {
+                "min": 380000,
+                "max": 480000,
+                "bonus": 200,
+                "description": "38-48万"
+              },
+              {
+                "min": 480000,
+                "max": 999999999,
+                "bonus": 200,
+                "description": "48万以上"
+              }
+            ],
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "region_004",
+            "name": "前台",
+            "erp_column": null,
+            "threshold": 0,
+            "ladder_rules": [],
+            "created_at": "2024-12-28"
+          }
+        ],
+        "employee_skills": [
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_011",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:50:42"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_012",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:50:43"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_013",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:50:44"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_014",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:50:45"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_015",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:50:46"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_016",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:50:58"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_017",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:50:58"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_018",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:50:58"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_019",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:00"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_020",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:00"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_021",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:00"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_022",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:00"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_023",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:01"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_024",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:01"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_025",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:01"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_026",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:02"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_027",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:02"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_028",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:02"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_029",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:02"
+          },
+          {
+            "employee_id": "emp_0003",
+            "skill_id": "skill_011",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-03 16:14:48"
+          },
+          {
+            "employee_id": "emp_0002",
+            "skill_id": "skill_016",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-03 16:32:26"
+          },
+          {
+            "employee_id": "emp_0002",
+            "skill_id": "skill_011",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-03 16:34:21"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_030",
+            "passed_exam": true,
+            "use_system_threshold": false,
+            "custom_threshold": 30000,
+            "created_at": "2026-01-03 17:16:47"
+          },
+          {
+            "employee_id": "emp_0002",
+            "skill_id": "skill_012",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 19:42:03"
+          },
+          {
+            "employee_id": "emp_0002",
+            "skill_id": "skill_013",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 19:42:04"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_031",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 20:12:20"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_033",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 20:12:21"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_032",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 20:12:22"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_034",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 20:12:23"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_036",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 20:12:24"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_040",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 20:12:25"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_035",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 22:57:24"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_037",
+            "passed_exam": false,
+            "use_system_threshold": false,
+            "custom_threshold": 30000,
+            "created_at": "2026-01-05 22:57:25"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_038",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_039",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_041",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_042",
+            "passed_exam": false,
+            "use_system_threshold": false,
+            "custom_threshold": 50000,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_043",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_044",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_045",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_046",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_047",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_048",
+            "passed_exam": true,
+            "use_system_threshold": false,
+            "custom_threshold": 0,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0005",
+            "skill_id": "skill_001",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "use_system_price": true,
+            "custom_price_on_duty": null,
+            "created_at": "2026-01-05 23:26:14"
+          },
+          {
+            "employee_id": "emp_0003",
+            "skill_id": "skill_012",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "use_system_price": true,
+            "custom_price_on_duty": null,
+            "created_at": "2026-01-05 23:29:18"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scheme_002",
+      "name": "123",
+      "is_active": false,
+      "created_at": "2026-01-06 22:17:04",
+      "updated_at": "2026-01-06 22:17:04",
+      "description": "123",
+      "snapshot": {
+        "skills": [
+          {
+            "id": "skill_001",
+            "name": "文本标准化",
+            "mode_id": "mode_001",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_002",
+            "name": "基础CAD标准化",
+            "mode_id": "mode_001",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_003",
+            "name": "高级CAD标准化",
+            "mode_id": "mode_001",
+            "region_id": "region_001",
+            "salary_on_duty": 300,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_004",
+            "name": "初级仿制",
+            "mode_id": "mode_001",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_005",
+            "name": "操机打印",
+            "mode_id": "mode_001",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_006",
+            "name": "设备维护",
+            "mode_id": "mode_001",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_007",
+            "name": "图纸处理",
+            "mode_id": "mode_001",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_008",
+            "name": "简装精装",
+            "mode_id": "mode_001",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_009",
+            "name": "特殊工艺",
+            "mode_id": "mode_001",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_010",
+            "name": "接待票据",
+            "mode_id": "mode_001",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_011",
+            "name": "CAD导pdf",
+            "mode_id": "mode_002",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_012",
+            "name": "拼板",
+            "mode_id": "mode_002",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_013",
+            "name": "特殊装订文本",
+            "mode_id": "mode_002",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_014",
+            "name": "刀板",
+            "mode_id": "mode_002",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_015",
+            "name": "初级仿制",
+            "mode_id": "mode_002",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_016",
+            "name": "文本",
+            "mode_id": "mode_002",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_017",
+            "name": "图纸",
+            "mode_id": "mode_002",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_018",
+            "name": "设备维护",
+            "mode_id": "mode_002",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_019",
+            "name": "图纸处理",
+            "mode_id": "mode_002",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_020",
+            "name": "软装",
+            "mode_id": "mode_002",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_021",
+            "name": "裁切",
+            "mode_id": "mode_002",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_022",
+            "name": "硬装",
+            "mode_id": "mode_002",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_023",
+            "name": "设备简单处理",
+            "mode_id": "mode_002",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_024",
+            "name": "网络/现场接单",
+            "mode_id": "mode_002",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_025",
+            "name": "收银结算开票",
+            "mode_id": "mode_002",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_026",
+            "name": "快印物料",
+            "mode_id": "mode_002",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_027",
+            "name": "图纸业务",
+            "mode_id": "mode_002",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_028",
+            "name": "商务业务",
+            "mode_id": "mode_002",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_029",
+            "name": "印刷/快印业务",
+            "mode_id": "mode_002",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_030",
+            "name": "cdr/pdf导图",
+            "mode_id": "mode_003",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_031",
+            "name": "AI导图",
+            "mode_id": "mode_003",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_032",
+            "name": "文件拼版及生成刀版",
+            "mode_id": "mode_003",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_033",
+            "name": "cdr简单排版",
+            "mode_id": "mode_003",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_034",
+            "name": "发图",
+            "mode_id": "mode_003",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_035",
+            "name": "常规打印",
+            "mode_id": "mode_003",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_036",
+            "name": "覆膜",
+            "mode_id": "mode_003",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_037",
+            "name": "裱板",
+            "mode_id": "mode_003",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_038",
+            "name": "雕刻",
+            "mode_id": "mode_003",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_039",
+            "name": "木工拼版雕刻",
+            "mode_id": "mode_003",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_040",
+            "name": "激光拼版雕刻",
+            "mode_id": "mode_003",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_041",
+            "name": "后期粘接",
+            "mode_id": "mode_003",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_042",
+            "name": "广告物料个性美陈组合",
+            "mode_id": "mode_003",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_043",
+            "name": "全品类个性方案",
+            "mode_id": "mode_003",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_044",
+            "name": "接单",
+            "mode_id": "mode_003",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_045",
+            "name": "票据整理",
+            "mode_id": "mode_003",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_046",
+            "name": "广告物料报价",
+            "mode_id": "mode_003",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_047",
+            "name": "数码印刷物料接单",
+            "mode_id": "mode_003",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_048",
+            "name": "广告门头/定制类标识报价",
+            "mode_id": "mode_003",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          }
+        ],
+        "regions": [
+          {
+            "id": "region_001",
+            "name": "印前",
+            "erp_column": "印前处理分值",
+            "threshold": 30000,
+            "ladder_rules": [
+              {
+                "min": 0,
+                "max": 30000,
+                "bonus": 50,
+                "description": "不在岗基础"
+              },
+              {
+                "min": 30000,
+                "max": 50000,
+                "bonus": 300,
+                "description": "3-5万"
+              },
+              {
+                "min": 50000,
+                "max": 100000,
+                "bonus": 500,
+                "description": "5-10万"
+              },
+              {
+                "min": 100000,
+                "max": 200000,
+                "bonus": 600,
+                "description": "10-20万"
+              },
+              {
+                "min": 200000,
+                "max": 300000,
+                "bonus": 500,
+                "description": "20-30万"
+              },
+              {
+                "min": 300000,
+                "max": 400000,
+                "bonus": 400,
+                "description": "30-40万"
+              },
+              {
+                "min": 400000,
+                "max": 999999999,
+                "bonus": 300,
+                "description": "40万以上"
+              }
+            ],
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "region_002",
+            "name": "印中",
+            "erp_column": "印中制作分值",
+            "threshold": 30000,
+            "ladder_rules": [
+              {
+                "min": 0,
+                "max": 30000,
+                "bonus": 50,
+                "description": "不在岗基础"
+              },
+              {
+                "min": 30000,
+                "max": 50000,
+                "bonus": 300,
+                "description": "3-5万"
+              },
+              {
+                "min": 50000,
+                "max": 100000,
+                "bonus": 500,
+                "description": "5-10万"
+              },
+              {
+                "min": 100000,
+                "max": 200000,
+                "bonus": 600,
+                "description": "10-20万"
+              },
+              {
+                "min": 200000,
+                "max": 300000,
+                "bonus": 500,
+                "description": "20-30万"
+              },
+              {
+                "min": 300000,
+                "max": 400000,
+                "bonus": 400,
+                "description": "30-40万"
+              },
+              {
+                "min": 400000,
+                "max": 999999999,
+                "bonus": 300,
+                "description": "40万以上"
+              }
+            ],
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "region_003",
+            "name": "印后",
+            "erp_column": "印后加工分值",
+            "threshold": 50000,
+            "ladder_rules": [
+              {
+                "min": 0,
+                "max": 50000,
+                "bonus": 50,
+                "description": "不在岗基础"
+              },
+              {
+                "min": 50000,
+                "max": 80000,
+                "bonus": 150,
+                "description": "5-8万"
+              },
+              {
+                "min": 80000,
+                "max": 180000,
+                "bonus": 200,
+                "description": "8-18万"
+              },
+              {
+                "min": 180000,
+                "max": 280000,
+                "bonus": 200,
+                "description": "18-28万"
+              },
+              {
+                "min": 280000,
+                "max": 380000,
+                "bonus": 200,
+                "description": "28-38万"
+              },
+              {
+                "min": 380000,
+                "max": 480000,
+                "bonus": 200,
+                "description": "38-48万"
+              },
+              {
+                "min": 480000,
+                "max": 999999999,
+                "bonus": 200,
+                "description": "48万以上"
+              }
+            ],
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "region_004",
+            "name": "前台",
+            "erp_column": null,
+            "threshold": 0,
+            "ladder_rules": [],
+            "created_at": "2024-12-28"
+          }
+        ],
+        "employee_skills": [
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_011",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:50:42"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_012",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:50:43"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_013",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:50:44"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_014",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:50:45"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_015",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:50:46"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_016",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:50:58"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_017",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:50:58"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_018",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:50:58"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_019",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:00"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_020",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:00"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_021",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:00"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_022",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:00"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_023",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:01"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_024",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:01"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_025",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:01"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_026",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:02"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_027",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:02"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_028",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:02"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_029",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:02"
+          },
+          {
+            "employee_id": "emp_0003",
+            "skill_id": "skill_011",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-03 16:14:48"
+          },
+          {
+            "employee_id": "emp_0002",
+            "skill_id": "skill_016",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-03 16:32:26"
+          },
+          {
+            "employee_id": "emp_0002",
+            "skill_id": "skill_011",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-03 16:34:21"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_030",
+            "passed_exam": true,
+            "use_system_threshold": false,
+            "custom_threshold": 30000,
+            "created_at": "2026-01-03 17:16:47"
+          },
+          {
+            "employee_id": "emp_0002",
+            "skill_id": "skill_012",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 19:42:03"
+          },
+          {
+            "employee_id": "emp_0002",
+            "skill_id": "skill_013",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 19:42:04"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_031",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 20:12:20"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_033",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 20:12:21"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_032",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 20:12:22"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_034",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 20:12:23"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_036",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 20:12:24"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_040",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 20:12:25"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_035",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 22:57:24"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_037",
+            "passed_exam": false,
+            "use_system_threshold": false,
+            "custom_threshold": 30000,
+            "created_at": "2026-01-05 22:57:25"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_038",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_039",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_041",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_042",
+            "passed_exam": false,
+            "use_system_threshold": false,
+            "custom_threshold": 50000,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_043",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_044",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_045",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_046",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_047",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_048",
+            "passed_exam": true,
+            "use_system_threshold": false,
+            "custom_threshold": 0,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0005",
+            "skill_id": "skill_001",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "use_system_price": true,
+            "custom_price_on_duty": null,
+            "created_at": "2026-01-05 23:26:14"
+          },
+          {
+            "employee_id": "emp_0003",
+            "skill_id": "skill_012",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "use_system_price": true,
+            "custom_price_on_duty": null,
+            "created_at": "2026-01-05 23:29:18"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scheme_003",
+      "name": "333",
+      "is_active": true,
+      "created_at": "2026-01-06 22:17:30",
+      "updated_at": "2026-01-06 22:17:30",
+      "description": "",
+      "snapshot": {
+        "skills": [
+          {
+            "id": "skill_001",
+            "name": "文本标准化",
+            "mode_id": "mode_001",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_002",
+            "name": "基础CAD标准化",
+            "mode_id": "mode_001",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_003",
+            "name": "高级CAD标准化",
+            "mode_id": "mode_001",
+            "region_id": "region_001",
+            "salary_on_duty": 300,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_004",
+            "name": "初级仿制",
+            "mode_id": "mode_001",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_005",
+            "name": "操机打印",
+            "mode_id": "mode_001",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_006",
+            "name": "设备维护",
+            "mode_id": "mode_001",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_007",
+            "name": "图纸处理",
+            "mode_id": "mode_001",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_008",
+            "name": "简装精装",
+            "mode_id": "mode_001",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_009",
+            "name": "特殊工艺",
+            "mode_id": "mode_001",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_010",
+            "name": "接待票据",
+            "mode_id": "mode_001",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_011",
+            "name": "CAD导pdf",
+            "mode_id": "mode_002",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_012",
+            "name": "拼板",
+            "mode_id": "mode_002",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_013",
+            "name": "特殊装订文本",
+            "mode_id": "mode_002",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_014",
+            "name": "刀板",
+            "mode_id": "mode_002",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_015",
+            "name": "初级仿制",
+            "mode_id": "mode_002",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_016",
+            "name": "文本",
+            "mode_id": "mode_002",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_017",
+            "name": "图纸",
+            "mode_id": "mode_002",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_018",
+            "name": "设备维护",
+            "mode_id": "mode_002",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_019",
+            "name": "图纸处理",
+            "mode_id": "mode_002",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_020",
+            "name": "软装",
+            "mode_id": "mode_002",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_021",
+            "name": "裁切",
+            "mode_id": "mode_002",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_022",
+            "name": "硬装",
+            "mode_id": "mode_002",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_023",
+            "name": "设备简单处理",
+            "mode_id": "mode_002",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_024",
+            "name": "网络/现场接单",
+            "mode_id": "mode_002",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_025",
+            "name": "收银结算开票",
+            "mode_id": "mode_002",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_026",
+            "name": "快印物料",
+            "mode_id": "mode_002",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_027",
+            "name": "图纸业务",
+            "mode_id": "mode_002",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_028",
+            "name": "商务业务",
+            "mode_id": "mode_002",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_029",
+            "name": "印刷/快印业务",
+            "mode_id": "mode_002",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_030",
+            "name": "cdr/pdf导图",
+            "mode_id": "mode_003",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_031",
+            "name": "AI导图",
+            "mode_id": "mode_003",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_032",
+            "name": "文件拼版及生成刀版",
+            "mode_id": "mode_003",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_033",
+            "name": "cdr简单排版",
+            "mode_id": "mode_003",
+            "region_id": "region_001",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_034",
+            "name": "发图",
+            "mode_id": "mode_003",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_035",
+            "name": "常规打印",
+            "mode_id": "mode_003",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_036",
+            "name": "覆膜",
+            "mode_id": "mode_003",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_037",
+            "name": "裱板",
+            "mode_id": "mode_003",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_038",
+            "name": "雕刻",
+            "mode_id": "mode_003",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_039",
+            "name": "木工拼版雕刻",
+            "mode_id": "mode_003",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_040",
+            "name": "激光拼版雕刻",
+            "mode_id": "mode_003",
+            "region_id": "region_002",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_041",
+            "name": "后期粘接",
+            "mode_id": "mode_003",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_042",
+            "name": "广告物料个性美陈组合",
+            "mode_id": "mode_003",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_043",
+            "name": "全品类个性方案",
+            "mode_id": "mode_003",
+            "region_id": "region_003",
+            "salary_on_duty": 200,
+            "salary_off_duty": 100,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_044",
+            "name": "接单",
+            "mode_id": "mode_003",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_045",
+            "name": "票据整理",
+            "mode_id": "mode_003",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_046",
+            "name": "广告物料报价",
+            "mode_id": "mode_003",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_047",
+            "name": "数码印刷物料接单",
+            "mode_id": "mode_003",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "skill_048",
+            "name": "广告门头/定制类标识报价",
+            "mode_id": "mode_003",
+            "region_id": "region_004",
+            "salary_on_duty": 100,
+            "salary_off_duty": 50,
+            "created_at": "2024-12-28"
+          }
+        ],
+        "regions": [
+          {
+            "id": "region_001",
+            "name": "印前",
+            "erp_column": "印前处理分值",
+            "threshold": 30000,
+            "ladder_rules": [
+              {
+                "min": 0,
+                "max": 30000,
+                "bonus": 50,
+                "description": "不在岗基础"
+              },
+              {
+                "min": 30000,
+                "max": 50000,
+                "bonus": 300,
+                "description": "3-5万"
+              },
+              {
+                "min": 50000,
+                "max": 100000,
+                "bonus": 500,
+                "description": "5-10万"
+              },
+              {
+                "min": 100000,
+                "max": 200000,
+                "bonus": 600,
+                "description": "10-20万"
+              },
+              {
+                "min": 200000,
+                "max": 300000,
+                "bonus": 500,
+                "description": "20-30万"
+              },
+              {
+                "min": 300000,
+                "max": 400000,
+                "bonus": 400,
+                "description": "30-40万"
+              },
+              {
+                "min": 400000,
+                "max": 999999999,
+                "bonus": 300,
+                "description": "40万以上"
+              }
+            ],
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "region_002",
+            "name": "印中",
+            "erp_column": "印中制作分值",
+            "threshold": 30000,
+            "ladder_rules": [
+              {
+                "min": 0,
+                "max": 30000,
+                "bonus": 50,
+                "description": "不在岗基础"
+              },
+              {
+                "min": 30000,
+                "max": 50000,
+                "bonus": 300,
+                "description": "3-5万"
+              },
+              {
+                "min": 50000,
+                "max": 100000,
+                "bonus": 500,
+                "description": "5-10万"
+              },
+              {
+                "min": 100000,
+                "max": 200000,
+                "bonus": 600,
+                "description": "10-20万"
+              },
+              {
+                "min": 200000,
+                "max": 300000,
+                "bonus": 500,
+                "description": "20-30万"
+              },
+              {
+                "min": 300000,
+                "max": 400000,
+                "bonus": 400,
+                "description": "30-40万"
+              },
+              {
+                "min": 400000,
+                "max": 999999999,
+                "bonus": 300,
+                "description": "40万以上"
+              }
+            ],
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "region_003",
+            "name": "印后",
+            "erp_column": "印后加工分值",
+            "threshold": 50000,
+            "ladder_rules": [
+              {
+                "min": 0,
+                "max": 50000,
+                "bonus": 50,
+                "description": "不在岗基础"
+              },
+              {
+                "min": 50000,
+                "max": 80000,
+                "bonus": 150,
+                "description": "5-8万"
+              },
+              {
+                "min": 80000,
+                "max": 180000,
+                "bonus": 200,
+                "description": "8-18万"
+              },
+              {
+                "min": 180000,
+                "max": 280000,
+                "bonus": 200,
+                "description": "18-28万"
+              },
+              {
+                "min": 280000,
+                "max": 380000,
+                "bonus": 200,
+                "description": "28-38万"
+              },
+              {
+                "min": 380000,
+                "max": 480000,
+                "bonus": 200,
+                "description": "38-48万"
+              },
+              {
+                "min": 480000,
+                "max": 999999999,
+                "bonus": 200,
+                "description": "48万以上"
+              }
+            ],
+            "created_at": "2024-12-28"
+          },
+          {
+            "id": "region_004",
+            "name": "前台",
+            "erp_column": null,
+            "threshold": 0,
+            "ladder_rules": [],
+            "created_at": "2024-12-28"
+          }
+        ],
+        "employee_skills": [
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_011",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:50:42"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_012",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:50:43"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_013",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:50:44"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_014",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:50:45"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_015",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:50:46"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_016",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:50:58"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_017",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:50:58"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_018",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:50:58"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_019",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:00"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_020",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:00"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_021",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:00"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_022",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:00"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_023",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:01"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_024",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:01"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_025",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:01"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_026",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:02"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_027",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:02"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_028",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:02"
+          },
+          {
+            "employee_id": "emp_0009",
+            "skill_id": "skill_029",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-01 20:51:02"
+          },
+          {
+            "employee_id": "emp_0003",
+            "skill_id": "skill_011",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-03 16:14:48"
+          },
+          {
+            "employee_id": "emp_0002",
+            "skill_id": "skill_016",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-03 16:32:26"
+          },
+          {
+            "employee_id": "emp_0002",
+            "skill_id": "skill_011",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-03 16:34:21"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_030",
+            "passed_exam": true,
+            "use_system_threshold": false,
+            "custom_threshold": 30000,
+            "created_at": "2026-01-03 17:16:47"
+          },
+          {
+            "employee_id": "emp_0002",
+            "skill_id": "skill_012",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 19:42:03"
+          },
+          {
+            "employee_id": "emp_0002",
+            "skill_id": "skill_013",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 19:42:04"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_031",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 20:12:20"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_033",
+            "passed_exam": true,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 20:12:21"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_032",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 20:12:22"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_034",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 20:12:23"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_036",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 20:12:24"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_040",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 20:12:25"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_035",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 22:57:24"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_037",
+            "passed_exam": false,
+            "use_system_threshold": false,
+            "custom_threshold": 30000,
+            "created_at": "2026-01-05 22:57:25"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_038",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_039",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_041",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_042",
+            "passed_exam": false,
+            "use_system_threshold": false,
+            "custom_threshold": 50000,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_043",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_044",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_045",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_046",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_047",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0001",
+            "skill_id": "skill_048",
+            "passed_exam": true,
+            "use_system_threshold": false,
+            "custom_threshold": 0,
+            "created_at": "2026-01-05 22:57:28"
+          },
+          {
+            "employee_id": "emp_0005",
+            "skill_id": "skill_001",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "use_system_price": true,
+            "custom_price_on_duty": null,
+            "created_at": "2026-01-05 23:26:14"
+          },
+          {
+            "employee_id": "emp_0003",
+            "skill_id": "skill_012",
+            "passed_exam": false,
+            "use_system_threshold": true,
+            "custom_threshold": null,
+            "use_system_price": true,
+            "custom_price_on_duty": null,
+            "created_at": "2026-01-05 23:29:18"
+          }
+        ]
+      }
+    }
+  ],
+  "next_id": 4
+}
