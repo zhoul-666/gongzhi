@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-from app.data_manager import get_regions, load_json
+from app.data_manager import get_regions, load_json, unlock_calculation
 
 
 def display_employee_detail(result: dict, regions: list):
@@ -73,9 +73,13 @@ def render():
 
     overview_data = []
     for calc in calculations:
+        is_locked = calc.get("locked", False)
+        locked_at = calc.get("locked_at", "")
         overview_data.append({
+            "状态": "🔒 已锁定" if is_locked else "📝 未锁定",
             "月份": calc.get("month", ""),
             "计算时间": calc.get("calculated_at", ""),
+            "锁定时间": locked_at if is_locked else "-",
             "员工人数": calc.get("employee_count", 0),
             "工资总额": f"{calc.get('total_salary', 0):,.2f}"
         })
@@ -95,6 +99,40 @@ def render():
     selected_calc = next((c for c in calculations if c.get("month") == selected_month), None)
 
     if selected_calc:
+        # 显示锁定状态和解锁按钮
+        is_locked = selected_calc.get("locked", False)
+
+        # 初始化解锁确认状态
+        if "confirm_unlock_month" not in st.session_state:
+            st.session_state.confirm_unlock_month = None
+
+        if is_locked:
+            col1, col2 = st.columns([3, 1])
+            with col1:
+                st.success(f"🔒 「{selected_month}」已锁定（锁定时间：{selected_calc.get('locked_at', '')}）")
+            with col2:
+                if st.button("🔓 解锁", key="unlock_btn"):
+                    st.session_state.confirm_unlock_month = selected_month
+
+            # 显示确认对话框
+            if st.session_state.confirm_unlock_month == selected_month:
+                st.warning("⚠️ 解锁后该月数据可被重新计算覆盖，确定要解锁吗？")
+                col_yes, col_no = st.columns(2)
+                with col_yes:
+                    if st.button("确认解锁", key="confirm_unlock", type="primary"):
+                        if unlock_calculation(selected_month):
+                            st.session_state.confirm_unlock_month = None
+                            st.success("✅ 已解锁")
+                            st.rerun()
+                        else:
+                            st.error("解锁失败")
+                with col_no:
+                    if st.button("取消", key="cancel_unlock"):
+                        st.session_state.confirm_unlock_month = None
+                        st.rerun()
+        else:
+            st.info(f"📝 「{selected_month}」未锁定，可在【绩效计算】页面重新计算")
+
         results = selected_calc.get("results", [])
         regions = get_regions()
 

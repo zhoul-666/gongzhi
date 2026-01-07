@@ -28,254 +28,430 @@ st.set_page_config(
 
 # ==================== 自定义样式 ====================
 def inject_custom_css():
-    """注入自定义CSS样式"""
+    """注入自定义CSS样式 - Apple Dark Mode"""
     st.markdown("""
     <style>
+    /* ==================== Apple Dark Mode 设计系统 ==================== */
+
+    /* 全局字体 - San Francisco / System UI */
+    * {
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+                     "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+    }
+
+    /* 全局背景色 - 纯黑 */
+    .stApp {
+        background-color: #000000 !important;
+    }
+
+    [data-testid="stAppViewContainer"] {
+        background-color: #000000 !important;
+    }
+
+    .main .block-container {
+        background-color: #000000 !important;
+        padding-top: 2rem;
+    }
+
+    [data-testid="stHeader"] {
+        background-color: #000000 !important;
+    }
+
     /* 隐藏侧边栏 */
     [data-testid="stSidebar"] {
         display: none;
     }
 
-    /* 主容器样式 */
+    /* ==================== 卡片样式 - 深色卡片 ==================== */
+
+    .apple-card {
+        background: #1C1C1E;
+        border-radius: 18px;
+        padding: 24px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        margin-bottom: 20px;
+    }
+
+    /* 主容器样式 - 深色头部 */
     .main-header {
         text-align: center;
-        padding: 20px 0;
-        background: linear-gradient(135deg, #1E88E5 0%, #1565C0 100%);
-        color: white;
-        border-radius: 15px;
+        padding: 40px 30px;
+        background: #1C1C1E;
+        color: #FFFFFF;
+        border-radius: 18px;
         margin-bottom: 30px;
-        box-shadow: 0 4px 15px rgba(30, 136, 229, 0.3);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
     .main-header h1 {
         margin: 0;
         font-size: 2.5em;
         font-weight: 600;
+        color: #FFFFFF;
+        letter-spacing: -0.5px;
     }
 
     .main-header p {
-        margin: 10px 0 0 0;
-        opacity: 0.9;
-        font-size: 1.1em;
+        margin: 12px 0 0 0;
+        color: #8E8E93;
+        font-size: 1.15em;
+        font-weight: 400;
     }
 
-    /* 卡片容器 */
-    .card-container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 20px;
-        padding: 20px 0;
-    }
-
-    /* 功能卡片 */
-    .feature-card {
-        background: white;
-        border-radius: 15px;
-        padding: 30px 25px;
-        width: 200px;
-        text-align: center;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-        cursor: pointer;
-        border: 2px solid transparent;
-    }
-
-    .feature-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(30, 136, 229, 0.25);
-        border-color: #1E88E5;
-    }
-
-    .feature-card .icon {
-        font-size: 3em;
-        margin-bottom: 15px;
-    }
-
-    .feature-card .title {
-        font-size: 1.1em;
-        font-weight: 600;
-        color: #333;
-        margin: 0;
-    }
-
-    .feature-card .desc {
-        font-size: 0.85em;
-        color: #666;
-        margin-top: 8px;
-    }
-
-    /* 统计卡片 */
+    /* 统计卡片 - 深色风格 */
     .stat-card {
-        background: linear-gradient(135deg, #1E88E5 0%, #1976D2 100%);
-        color: white;
-        border-radius: 12px;
-        padding: 20px;
+        background: #1C1C1E;
+        color: #FFFFFF;
+        border-radius: 18px;
+        padding: 24px 20px;
         text-align: center;
-        box-shadow: 0 4px 15px rgba(30, 136, 229, 0.3);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
     }
 
     .stat-card .number {
-        font-size: 2.5em;
-        font-weight: 700;
+        font-size: 2.8em;
+        font-weight: 600;
         margin: 0;
+        color: #0A84FF;
+        letter-spacing: -1px;
     }
 
     .stat-card .label {
         font-size: 0.95em;
-        opacity: 0.9;
-        margin-top: 5px;
-    }
-
-    /* 返回按钮 */
-    .back-button {
-        background: linear-gradient(135deg, #1E88E5 0%, #1565C0 100%);
-        color: white !important;
-        border: none;
-        padding: 10px 25px;
-        border-radius: 25px;
-        font-size: 1em;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        text-decoration: none;
-        box-shadow: 0 3px 10px rgba(30, 136, 229, 0.3);
-        transition: all 0.3s ease;
-    }
-
-    .back-button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(30, 136, 229, 0.4);
-    }
-
-    /* 页面标题样式 */
-    .page-title {
-        color: #1E88E5;
-        border-bottom: 3px solid #1E88E5;
-        padding-bottom: 10px;
-        margin-bottom: 25px;
-    }
-
-    /* 美化按钮 */
-    .stButton > button {
-        background: linear-gradient(135deg, #1E88E5 0%, #1565C0 100%);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        padding: 10px 25px;
+        color: #8E8E93;
+        margin-top: 8px;
         font-weight: 500;
-        transition: all 0.3s ease;
+    }
+
+    /* ==================== 按钮样式 - 胶囊形状 ==================== */
+
+    /* 主要操作按钮 - Apple Blue (Dark Mode) */
+    .stButton > button {
+        background: #0A84FF !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 20px !important;
+        padding: 12px 28px !important;
+        font-weight: 500 !important;
+        font-size: 0.95em !important;
+        transition: all 0.2s ease !important;
+        box-shadow: none !important;
     }
 
     .stButton > button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(30, 136, 229, 0.4);
+        background: #409CFF !important;
+        transform: scale(1.02) !important;
+        box-shadow: 0 4px 12px rgba(10, 132, 255, 0.4) !important;
     }
 
-    /* 美化输入框 */
-    .stTextInput > div > div > input,
-    .stNumberInput > div > div > input,
-    .stSelectbox > div > div {
-        border-radius: 8px;
-        border: 2px solid #E3F2FD;
+    .stButton > button:active {
+        transform: scale(0.98) !important;
     }
 
-    .stTextInput > div > div > input:focus,
+    /* 次要按钮样式 */
+    .stButton > button[kind="secondary"] {
+        background: #2C2C2E !important;
+        color: #FFFFFF !important;
+        border: 1.5px solid #3A3A3C !important;
+    }
+
+    .stButton > button[kind="secondary"]:hover {
+        background: #3A3A3C !important;
+        border-color: #48484A !important;
+    }
+
+    /* ==================== 输入框样式 ==================== */
+
+    /* 文本输入框 */
+    .stTextInput > div > div > input {
+        border-radius: 12px !important;
+        border: 1.5px solid #3A3A3C !important;
+        padding: 12px 16px !important;
+        font-size: 1em !important;
+        background: #1C1C1E !important;
+        color: #FFFFFF !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .stTextInput > div > div > input:focus {
+        border-color: #0A84FF !important;
+        box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.2) !important;
+        outline: none !important;
+    }
+
+    .stTextInput > div > div > input::placeholder {
+        color: #636366 !important;
+    }
+
+    /* 数字输入框 */
+    .stNumberInput > div > div > input {
+        border-radius: 12px !important;
+        border: 1.5px solid #3A3A3C !important;
+        padding: 12px 16px !important;
+        background: #1C1C1E !important;
+        color: #FFFFFF !important;
+    }
+
     .stNumberInput > div > div > input:focus {
-        border-color: #1E88E5;
-        box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+        border-color: #0A84FF !important;
+        box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.2) !important;
     }
 
-    /* 美化expander */
-    .streamlit-expanderHeader {
-        background: #E3F2FD;
-        border-radius: 8px;
+    /* 下拉选择框 */
+    .stSelectbox > div > div {
+        border-radius: 12px !important;
+        border: 1.5px solid #3A3A3C !important;
+        background: #1C1C1E !important;
     }
 
-    /* 美化metric */
-    [data-testid="stMetricValue"] {
-        color: #1E88E5;
+    .stSelectbox > div > div:focus-within {
+        border-color: #0A84FF !important;
+        box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.2) !important;
     }
 
-    /* 禁用 selectbox 输入编辑功能 - 只能选择不能输入 */
+    /* 下拉框文字颜色 */
+    .stSelectbox [data-baseweb="select"] {
+        color: #FFFFFF !important;
+    }
+
+    .stSelectbox [data-baseweb="select"] > div {
+        background: #1C1C1E !important;
+        color: #FFFFFF !important;
+    }
+
+    /* 禁用 selectbox 输入编辑功能 */
     div[data-baseweb="select"] input {
         caret-color: transparent !important;
         pointer-events: none !important;
+        color: #FFFFFF !important;
     }
 
-    /* 顶部方案工具栏 - 固定定位 */
+    /* ==================== 表格样式 ==================== */
+
+    .stDataFrame {
+        background: #1C1C1E !important;
+        border-radius: 18px !important;
+        padding: 8px !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    [data-testid="stDataFrame"] > div {
+        border-radius: 12px !important;
+        overflow: hidden !important;
+    }
+
+    /* 表格内部样式 */
+    .stDataFrame [data-testid="stDataFrameResizable"] {
+        background: #1C1C1E !important;
+    }
+
+    /* ==================== Expander 样式 ==================== */
+
+    .streamlit-expanderHeader {
+        background: #1C1C1E !important;
+        border-radius: 12px !important;
+        border: 1.5px solid #3A3A3C !important;
+        font-weight: 500 !important;
+        color: #FFFFFF !important;
+    }
+
+    .streamlit-expanderContent {
+        background: #1C1C1E !important;
+        border: 1.5px solid #3A3A3C !important;
+        border-top: none !important;
+        border-radius: 0 0 12px 12px !important;
+    }
+
+    /* ==================== Metric 样式 ==================== */
+
+    [data-testid="stMetricValue"] {
+        color: #0A84FF !important;
+        font-weight: 600 !important;
+    }
+
+    [data-testid="stMetricLabel"] {
+        color: #8E8E93 !important;
+    }
+
+    [data-testid="stMetric"] {
+        background: #1C1C1E;
+        padding: 20px;
+        border-radius: 18px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    /* ==================== 警告/提示框样式 ==================== */
+
+    .stAlert {
+        border-radius: 12px !important;
+        border: none !important;
+    }
+
+    /* ==================== 分隔线样式 ==================== */
+
+    hr {
+        border: none !important;
+        height: 1px !important;
+        background: #3A3A3C !important;
+        margin: 24px 0 !important;
+    }
+
+    /* ==================== 页面标题样式 ==================== */
+
+    h1, h2, h3 {
+        color: #FFFFFF !important;
+        font-weight: 600 !important;
+        letter-spacing: -0.3px !important;
+    }
+
+    h1 { font-size: 2em !important; }
+    h2 { font-size: 1.5em !important; }
+    h3 { font-size: 1.2em !important; }
+
+    /* 普通文字颜色 */
+    p, span, label, .stMarkdown {
+        color: #FFFFFF !important;
+    }
+
+    /* 次要文字 */
+    .stCaption, small {
+        color: #8E8E93 !important;
+    }
+
+    /* ==================== 工具栏样式 ==================== */
+
     .scheme-toolbar {
-        position: fixed;
-        top: 60px;
-        left: 0;
-        right: 0;
-        z-index: 999;
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        border-bottom: 2px solid #1E88E5;
-        padding: 8px 20px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        display: flex;
-        align-items: center;
-        gap: 15px;
+        background: #1C1C1E;
+        border-bottom: 1px solid #3A3A3C;
+        padding: 12px 24px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
 
     .scheme-toolbar .scheme-label {
         font-weight: 600;
-        color: #1565C0;
-        white-space: nowrap;
+        color: #FFFFFF;
     }
 
     .scheme-toolbar .scheme-name {
-        background: white;
-        padding: 6px 15px;
+        background: #2C2C2E;
+        padding: 8px 16px;
         border-radius: 20px;
-        border: 2px solid #1E88E5;
         font-weight: 500;
-        color: #1565C0;
+        color: #FFFFFF;
     }
 
     .scheme-toolbar .modified-badge {
-        background: #ff9800;
-        color: white;
-        padding: 3px 10px;
+        background: #FF9F0A;
+        color: #000000;
+        padding: 4px 12px;
         border-radius: 12px;
         font-size: 0.8em;
-        font-weight: 500;
+        font-weight: 600;
     }
 
-    /* 为工具栏留出顶部空间 */
-    .main-content-with-toolbar {
-        padding-top: 60px;
+    /* ==================== 复选框样式 ==================== */
+
+    .stCheckbox > label {
+        font-weight: 400 !important;
+        color: #FFFFFF !important;
     }
 
-    /* 工具栏按钮样式 */
-    .toolbar-btn {
-        background: #1E88E5;
-        color: white !important;
-        border: none;
-        padding: 6px 15px;
-        border-radius: 6px;
-        font-size: 0.9em;
-        cursor: pointer;
-        transition: all 0.2s;
-        text-decoration: none;
+    .stCheckbox > label > span {
+        color: #FFFFFF !important;
     }
 
-    .toolbar-btn:hover {
-        background: #1565C0;
-        transform: translateY(-1px);
+    /* ==================== 文件上传样式 ==================== */
+
+    .stFileUploader > div {
+        background: #1C1C1E !important;
+        border-radius: 18px !important;
+        border: 2px dashed #3A3A3C !important;
+        padding: 30px !important;
     }
 
-    .toolbar-btn-secondary {
-        background: white;
-        color: #1E88E5 !important;
-        border: 2px solid #1E88E5;
+    .stFileUploader > div:hover {
+        border-color: #0A84FF !important;
+        background: #2C2C2E !important;
     }
 
-    .toolbar-btn-secondary:hover {
-        background: #E3F2FD;
+    /* ==================== 滚动条样式 ==================== */
+
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
     }
+
+    ::-webkit-scrollbar-track {
+        background: #1C1C1E;
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #3A3A3C;
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #48484A;
+    }
+
+    /* ==================== 表单容器 ==================== */
+
+    .stForm {
+        background: #1C1C1E !important;
+        padding: 24px !important;
+        border-radius: 18px !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    /* ==================== Radio 按钮样式 ==================== */
+
+    .stRadio > div {
+        background: #1C1C1E;
+        padding: 16px;
+        border-radius: 12px;
+    }
+
+    .stRadio label {
+        color: #FFFFFF !important;
+    }
+
+    /* ==================== 多选框样式 ==================== */
+
+    .stMultiSelect > div > div {
+        border-radius: 12px !important;
+        border: 1.5px solid #3A3A3C !important;
+        background: #1C1C1E !important;
+    }
+
+    /* ==================== Info/Warning/Error 框 ==================== */
+
+    [data-testid="stNotification"] {
+        background: #1C1C1E !important;
+        border-radius: 12px !important;
+    }
+
+    /* ==================== Tab 标签样式 ==================== */
+
+    .stTabs [data-baseweb="tab-list"] {
+        background: #1C1C1E;
+        border-radius: 12px;
+    }
+
+    .stTabs [data-baseweb="tab"] {
+        color: #8E8E93 !important;
+    }
+
+    .stTabs [aria-selected="true"] {
+        color: #0A84FF !important;
+    }
+
     </style>
     """, unsafe_allow_html=True)
 

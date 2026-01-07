@@ -14,6 +14,23 @@ from pathlib import Path
 DATA_DIR = Path(__file__).parent.parent / "data"
 BACKUP_DIR = Path(__file__).parent.parent / "backup"
 
+# 简单内存缓存
+_cache = {}
+_cache_enabled = True
+
+
+def clear_cache(filename: str = None):
+    """清除缓存
+
+    Args:
+        filename: 指定文件名则只清除该文件缓存，否则清除所有缓存
+    """
+    global _cache
+    if filename:
+        _cache.pop(filename, None)
+    else:
+        _cache.clear()
+
 
 def ensure_dirs():
     """确保数据目录和备份目录存在"""
@@ -40,16 +57,23 @@ def backup_file(file_path: Path, version: str = None):
 
 
 def load_json(filename: str) -> dict:
-    """读取JSON文件"""
+    """读取JSON文件（带缓存）"""
+    global _cache
+
+    # 检查缓存
+    if _cache_enabled and filename in _cache:
+        return _cache[filename]
+
     file_path = DATA_DIR / filename
     if not file_path.exists():
-        print(f"[警告] 文件不存在: {filename}")
         return {}
 
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
-            print(f"[读取] 成功读取: {filename}")
+            # 存入缓存
+            if _cache_enabled:
+                _cache[filename] = data
             return data
     except json.JSONDecodeError as e:
         print(f"[错误] JSON格式错误: {filename} - {e}")
@@ -71,7 +95,8 @@ def save_json(filename: str, data: dict, backup: bool = True):
     try:
         with open(file_path, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
-            print(f"[保存] 成功保存: {filename}")
+        # 清除该文件的缓存
+        clear_cache(filename)
         return True
     except Exception as e:
         print(f"[错误] 保存失败: {filename} - {e}")
@@ -366,6 +391,21 @@ def update_employee_skill(emp_id: str, skill_id: str, updates: dict) -> bool:
     return False
 
 
+def remove_employee_skill(emp_id: str, skill_id: str) -> bool:
+    """取消员工的技能分配"""
+    data = load_json("employee_skills.json")
+    emp_skills = data.get("employee_skills", [])
+
+    for i, es in enumerate(emp_skills):
+        if es["employee_id"] == emp_id and es["skill_id"] == skill_id:
+            emp_skills.pop(i)
+            data["employee_skills"] = emp_skills
+            save_json("employee_skills.json", data)
+            return True
+
+    return False
+
+
 # ============ 方案管理 ============
 
 def get_schemes() -> list:
@@ -555,6 +595,59 @@ def is_config_modified() -> bool:
     active_hash = hashlib.md5(snapshot_content.encode()).hexdigest()[:8]
 
     return current_hash != active_hash
+
+
+# ============ 计算历史锁定管理 ============
+
+def is_calculation_locked(month: str) -> bool:
+    """检查指定月份是否已锁定"""
+    data = load_json("calculation_history.json")
+    calculations = data.get("calculations", [])
+
+    for calc in calculations:
+        if calc.get("month") == month:
+            return calc.get("locked", False)
+    return False
+
+
+def lock_calculation(month: str) -> bool:
+    """锁定指定月份的计算结果"""
+    data = load_json("calculation_history.json")
+    if not data:
+        return False
+
+    calculations = data.get("calculations", [])
+
+    for calc in calculations:
+        if calc.get("month") == month:
+            calc["locked"] = True
+            calc["locked_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            save_json("calculation_history.json", data, backup=False)
+            print(f"[锁定] 已锁定月份: {month}")
+            return True
+
+    print(f"[错误] 未找到该月份记录: {month}")
+    return False
+
+
+def unlock_calculation(month: str) -> bool:
+    """解锁指定月份的计算结果"""
+    data = load_json("calculation_history.json")
+    if not data:
+        return False
+
+    calculations = data.get("calculations", [])
+
+    for calc in calculations:
+        if calc.get("month") == month:
+            calc["locked"] = False
+            calc.pop("locked_at", None)
+            save_json("calculation_history.json", data, backup=False)
+            print(f"[解锁] 已解锁月份: {month}")
+            return True
+
+    print(f"[错误] 未找到该月份记录: {month}")
+    return False
 
 
 if __name__ == "__main__":

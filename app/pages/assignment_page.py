@@ -10,6 +10,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from app.data_manager import (
     get_employees, get_skills, get_skills_by_mode,
     get_employee_skills, assign_skill_to_employee, update_employee_skill,
+    remove_employee_skill,
     get_modes, get_mode_by_id, get_regions, get_region_by_id,
     save_json, load_json
 )
@@ -83,12 +84,13 @@ def render():
     assigned = get_employee_skills(selected_emp_id)
     assigned_skill_ids = [a["skill_id"] for a in assigned]
 
-    # 分两列显示
-    col_left, col_right = st.columns(2)
+    # 未分配的技能
+    unassigned_skills = [s for s in available_skills if s["id"] not in assigned_skill_ids]
 
-    with col_left:
-        st.subheader(f"已分配技能 ({len(assigned)}个)")
+    # 使用 Tab 切换已分配和可分配
+    tab1, tab2 = st.tabs([f"已分配技能 ({len(assigned)}个)", f"可分配技能 ({len(unassigned_skills)}个)"])
 
+    with tab1:
         if not assigned:
             st.info("该员工暂未分配任何技能")
         else:
@@ -138,19 +140,14 @@ def render():
                             # 工资信息
                             st.caption(f"默认: 在岗{default_price} / 不在岗{skill.get('salary_off_duty', 0)}")
 
-                            # 分值设置（一行：标签 + 选项）
-                            th_col1, th_col2 = st.columns([1, 2])
-                            with th_col1:
-                                st.markdown("**分值**")
-                            with th_col2:
-                                threshold_option = st.radio(
-                                    "分值",
-                                    options=["默认", "自定义"],
-                                    index=0 if current_use_system else 1,
-                                    key=f"th_{selected_emp_id}_{skill['id']}",
-                                    horizontal=True,
-                                    label_visibility="collapsed"
-                                )
+                            # 分值设置
+                            threshold_option = st.radio(
+                                "分值",
+                                options=["默认", "自定义"],
+                                index=0 if current_use_system else 1,
+                                key=f"th_{selected_emp_id}_{skill['id']}",
+                                horizontal=True
+                            )
                             use_system = threshold_option == "默认"
 
                             if not use_system:
@@ -175,19 +172,14 @@ def render():
                                         {"use_system_threshold": False, "custom_threshold": custom_val})
                                 st.rerun()
 
-                            # 奖金设置（一行：标签 + 选项）
-                            pr_col1, pr_col2 = st.columns([1, 2])
-                            with pr_col1:
-                                st.markdown("**奖金**")
-                            with pr_col2:
-                                price_option = st.radio(
-                                    "奖金",
-                                    options=["默认", "自定义"],
-                                    index=0 if current_use_system_price else 1,
-                                    key=f"price_{selected_emp_id}_{skill['id']}",
-                                    horizontal=True,
-                                    label_visibility="collapsed"
-                                )
+                            # 奖金设置
+                            price_option = st.radio(
+                                "奖金",
+                                options=["默认", "自定义"],
+                                index=0 if current_use_system_price else 1,
+                                key=f"price_{selected_emp_id}_{skill['id']}",
+                                horizontal=True
+                            )
                             use_system_price = price_option == "默认"
 
                             if not use_system_price:
@@ -212,18 +204,18 @@ def render():
                                         {"use_system_price": False, "custom_price_on_duty": custom_price})
                                 st.rerun()
 
+                            # 取消分配按钮
+                            if st.button("取消分配", key=f"remove_{selected_emp_id}_{skill['id']}", type="secondary"):
+                                remove_employee_skill(selected_emp_id, skill["id"])
+                                st.rerun()
+
                     # 每3个重新创建列
                     if col_idx == 2 and idx < len(items) - 1:
                         cols = st.columns(3)
 
                 st.markdown("")  # 区域之间的间隔
 
-    with col_right:
-        st.subheader(f"可分配技能 ({len([s for s in available_skills if s['id'] not in assigned_skill_ids])}个)")
-
-        # 未分配的技能
-        unassigned_skills = [s for s in available_skills if s["id"] not in assigned_skill_ids]
-
+    with tab2:
         if not unassigned_skills:
             st.info("已分配所有可用技能")
         else:
@@ -241,25 +233,21 @@ def render():
 
                 st.markdown(f"**{region_name}** ({len(skills)}个)")
 
-                # 三列网格布局
-                cols = st.columns(3)
-                for idx, skill in enumerate(skills):
-                    col_idx = idx % 3
-                    with cols[col_idx]:
-                        with st.container(border=True):
-                            st.markdown(f"**{skill['name']}**")
-                            st.caption(f"在岗{skill.get('salary_on_duty', 0)} / 不在岗{skill.get('salary_off_duty', 0)}")
-                            if st.button("分配", key=f"assign_{selected_emp_id}_{skill['id']}", use_container_width=True):
-                                assign_skill_to_employee(
-                                    selected_emp_id,
-                                    skill["id"],
-                                    passed_exam=False
-                                )
-                                st.rerun()
-
-                    # 每3个重新创建列
-                    if col_idx == 2 and idx < len(skills) - 1:
-                        cols = st.columns(3)
+                # 紧凑列表显示
+                for skill in skills:
+                    col1, col2, col3 = st.columns([3, 3, 1])
+                    with col1:
+                        st.markdown(f"**{skill['name']}**")
+                    with col2:
+                        st.caption(f"在岗{skill.get('salary_on_duty', 0)} / 不在岗{skill.get('salary_off_duty', 0)}")
+                    with col3:
+                        if st.button("分配", key=f"assign_{selected_emp_id}_{skill['id']}"):
+                            assign_skill_to_employee(
+                                selected_emp_id,
+                                skill["id"],
+                                passed_exam=False
+                            )
+                            st.rerun()
 
                 st.markdown("")  # 区域之间的间隔
 
@@ -293,4 +281,3 @@ def render():
             if count > 0:
                 st.success(f"已通过 {count} 个技能的考核")
                 st.rerun()
-

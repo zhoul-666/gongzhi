@@ -64,19 +64,21 @@ def render():
     st.subheader("技能列表")
 
     mode_filter_options = ["全部"] + [m["name"] for m in modes]
-    filter_mode = st.segmented_control(
+    filter_mode = st.radio(
         "按模式筛选",
         options=mode_filter_options,
-        default="全部",
-        key="filter_skill_mode"
+        index=0,
+        key="filter_skill_mode",
+        horizontal=True
     )
 
     region_filter_options = ["全部"] + [r["name"] for r in regions]
-    filter_region = st.segmented_control(
+    filter_region = st.radio(
         "按区域筛选",
         options=region_filter_options,
-        default="全部",
-        key="filter_skill_region"
+        index=0,
+        key="filter_skill_region",
+        horizontal=True
     )
 
     # 筛选数据

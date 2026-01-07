@@ -72,11 +72,12 @@ def render():
 
     # 筛选功能
     mode_filter_options = ["全部"] + list(mode_options.values())
-    filter_mode = st.segmented_control(
+    filter_mode = st.radio(
         "按模式筛选",
         options=mode_filter_options,
-        default="全部",
-        key="filter_mode"
+        index=0,
+        key="filter_mode",
+        horizontal=True
     )
 
     if filter_mode != "全部":

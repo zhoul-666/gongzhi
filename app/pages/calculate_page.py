@@ -13,7 +13,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from app.data_manager import (
     get_employees, get_regions, get_skills,
     get_employee_skills, get_mode_by_id,
-    save_json, load_json
+    save_json, load_json,
+    is_calculation_locked, lock_calculation
 )
 
 
@@ -162,21 +163,38 @@ def render():
         help="计算结果的保存名称，可自定义（如：2024-12-方案一）"
     )
 
+    # 检查是否已锁定
+    is_locked = is_calculation_locked(save_name)
+    if is_locked:
+        st.warning(f"⚠️ 「{save_name}」已锁定，无法重新计算。如需修改请先在【历史查询】页面解锁。")
+
     st.markdown("---")
 
-    # 计算按钮
-    if st.button("🚀 开始计算", type="primary"):
+    # 计算按钮（锁定时禁用）
+    if st.button("🚀 开始计算", type="primary", disabled=is_locked):
         with st.spinner("正在计算..."):
             results = do_calculate(month_records, save_name)
 
         if results:
             st.success(f"计算完成！共 {len(results)} 人，保存为：{save_name}")
 
+            # 保存结果
+            save_results(results, save_name)
+
             # 显示结果
             display_results(results, save_name)
 
-            # 保存结果
-            save_results(results, save_name)
+            # 锁定按钮
+            st.markdown("---")
+            st.subheader("锁定确认")
+            st.info("锁定后该月数据将不可被覆盖，确保计算结果安全。")
+
+            if st.button("🔒 锁定本月", type="secondary"):
+                if lock_calculation(save_name):
+                    st.success(f"✅ 已锁定「{save_name}」，数据已成为静态快照。")
+                    st.rerun()
+                else:
+                    st.error("锁定失败，请稍后重试")
 
 
 def do_calculate(month_records: list, month: str) -> list:

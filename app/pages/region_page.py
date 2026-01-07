@@ -44,11 +44,12 @@ def render():
     region_options = {r["id"]: r["name"] for r in regions}
     region_names = [r["name"] for r in regions]
 
-    selected_region_name = st.segmented_control(
+    selected_region_name = st.radio(
         "选择区域进行配置",
         options=region_names,
-        default=region_names[0] if region_names else None,
-        key="select_region"
+        index=0,
+        key="select_region",
+        horizontal=True
     )
 
     # 根据名称找到对应的ID
