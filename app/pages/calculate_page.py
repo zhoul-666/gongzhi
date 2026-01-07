@@ -8,7 +8,6 @@ import io
 import json
 from pathlib import Path
 from datetime import datetime
-from st_aggrid import AgGrid, GridOptionsBuilder, JsCode
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from app.data_manager import (
@@ -251,46 +250,11 @@ def display_results(results: list, month: str):
     """显示计算结果"""
     regions = get_regions()
 
-    st.subheader("计算结果（双击某行展开/收起明细）")
+    st.subheader("计算结果")
 
-    # 构建表格数据，包含详情信息
+    # 构建表格数据
     display_data = []
     for r in results:
-        # 构建详情数据
-        detail_rows = []
-        total_parts = []
-        for region in regions:
-            region_id = region["id"]
-            region_name = region["name"]
-            if region_id in r.get("regions", {}):
-                rd = r["regions"][region_id]
-                score = rd.get("score", 0)
-                skill_salary = rd.get("skill_salary", 0)
-                ladder_bonus = rd.get("ladder_bonus", 0)
-                total = rd.get("total", 0)
-                status = "在岗" if rd.get("is_on_duty") else "不在岗"
-
-                if total > 0:
-                    detail_rows.append({
-                        "项目": f"{region_name}小计",
-                        "计算公式": f"技能工资 {skill_salary:.0f} + 阶梯奖金 {ladder_bonus:.0f}",
-                        "绩效分": f"{score:,.0f}",
-                        "状态": status,
-                        "金额": f"{total:.0f}"
-                    })
-                    total_parts.append(f"{region_name} {total:.0f}")
-
-        # 添加总计行
-        total_formula = " + ".join(total_parts) if total_parts else "无"
-        detail_rows.append({
-            "项目": "【总工资】",
-            "计算公式": total_formula,
-            "绩效分": "",
-            "状态": "",
-            "金额": f"{r.get('total_salary', 0):.2f}"
-        })
-
-        # 主行数据
         row = {"姓名": r["employee_name"]}
         for region in regions:
             region_id = region["id"]
@@ -300,64 +264,55 @@ def display_results(results: list, month: str):
                 row[f"{region_name}绩效分"] = rd.get("score", 0)
                 row[f"{region_name}小计"] = rd.get("total", 0)
         row["总工资"] = r.get("total_salary", 0)
-        row["detail_data"] = detail_rows  # 详情数据
         display_data.append(row)
 
     df = pd.DataFrame(display_data)
 
-    # 配置 AgGrid - 使用 columnDefs 直接定义列
-    column_defs = [
-        {
-            "field": "姓名",
-            "cellRenderer": "agGroupCellRenderer",  # 显示展开箭头
-            "width": 150,
-            "pinned": "left"
-        }
-    ]
+    # 使用原生表格显示
+    st.dataframe(df, use_container_width=True, hide_index=True)
 
-    # 添加区域列
-    for region in regions:
-        region_name = region["name"]
-        column_defs.append({"field": f"{region_name}绩效分", "width": 100})
-        column_defs.append({"field": f"{region_name}小计", "width": 100})
+    # 展开查看详情
+    st.markdown("---")
+    st.subheader("查看明细")
 
-    column_defs.append({"field": "总工资", "width": 100, "pinned": "right"})
+    emp_names = [r["employee_name"] for r in results]
+    selected_emp = st.selectbox("选择员工", options=emp_names, key="detail_emp")
 
-    # 配置 grid options
-    grid_options = {
-        "columnDefs": column_defs,
-        "rowData": display_data,
-        "masterDetail": True,
-        "detailRowHeight": 150,
-        "detailCellRendererParams": {
-            "detailGridOptions": {
-                "columnDefs": [
-                    {"field": "项目", "width": 120},
-                    {"field": "计算公式", "width": 250},
-                    {"field": "绩效分", "width": 100},
-                    {"field": "状态", "width": 80},
-                    {"field": "金额", "width": 100},
-                ],
-                "defaultColDef": {"flex": 1},
-            },
-            "getDetailRowData": JsCode("""function(params) {
-                params.successCallback(params.data.detail_data);
-            }"""),
-        },
-        "defaultColDef": {
-            "resizable": True,
-            "sortable": True,
-        }
-    }
+    if selected_emp:
+        result = next((r for r in results if r["employee_name"] == selected_emp), None)
+        if result:
+            with st.expander(f"📋 {selected_emp} 的计算明细", expanded=True):
+                detail_data = []
+                total_parts = []
+                for region in regions:
+                    region_id = region["id"]
+                    region_name = region["name"]
+                    if region_id in result.get("regions", {}):
+                        rd = result["regions"][region_id]
+                        score = rd.get("score", 0)
+                        skill_salary = rd.get("skill_salary", 0)
+                        ladder_bonus = rd.get("ladder_bonus", 0)
+                        total = rd.get("total", 0)
+                        status = "在岗" if rd.get("is_on_duty") else "不在岗"
 
-    # 显示 AgGrid
-    AgGrid(
-        df.drop(columns=["detail_data"]),
-        gridOptions=grid_options,
-        height=400,
-        allow_unsafe_jscode=True,
-        theme="streamlit"
-    )
+                        if total > 0:
+                            detail_data.append({
+                                "项目": f"{region_name}小计",
+                                "计算公式": f"技能 {skill_salary:.0f} + 阶梯 {ladder_bonus:.0f}",
+                                "绩效分": f"{score:,.0f}",
+                                "状态": status,
+                                "金额": f"{total:.0f}"
+                            })
+                            total_parts.append(f"{region_name} {total:.0f}")
+
+                if detail_data:
+                    detail_df = pd.DataFrame(detail_data)
+                    st.dataframe(detail_df, use_container_width=True, hide_index=True)
+
+                    total_formula = " + ".join(total_parts)
+                    st.markdown(f"**总工资 {result.get('total_salary', 0):.2f}** = {total_formula}")
+                else:
+                    st.info("该员工无绩效数据")
 
     # 汇总统计
     st.markdown("---")
