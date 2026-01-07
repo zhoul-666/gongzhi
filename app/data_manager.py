@@ -9,27 +9,16 @@ import os
 import shutil
 from datetime import datetime
 from pathlib import Path
+import streamlit as st
 
 # 数据目录
 DATA_DIR = Path(__file__).parent.parent / "data"
 BACKUP_DIR = Path(__file__).parent.parent / "backup"
 
-# 简单内存缓存
-_cache = {}
-_cache_enabled = True
 
-
-def clear_cache(filename: str = None):
-    """清除缓存
-
-    Args:
-        filename: 指定文件名则只清除该文件缓存，否则清除所有缓存
-    """
-    global _cache
-    if filename:
-        _cache.pop(filename, None)
-    else:
-        _cache.clear()
+def clear_cache():
+    """清除所有 Streamlit 数据缓存"""
+    st.cache_data.clear()
 
 
 def ensure_dirs():
@@ -56,25 +45,16 @@ def backup_file(file_path: Path, version: str = None):
     return backup_path
 
 
+@st.cache_data(ttl=300)  # 缓存5分钟
 def load_json(filename: str) -> dict:
-    """读取JSON文件（带缓存）"""
-    global _cache
-
-    # 检查缓存
-    if _cache_enabled and filename in _cache:
-        return _cache[filename]
-
+    """读取JSON文件（带Streamlit缓存）"""
     file_path = DATA_DIR / filename
     if not file_path.exists():
         return {}
 
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-            # 存入缓存
-            if _cache_enabled:
-                _cache[filename] = data
-            return data
+            return json.load(f)
     except json.JSONDecodeError as e:
         print(f"[错误] JSON格式错误: {filename} - {e}")
         return {}
@@ -95,8 +75,8 @@ def save_json(filename: str, data: dict, backup: bool = True):
     try:
         with open(file_path, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
-        # 清除该文件的缓存
-        clear_cache(filename)
+        # 清除缓存，确保下次读取是最新数据
+        clear_cache()
         return True
     except Exception as e:
         print(f"[错误] 保存失败: {filename} - {e}")
