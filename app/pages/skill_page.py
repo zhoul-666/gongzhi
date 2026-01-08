@@ -147,15 +147,15 @@ def render():
 
     st.markdown("---")
 
-    # 技能列表（三列网格布局）
-    cols = st.columns(3)
+    # 技能列表（五列紧凑网格布局）
+    cols = st.columns(5)
     for idx, skill in enumerate(filtered_skills):
-        col_idx = idx % 3
+        col_idx = idx % 5
 
         with cols[col_idx]:
             with st.container(border=True):
-                # 第一行：勾选框 + 技能名
-                c1, c2 = st.columns([0.15, 0.85])
+                # 第一行：勾选框 + 技能名 + 保存图标
+                c1, c2, c3 = st.columns([0.12, 0.6, 0.28])
                 with c1:
                     is_selected = skill["id"] in st.session_state.selected_skills
                     version = st.session_state.checkbox_version
@@ -165,38 +165,37 @@ def render():
                         st.session_state.selected_skills.discard(skill["id"])
                 with c2:
                     st.markdown(f"**{skill['name']}**")
-
-                # 第二行：在岗/不在岗 + 保存按钮
-                c1, c2, c3 = st.columns([1, 1, 0.6])
-                with c1:
-                    new_on = st.number_input(
-                        "在岗",
-                        value=skill.get("salary_on_duty", 200),
-                        min_value=0,
-                        step=50,
-                        key=f"on_{skill['id']}",
-                        label_visibility="collapsed"
-                    )
-                with c2:
-                    new_off = st.number_input(
-                        "不在岗",
-                        value=skill.get("salary_off_duty", 100),
-                        min_value=0,
-                        step=50,
-                        key=f"off_{skill['id']}",
-                        label_visibility="collapsed"
-                    )
                 with c3:
-                    if st.button("保存", key=f"save_{skill['id']}"):
+                    if st.button("💾", key=f"save_{skill['id']}", help="保存"):
+                        new_on = st.session_state.get(f"on_{skill['id']}", skill.get("salary_on_duty", 200))
+                        new_off = st.session_state.get(f"off_{skill['id']}", skill.get("salary_off_duty", 100))
                         update_skill(skill["id"], {
                             "salary_on_duty": new_on,
                             "salary_off_duty": new_off
                         })
                         st.rerun()
 
-        # 每三个重新创建列
-        if col_idx == 2 and idx < len(filtered_skills) - 1:
-            cols = st.columns(3)
+                # 第二行：在岗工资
+                st.number_input(
+                    "在",
+                    value=skill.get("salary_on_duty", 200),
+                    min_value=0,
+                    step=50,
+                    key=f"on_{skill['id']}"
+                )
+
+                # 第三行：不在岗工资
+                st.number_input(
+                    "离",
+                    value=skill.get("salary_off_duty", 100),
+                    min_value=0,
+                    step=50,
+                    key=f"off_{skill['id']}"
+                )
+
+        # 每五个重新创建列
+        if col_idx == 4 and idx < len(filtered_skills) - 1:
+            cols = st.columns(5)
 
     # 统计信息
     st.markdown("---")

@@ -265,72 +265,83 @@ def display_employee_detail(result: dict, regions: list):
 
 
 def display_results(results: list, month: str):
-    """显示计算结果"""
+    """显示计算结果 - 表格样式 + popover弹出详情"""
     regions = get_regions()
 
     st.subheader("计算结果")
 
-    # 构建表格数据
-    display_data = []
-    for r in results:
-        row = {"姓名": r["employee_name"]}
+    # 计算列宽：姓名 + 每个区域2列 + 总工资 + 详情按钮
+    col_widths = [1.2] + [0.9, 0.7] * len(regions) + [0.9, 0.5]
+
+    # 显示表头
+    header_cols = st.columns(col_widths)
+    header_cols[0].markdown("**姓名**")
+    col_idx = 1
+    for region in regions:
+        header_cols[col_idx].markdown(f"**{region['name']}绩效**")
+        header_cols[col_idx + 1].markdown(f"**小计**")
+        col_idx += 2
+    header_cols[-2].markdown("**总工资**")
+    header_cols[-1].markdown("**详情**")
+
+    st.markdown("---")
+
+    # 每个员工一行
+    for idx, r in enumerate(results):
+        emp_name = r["employee_name"]
+        total_salary = r.get("total_salary", 0)
+
+        # 显示数据行
+        row_cols = st.columns(col_widths)
+        row_cols[0].write(emp_name)
+
+        col_idx = 1
         for region in regions:
             region_id = region["id"]
-            region_name = region["name"]
             if region_id in r.get("regions", {}):
                 rd = r["regions"][region_id]
-                row[f"{region_name}绩效分"] = rd.get("score", 0)
-                row[f"{region_name}小计"] = rd.get("total", 0)
-        row["总工资"] = r.get("total_salary", 0)
-        display_data.append(row)
+                row_cols[col_idx].write(f"{rd.get('score', 0):,.0f}")
+                row_cols[col_idx + 1].write(f"{rd.get('total', 0):.0f}")
+            else:
+                row_cols[col_idx].write("-")
+                row_cols[col_idx + 1].write("-")
+            col_idx += 2
 
-    df = pd.DataFrame(display_data)
+        row_cols[-2].write(f"¥{total_salary:.0f}")
 
-    # 使用原生表格显示
-    st.dataframe(df, use_container_width=True, hide_index=True)
+        # 详情按钮 - 使用popover弹出
+        with row_cols[-1].popover("📋"):
+            st.markdown(f"### {emp_name} 计算明细")
+            st.markdown("---")
 
-    # 展开查看详情
-    st.markdown("---")
-    st.subheader("查看明细")
+            total_parts = []
+            for region in regions:
+                region_id = region["id"]
+                region_name = region["name"]
+                if region_id in r.get("regions", {}):
+                    rd = r["regions"][region_id]
+                    score = rd.get("score", 0)
+                    skill_salary = rd.get("skill_salary", 0)
+                    ladder_bonus = rd.get("ladder_bonus", 0)
+                    total = rd.get("total", 0)
+                    status = "在岗" if rd.get("is_on_duty") else "不在岗"
 
-    emp_names = [r["employee_name"] for r in results]
-    selected_emp = st.selectbox("选择员工", options=emp_names, key="detail_emp")
+                    if total > 0:
+                        st.markdown(f"**{region_name}小计** {total:.0f}")
+                        st.markdown(f"= 技能 {skill_salary:.0f} + 阶梯 {ladder_bonus:.0f}")
+                        st.markdown(f"（绩效 {score:,.0f}，{status}）")
+                        st.markdown("")
+                        total_parts.append(f"{region_name} {total:.0f}")
+                    elif score > 0:
+                        st.markdown(f"**{region_name}小计** 0")
+                        st.markdown(f"（绩效 {score:,.0f}，{status}）")
+                        st.markdown("")
 
-    if selected_emp:
-        result = next((r for r in results if r["employee_name"] == selected_emp), None)
-        if result:
-            with st.expander(f"📋 {selected_emp} 的计算明细", expanded=True):
-                detail_data = []
-                total_parts = []
-                for region in regions:
-                    region_id = region["id"]
-                    region_name = region["name"]
-                    if region_id in result.get("regions", {}):
-                        rd = result["regions"][region_id]
-                        score = rd.get("score", 0)
-                        skill_salary = rd.get("skill_salary", 0)
-                        ladder_bonus = rd.get("ladder_bonus", 0)
-                        total = rd.get("total", 0)
-                        status = "在岗" if rd.get("is_on_duty") else "不在岗"
-
-                        if total > 0:
-                            detail_data.append({
-                                "项目": f"{region_name}小计",
-                                "计算公式": f"技能 {skill_salary:.0f} + 阶梯 {ladder_bonus:.0f}",
-                                "绩效分": f"{score:,.0f}",
-                                "状态": status,
-                                "金额": f"{total:.0f}"
-                            })
-                            total_parts.append(f"{region_name} {total:.0f}")
-
-                if detail_data:
-                    detail_df = pd.DataFrame(detail_data)
-                    st.dataframe(detail_df, use_container_width=True, hide_index=True)
-
-                    total_formula = " + ".join(total_parts)
-                    st.markdown(f"**总工资 {result.get('total_salary', 0):.2f}** = {total_formula}")
-                else:
-                    st.info("该员工无绩效数据")
+            if total_parts:
+                st.markdown("---")
+                total_formula = " + ".join(total_parts)
+                st.markdown(f"**总工资 ¥{total_salary:.2f}**")
+                st.markdown(f"= {total_formula}")
 
     # 汇总统计
     st.markdown("---")

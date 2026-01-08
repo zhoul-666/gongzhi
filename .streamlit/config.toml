@@ -1,0 +1,23 @@
+# 绩效核算系统 - Streamlit 配置
+# 强制使用深色主题，不跟随系统
+
+[theme]
+# 强制深色主题 - 解决白天"白底白字"问题
+base = "dark"
+
+# 主要颜色配置
+primaryColor = "#0A84FF"           # Apple Blue - 主要强调色
+backgroundColor = "#000000"         # 纯黑背景
+secondaryBackgroundColor = "#1C1C1E" # 深灰卡片/侧边栏
+textColor = "#FFFFFF"              # 白色文字
+
+# 字体
+font = "sans serif"
+
+[server]
+# 文件变化时自动重新运行
+runOnSave = true
+
+[browser]
+# 收集使用统计（关闭）
+gatherUsageStats = false
