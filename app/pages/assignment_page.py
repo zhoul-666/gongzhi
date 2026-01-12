@@ -10,7 +10,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from app.data_manager import (
     get_employees, get_skills, get_skills_by_mode,
     get_employee_skills, assign_skill_to_employee, update_employee_skill,
-    remove_employee_skill,
+    remove_employee_skill, batch_assign_skills_to_employee,
     get_modes, get_mode_by_id, get_regions, get_region_by_id,
     save_json, load_json
 )
@@ -219,37 +219,55 @@ def render():
         if not unassigned_skills:
             st.info("已分配所有可用技能")
         else:
-            # 按区域分组显示
-            skills_by_region = {}
+            # 准备表格数据
+            table_data = []
             for skill in unassigned_skills:
-                region_id = skill.get("region_id", "unknown")
-                if region_id not in skills_by_region:
-                    skills_by_region[region_id] = []
-                skills_by_region[region_id].append(skill)
+                region = get_region_by_id(skill.get("region_id"))
+                table_data.append({
+                    "选择": False,
+                    "技能名称": skill['name'],
+                    "区域": region["name"] if region else "未分类",
+                    "在岗工资": skill.get('salary_on_duty', 0),
+                    "不在岗工资": skill.get('salary_off_duty', 0),
+                    "_skill_id": skill['id']
+                })
 
-            for region_id, skills in skills_by_region.items():
-                region = get_region_by_id(region_id)
-                region_name = region["name"] if region else "未分类"
+            df = pd.DataFrame(table_data)
 
-                st.markdown(f"**{region_name}** ({len(skills)}个)")
+            # 主操作按钮（表格上方）
+            col1, col2 = st.columns([1, 4])
+            with col1:
+                confirm_btn = st.button("✅ 确认分配所选", type="primary", use_container_width=True)
+            with col2:
+                st.caption("💡 勾选左侧复选框，然后点击按钮批量分配")
 
-                # 紧凑列表显示
-                for skill in skills:
-                    col1, col2, col3 = st.columns([3, 3, 1])
-                    with col1:
-                        st.markdown(f"**{skill['name']}**")
-                    with col2:
-                        st.caption(f"在岗{skill.get('salary_on_duty', 0)} / 不在岗{skill.get('salary_off_duty', 0)}")
-                    with col3:
-                        if st.button("分配", key=f"assign_{selected_emp_id}_{skill['id']}"):
-                            assign_skill_to_employee(
-                                selected_emp_id,
-                                skill["id"],
-                                passed_exam=False
-                            )
-                            st.rerun()
+            # 数据表格
+            edited_df = st.data_editor(
+                df,
+                hide_index=True,
+                use_container_width=True,
+                column_config={
+                    "选择": st.column_config.CheckboxColumn("选择", default=False),
+                    "技能名称": st.column_config.TextColumn("技能名称", disabled=True),
+                    "区域": st.column_config.TextColumn("区域", disabled=True),
+                    "在岗工资": st.column_config.NumberColumn("在岗工资", disabled=True),
+                    "不在岗工资": st.column_config.NumberColumn("不在岗工资", disabled=True),
+                    "_skill_id": None  # 隐藏
+                }
+            )
 
-                st.markdown("")  # 区域之间的间隔
+            # 处理批量分配
+            if confirm_btn:
+                selected = edited_df[edited_df["选择"]]["_skill_id"].tolist()
+                if not selected:
+                    st.warning("请先选择要分配的技能")
+                else:
+                    results = batch_assign_skills_to_employee(selected_emp_id, selected)
+                    if results["success"]:
+                        st.success(f"✅ 已分配 {len(results['success'])} 个技能")
+                    if results["skipped"]:
+                        st.info(f"⏭️ 跳过已存在的 {len(results['skipped'])} 个技能")
+                    st.rerun()
 
     # 批量分配功能
     st.markdown("---")

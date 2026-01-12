@@ -181,8 +181,8 @@ def render():
             # 保存结果
             save_results(results, save_name)
 
-            # 显示结果
-            display_results(results, save_name)
+            # 显示结果（使用折叠面板样式）
+            display_results_v2(results, save_name)
 
             # 锁定按钮
             st.markdown("---")
@@ -368,6 +368,113 @@ def display_results(results: list, month: str):
     with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
         export_df.to_excel(writer, sheet_name=f'{month}绩效工资', index=False)
 
+    buffer.seek(0)
+
+    st.download_button(
+        label="📥 下载Excel",
+        data=buffer,
+        file_name=f"绩效工资_{month}.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+
+
+def display_employee_detail_v2(result: dict, regions: list):
+    """展开后的详情展示 - 紧凑布局"""
+    for region in regions:
+        region_id = region["id"]
+        region_name = region["name"]
+
+        if region_id in result.get("regions", {}):
+            rd = result["regions"][region_id]
+            score = rd.get("score", 0)
+            is_on_duty = rd.get("is_on_duty", False)
+            skill_salary = rd.get("skill_salary", 0)
+            ladder_bonus = rd.get("ladder_bonus", 0)
+            total = rd.get("total", 0)
+
+            status = "🟢" if is_on_duty else "🔴"
+            st.markdown(f"{status} **{region_name}** | 绩效:{score:,.0f} | 技能:¥{skill_salary:.0f} | 阶梯:¥{ladder_bonus:.0f} | 小计:**¥{total:.0f}**")
+
+
+def display_results_v2(results: list, month: str):
+    """显示计算结果 - 折叠面板样式"""
+    regions = get_regions()
+
+    st.subheader("计算结果")
+
+    # 汇总统计
+    col1, col2, col3 = st.columns(3)
+    total_all = sum(r["total_salary"] for r in results)
+    with col1:
+        st.metric("总人数", len(results))
+    with col2:
+        st.metric("工资总额", f"¥{total_all:,.2f}")
+    with col3:
+        avg = total_all / len(results) if results else 0
+        st.metric("人均工资", f"¥{avg:,.2f}")
+
+    st.markdown("---")
+
+    # 紧凑间距样式
+    st.markdown("""
+    <style>
+    /* 去掉expander之间的间距 */
+    div[data-testid="stExpander"] {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+    }
+    /* 去掉内部details的间距 */
+    div[data-testid="stExpander"] details {
+        margin: 0 !important;
+        border-radius: 0 !important;
+    }
+    /* 标题字体放大 */
+    div[data-testid="stExpander"] summary p,
+    div[data-testid="stExpander"] summary span,
+    div[data-testid="stExpander"] summary {
+        font-size: 1.15rem !important;
+        font-weight: 500 !important;
+    }
+    /* 去掉垂直块间距 */
+    .stVerticalBlock > div[data-testid="stExpander"] {
+        gap: 0 !important;
+    }
+    .stVerticalBlock {
+        gap: 0 !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # 折叠列表展示每个员工
+    for idx, r in enumerate(results):
+        emp_name = r["employee_name"]
+        total_salary = r.get("total_salary", 0)
+
+        # 构建标题：显示各区域绩效分/小计
+        label_parts = [f"👤 {emp_name}"]
+        for region in regions:
+            region_id = region["id"]
+            region_name = region["name"]
+            if region_id in r.get("regions", {}):
+                rd = r["regions"][region_id]
+                score = rd.get("score", 0)
+                subtotal = rd.get("total", 0)
+                label_parts.append(f"{region_name}:{score:,.0f}/¥{subtotal:.0f}")
+        label_parts.append(f"总:¥{total_salary:,.0f}")
+        expander_label = " | ".join(label_parts)
+
+        with st.expander(expander_label, expanded=False):
+            display_employee_detail_v2(r, regions)
+            st.markdown(f"**实发工资：¥{total_salary:,.2f}**")
+
+    # 导出Excel
+    st.markdown("---")
+    st.subheader("导出结果")
+
+    export_df = prepare_export_data(results, regions)
+    buffer = io.BytesIO()
+    with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
+        export_df.to_excel(writer, sheet_name=f'{month}绩效工资', index=False)
     buffer.seek(0)
 
     st.download_button(

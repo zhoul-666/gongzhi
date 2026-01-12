@@ -357,6 +357,50 @@ def assign_skill_to_employee(emp_id: str, skill_id: str, passed_exam: bool = Fal
     return new_assignment
 
 
+def batch_assign_skills_to_employee(emp_id: str, skill_ids: list, passed_exam: bool = False) -> dict:
+    """批量分配技能给员工
+
+    Args:
+        emp_id: 员工ID
+        skill_ids: 技能ID列表
+        passed_exam: 是否通过考核，默认False
+
+    Returns:
+        dict: {"success": [...], "skipped": [...]} 分配结果
+    """
+    data = load_json("employee_skills.json")
+    emp_skills = data.get("employee_skills", [])
+
+    results = {"success": [], "skipped": []}
+
+    for skill_id in skill_ids:
+        # 检查是否已存在
+        exists = any(es["employee_id"] == emp_id and es["skill_id"] == skill_id for es in emp_skills)
+        if exists:
+            results["skipped"].append(skill_id)
+            continue
+
+        new_assignment = {
+            "employee_id": emp_id,
+            "skill_id": skill_id,
+            "passed_exam": passed_exam,
+            "use_system_threshold": True,
+            "custom_threshold": None,
+            "use_system_price": True,
+            "custom_price_on_duty": None,
+            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
+        emp_skills.append(new_assignment)
+        results["success"].append(skill_id)
+
+    if results["success"]:
+        data["employee_skills"] = emp_skills
+        save_json("employee_skills.json", data)
+        print(f"[批量分配] 成功分配 {len(results['success'])} 个技能")
+
+    return results
+
+
 def update_employee_skill(emp_id: str, skill_id: str, updates: dict) -> bool:
     """更新员工技能关联"""
     data = load_json("employee_skills.json")
