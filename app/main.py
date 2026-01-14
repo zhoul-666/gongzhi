@@ -26,11 +26,52 @@ st.set_page_config(
     initial_sidebar_state="collapsed"  # 默认收起侧边栏
 )
 
+# ==================== 禁用 Chrome 翻译 ====================
+def disable_chrome_translate():
+    """
+    禁用 Chrome 自动翻译功能
+    - 修改 html 标签的 lang 属性为 zh-CN
+    - 添加 translate="no" 和 notranslate class
+    - 注入 meta 标签告诉 Google 不要翻译
+    """
+    import streamlit.components.v1 as components
+
+    # 使用零高度的 HTML 组件注入脚本
+    components.html("""
+        <script>
+            // 立即执行：修改 html 标签属性
+            (function() {
+                var html = document.documentElement;
+                html.setAttribute('lang', 'zh-CN');
+                html.setAttribute('translate', 'no');
+                html.classList.add('notranslate');
+
+                // 添加 meta 标签到 head
+                var meta1 = document.createElement('meta');
+                meta1.name = 'google';
+                meta1.content = 'notranslate';
+                document.head.appendChild(meta1);
+
+                var meta2 = document.createElement('meta');
+                meta2.httpEquiv = 'Content-Language';
+                meta2.content = 'zh-CN';
+                document.head.appendChild(meta2);
+            })();
+        </script>
+    """, height=0)
+
 # ==================== 自定义样式 ====================
 def inject_custom_css():
     """注入自定义CSS样式 - Apple Dark Mode"""
     st.markdown("""
     <style>
+    /* 禁止翻译 - 全局 */
+    * {
+        translate: no;
+    }
+    .notranslate {
+        translate: no;
+    }
     /* ==================== Apple Dark Mode 设计系统 ==================== */
 
     /* 全局字体 - San Francisco / System UI */
@@ -742,6 +783,9 @@ def render_back_button():
     st.markdown("---")
 
 # ==================== 主程序 ====================
+# 禁用 Chrome 翻译（必须在最前面执行）
+disable_chrome_translate()
+
 # 注入自定义样式
 inject_custom_css()
 
