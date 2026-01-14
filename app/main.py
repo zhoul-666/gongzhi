@@ -37,25 +37,40 @@ def disable_chrome_translate():
     import streamlit.components.v1 as components
 
     # 使用零高度的 HTML 组件注入脚本
+    # 注意：components.html 是在 iframe 中运行的，需要用 parent.document 访问主页面
     components.html("""
         <script>
-            // 立即执行：修改 html 标签属性
+            // 立即执行：修改主页面的 html 标签属性
             (function() {
-                var html = document.documentElement;
-                html.setAttribute('lang', 'zh-CN');
-                html.setAttribute('translate', 'no');
-                html.classList.add('notranslate');
+                try {
+                    // 访问父页面（主 Streamlit 页面）的 document
+                    var html = parent.document.documentElement;
+                    html.setAttribute('lang', 'zh-CN');
+                    html.setAttribute('translate', 'no');
+                    html.classList.add('notranslate');
 
-                // 添加 meta 标签到 head
-                var meta1 = document.createElement('meta');
-                meta1.name = 'google';
-                meta1.content = 'notranslate';
-                document.head.appendChild(meta1);
+                    // 添加 meta 标签到父页面的 head
+                    var head = parent.document.head;
 
-                var meta2 = document.createElement('meta');
-                meta2.httpEquiv = 'Content-Language';
-                meta2.content = 'zh-CN';
-                document.head.appendChild(meta2);
+                    // 检查是否已经添加过，避免重复
+                    if (!head.querySelector('meta[name="google"][content="notranslate"]')) {
+                        var meta1 = parent.document.createElement('meta');
+                        meta1.name = 'google';
+                        meta1.content = 'notranslate';
+                        head.appendChild(meta1);
+                    }
+
+                    if (!head.querySelector('meta[http-equiv="Content-Language"]')) {
+                        var meta2 = parent.document.createElement('meta');
+                        meta2.httpEquiv = 'Content-Language';
+                        meta2.content = 'zh-CN';
+                        head.appendChild(meta2);
+                    }
+
+                    console.log('Chrome translate disabled successfully');
+                } catch (e) {
+                    console.error('Failed to disable Chrome translate:', e);
+                }
             })();
         </script>
     """, height=0)
