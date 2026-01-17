@@ -1,5 +1,5 @@
 """
-绩效导入页面 - 从ERP导入绩效数据
+绩效导入页面 - 从ERP导入明细数据并自动汇总
 """
 import streamlit as st
 import pandas as pd
@@ -15,7 +15,7 @@ from app.data_manager import (
 
 
 def parse_erp_excel(uploaded_file):
-    """解析ERP导出的Excel文件"""
+    """解析ERP导出的Excel文件（支持HTML格式）"""
     try:
         # 尝试不同的读取方式
         try:
@@ -23,19 +23,16 @@ def parse_erp_excel(uploaded_file):
             dfs = pd.read_html(uploaded_file)
             if dfs:
                 df = dfs[0]
-                print("[读取] 使用HTML格式解析成功")
             else:
                 raise ValueError("无法解析HTML")
         except:
             try:
                 # 尝试xlsx格式
                 df = pd.read_excel(uploaded_file, engine='openpyxl')
-                print("[读取] 使用openpyxl解析成功")
             except:
                 try:
                     # 尝试xls格式
                     df = pd.read_excel(uploaded_file, engine='xlrd')
-                    print("[读取] 使用xlrd解析成功")
                 except Exception as e:
                     return None, f"无法解析文件格式: {e}"
 
@@ -44,32 +41,112 @@ def parse_erp_excel(uploaded_file):
         return None, f"解析失败: {e}"
 
 
+def summarize_performance(df, period):
+    """
+    汇总绩效数据
+
+    按姓名分组，汇总：
+    - 印前 = 工序"印前处理"的绩效分合计
+    - 图纸印中 = 工序"印中制作" + 业务类别为"蓝图"或"工程图纸"
+    - 数码印中 = 工序"印中制作" + 其他业务类别
+    - 印后 = 工序"印后加工"的绩效分合计
+    """
+    # 确保必要的列存在
+    required_cols = ['姓名', '工序', '业务类别', '绩效分']
+    missing_cols = [col for col in required_cols if col not in df.columns]
+    if missing_cols:
+        return None, f"缺少必要的列: {', '.join(missing_cols)}"
+
+    # 获取所有员工姓名
+    employees = df['姓名'].unique().tolist()
+
+    summary = []
+    raw_details = []  # 保存原始明细用于穿透查询
+
+    for emp_name in employees:
+        if not emp_name or pd.isna(emp_name) or str(emp_name).strip() == '':
+            continue
+
+        emp_name = str(emp_name).strip()
+        emp_df = df[df['姓名'] == emp_name]
+
+        # 汇总各工序绩效分
+        # 印前
+        pre_press = emp_df[emp_df['工序'] == '印前处理']['绩效分'].sum()
+
+        # 印中 - 需要细分
+        mid_press_df = emp_df[emp_df['工序'] == '印中制作']
+        # 图纸印中：蓝图、工程图纸
+        drawing_mid = mid_press_df[mid_press_df['业务类别'].isin(['蓝图', '工程图纸'])]['绩效分'].sum()
+        # 数码印中：其他业务类别
+        digital_mid = mid_press_df[~mid_press_df['业务类别'].isin(['蓝图', '工程图纸'])]['绩效分'].sum()
+
+        # 印后
+        post_press = emp_df[emp_df['工序'] == '印后加工']['绩效分'].sum()
+
+        # 汇总记录
+        summary.append({
+            'employee_name': emp_name,
+            'period': period,
+            'pre_press': float(pre_press),           # 印前
+            'drawing_mid': float(drawing_mid),       # 图纸印中
+            'digital_mid': float(digital_mid),       # 数码印中
+            'mid_press': float(drawing_mid + digital_mid),  # 印中合计
+            'post_press': float(post_press),         # 印后
+        })
+
+        # 保存原始明细
+        for _, row in emp_df.iterrows():
+            raw_details.append({
+                'period': period,
+                'employee_name': emp_name,
+                'order_no': str(row.get('订单编号', '')),
+                'customer': str(row.get('客户名称', '')),
+                'process': str(row.get('工序', '')),
+                'business_type': str(row.get('业务类别', '')),
+                'item': str(row.get('制作项', '')),
+                'quantity': float(row.get('数量', 0)) if pd.notna(row.get('数量')) else 0,
+                'score': float(row.get('绩效分', 0)) if pd.notna(row.get('绩效分')) else 0,
+                'register_time': str(row.get('登记时间', '')),
+            })
+
+    return {
+        'summary': summary,
+        'raw_details': raw_details
+    }, None
+
+
 def render():
     st.title("📥 绩效导入")
     st.markdown("---")
 
-    # 获取区域配置
-    regions = get_regions()
-    region_columns = {r["erp_column"]: r for r in regions if r.get("erp_column")}
-
     st.markdown("""
     ### 使用说明
-    1. 从ERP系统导出绩效统计Excel文件
-    2. 上传文件，系统会自动识别员工和绩效数据
-    3. 新员工会自动创建，已有员工会匹配更新
+    1. 从ERP系统导出**绩效明细**Excel文件
+    2. 输入导入期间（如 2025-12）
+    3. 上传文件，系统会自动：
+       - 按员工姓名汇总绩效分
+       - 区分印前/图纸印中/数码印中/印后
+       - 匹配现有员工或自动创建新员工
     """)
 
-    # 显示当前配置的ERP列名
-    with st.expander("当前区域-ERP列名映射"):
-        for region in regions:
-            col = region.get("erp_column", "未配置")
-            st.text(f"{region['name']} → {col or '未配置'}")
+    st.markdown("---")
+
+    # 期间输入
+    col1, col2 = st.columns([1, 2])
+    with col1:
+        current_month = datetime.now().strftime("%Y-%m")
+        import_period = st.text_input(
+            "导入期间",
+            value=current_month,
+            help="格式: YYYY-MM，如 2025-12"
+        )
 
     st.markdown("---")
 
     # 文件上传
     uploaded_file = st.file_uploader(
-        "上传ERP绩效文件",
+        "上传ERP绩效明细文件",
         type=['xls', 'xlsx'],
         help="支持.xls和.xlsx格式"
     )
@@ -90,100 +167,92 @@ def render():
             return
 
         # 显示数据预览
-        st.subheader("数据预览")
+        st.subheader("原始数据预览")
         st.dataframe(df.head(10), use_container_width=True)
-        st.caption(f"共 {len(df)} 行数据")
+        st.caption(f"共 {len(df)} 条明细记录")
 
-        # 列名映射
-        st.subheader("列名映射")
-
-        columns = df.columns.tolist()
-
-        col1, col2 = st.columns(2)
-
-        with col1:
-            # 员工姓名列
-            name_col_options = ["自动识别"] + columns
-            name_col_default = 0
-
-            # 尝试自动匹配
-            for i, col in enumerate(columns):
-                if "人员" in str(col) or "姓名" in str(col) or "员工" in str(col):
-                    name_col_default = i + 1
-                    break
-
-            name_column = st.selectbox(
-                "员工姓名列",
-                options=name_col_options,
-                index=name_col_default,
-                key="name_col"
-            )
-
-        with col2:
-            # 选择月份
-            current_month = datetime.now().strftime("%Y-%m")
-            import_month = st.text_input(
-                "导入月份",
-                value=current_month,
-                help="格式: YYYY-MM"
-            )
-
-        # 绩效分值列映射
-        st.markdown("**绩效分值列映射：**")
-
-        score_mapping = {}
-        cols = st.columns(len(regions))
-
-        for i, region in enumerate(regions):
-            with cols[i]:
-                # 尝试自动匹配
-                default_idx = 0
-                erp_col = region.get("erp_column", "")
-                for j, col in enumerate(columns):
-                    if erp_col and erp_col in str(col):
-                        default_idx = j + 1
-                        break
-
-                selected = st.selectbox(
-                    f"{region['name']}",
-                    options=["不导入"] + columns,
-                    index=default_idx,
-                    key=f"region_col_{region['id']}"
-                )
-
-                if selected != "不导入":
-                    score_mapping[region["id"]] = selected
+        # 显示列信息
+        with st.expander("查看数据列"):
+            st.write(df.columns.tolist())
 
         st.markdown("---")
 
-        # 导入按钮
-        if st.button("🚀 开始导入", type="primary"):
-            # 确定员工姓名列
-            if name_column == "自动识别":
-                # 尝试自动识别
-                for col in columns:
-                    if "人员" in str(col) or "姓名" in str(col) or "员工" in str(col):
-                        name_column = col
-                        break
-                else:
-                    st.error("无法自动识别员工姓名列，请手动选择")
-                    return
+        # 预览汇总结果
+        if st.button("📊 预览汇总结果", type="secondary"):
+            with st.spinner("正在汇总数据..."):
+                result, error = summarize_performance(df, import_period)
 
-            if not score_mapping:
-                st.error("请至少映射一个绩效分值列")
+            if error:
+                st.error(error)
                 return
+
+            summary = result['summary']
+
+            # 显示汇总预览
+            st.subheader("汇总预览")
+
+            preview_data = []
+            for item in summary:
+                preview_data.append({
+                    '姓名': item['employee_name'],
+                    '期间': item['period'],
+                    '印前': f"{item['pre_press']:,.0f}",
+                    '图纸印中': f"{item['drawing_mid']:,.0f}",
+                    '数码印中': f"{item['digital_mid']:,.0f}",
+                    '印中合计': f"{item['mid_press']:,.0f}",
+                    '印后': f"{item['post_press']:,.0f}",
+                })
+
+            preview_df = pd.DataFrame(preview_data)
+            st.dataframe(preview_df, use_container_width=True)
+            st.caption(f"共 {len(summary)} 名员工")
+
+            # 保存到session_state供导入使用
+            st.session_state['pending_import'] = result
+            st.session_state['pending_period'] = import_period
+
+        # 导入按钮
+        st.markdown("---")
+
+        if st.button("🚀 确认导入", type="primary"):
+            # 检查是否已预览
+            if 'pending_import' not in st.session_state:
+                # 先执行汇总
+                with st.spinner("正在汇总数据..."):
+                    result, error = summarize_performance(df, import_period)
+
+                if error:
+                    st.error(error)
+                    return
+            else:
+                result = st.session_state['pending_import']
+                # 更新期间（以防用户修改了）
+                if st.session_state.get('pending_period') != import_period:
+                    # 期间变了，重新汇总
+                    with st.spinner("正在汇总数据..."):
+                        result, error = summarize_performance(df, import_period)
+                    if error:
+                        st.error(error)
+                        return
 
             # 开始导入
             with st.spinner("正在导入数据..."):
-                import_result = do_import(df, name_column, score_mapping, import_month, regions)
+                import_result = do_import(result, import_period)
 
             if import_result["success"]:
                 st.success(f"""
-                导入完成！
+                ✅ 导入完成！
+                - 导入期间: {import_period}
                 - 新增员工: {import_result['new_employees']} 人
-                - 更新记录: {import_result['updated_records']} 条
-                - 导入月份: {import_month}
+                - 导入记录: {import_result['imported_records']} 条
+                - 明细记录: {import_result['detail_records']} 条
                 """)
+
+                # 清理session_state
+                if 'pending_import' in st.session_state:
+                    del st.session_state['pending_import']
+                if 'pending_period' in st.session_state:
+                    del st.session_state['pending_period']
 
                 # 显示导入详情
                 with st.expander("查看导入详情"):
@@ -194,101 +263,109 @@ def render():
                 st.error(f"导入失败: {import_result.get('error', '未知错误')}")
 
 
-def do_import(df, name_column, score_mapping, import_month, regions):
+def do_import(result, import_period):
     """执行导入操作"""
     try:
         employees = get_employees()
         emp_name_map = {e["name"]: e for e in employees}
 
+        summary = result['summary']
+        raw_details = result['raw_details']
+
         # 加载绩效数据
         perf_data = load_json("performance.json")
         if not perf_data:
-            perf_data = {"records": [], "imports": []}
+            perf_data = {"records": [], "imports": [], "raw_details": []}
 
         records = perf_data.get("records", [])
         imports = perf_data.get("imports", [])
+        existing_raw = perf_data.get("raw_details", [])
 
         new_employees = 0
-        updated_records = 0
+        imported_records = 0
         details = []
 
-        region_map = {r["id"]: r["name"] for r in regions}
+        # 移除该期间的旧记录
+        records = [r for r in records if r.get("period") != import_period]
+        existing_raw = [r for r in existing_raw if r.get("period") != import_period]
 
-        for idx, row in df.iterrows():
-            name = str(row[name_column]).strip()
-
-            if not name or name == "nan" or name == "NaN":
-                continue
+        for item in summary:
+            emp_name = item['employee_name']
 
             # 查找或创建员工
-            if name in emp_name_map:
-                emp = emp_name_map[name]
+            if emp_name in emp_name_map:
+                emp = emp_name_map[emp_name]
+                status = "匹配"
             else:
                 # 新增员工
-                emp = add_employee(name, None, "mode_002")  # 默认中央工厂
-                emp_name_map[name] = emp
+                emp = add_employee(emp_name, None, "mode_002")  # 默认中央工厂
+                emp_name_map[emp_name] = emp
                 new_employees += 1
+                status = "新增"
 
-            # 提取绩效分值
-            scores = {}
-            for region_id, col_name in score_mapping.items():
-                try:
-                    value = row[col_name]
-                    if pd.notna(value):
-                        scores[region_id] = float(value)
-                    else:
-                        scores[region_id] = 0
-                except:
-                    scores[region_id] = 0
-
-            # 创建或更新记录
+            # 创建绩效记录（新格式，包含印中细分）
             record = {
                 "employee_id": emp["id"],
-                "employee_name": name,
-                "month": import_month,
-                "scores": scores,
+                "employee_name": emp_name,
+                "period": import_period,
+                "scores": {
+                    "region_001": item['pre_press'],      # 印前
+                    "region_002": item['mid_press'],       # 印中合计
+                    "region_003": item['post_press'],      # 印后
+                    "region_004": 0,                       # 前台（暂无）
+                },
+                "mid_detail": {
+                    "drawing": item['drawing_mid'],        # 图纸印中
+                    "digital": item['digital_mid'],        # 数码印中
+                },
                 "imported_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             }
 
-            # 检查是否已存在该月记录
-            existing_idx = None
-            for i, r in enumerate(records):
-                if r["employee_id"] == emp["id"] and r["month"] == import_month:
-                    existing_idx = i
-                    break
-
-            if existing_idx is not None:
-                records[existing_idx] = record
-            else:
-                records.append(record)
-
-            updated_records += 1
+            records.append(record)
+            imported_records += 1
 
             # 记录详情
-            detail = {"姓名": name, "状态": "新增" if name not in emp_name_map else "更新"}
-            for region_id, score in scores.items():
-                detail[region_map.get(region_id, region_id)] = f"{score:,.0f}"
-            details.append(detail)
+            details.append({
+                "姓名": emp_name,
+                "状态": status,
+                "印前": f"{item['pre_press']:,.0f}",
+                "图纸印中": f"{item['drawing_mid']:,.0f}",
+                "数码印中": f"{item['digital_mid']:,.0f}",
+                "印中合计": f"{item['mid_press']:,.0f}",
+                "印后": f"{item['post_press']:,.0f}",
+            })
+
+        # 添加原始明细（用于穿透查询）
+        # 为每条明细关联员工ID
+        for detail in raw_details:
+            emp_name = detail['employee_name']
+            if emp_name in emp_name_map:
+                detail['employee_id'] = emp_name_map[emp_name]['id']
+            existing_raw.append(detail)
 
         # 记录导入历史
         imports.append({
-            "month": import_month,
+            "period": import_period,
             "imported_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "record_count": updated_records,
+            "record_count": imported_records,
+            "detail_count": len(raw_details),
             "new_employees": new_employees
         })
 
         perf_data["records"] = records
         perf_data["imports"] = imports
+        perf_data["raw_details"] = existing_raw
 
         save_json("performance.json", perf_data)
 
         return {
             "success": True,
             "new_employees": new_employees,
-            "updated_records": updated_records,
+            "imported_records": imported_records,
+            "detail_records": len(raw_details),
             "details": details
         }
 
     except Exception as e:
-        return {"success": False, "error": str(e)}
+        import traceback
+        return {"success": False, "error": f"{str(e)}\n{traceback.format_exc()}"}
