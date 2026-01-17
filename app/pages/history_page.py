@@ -1,5 +1,6 @@
 """
 历史查询页面 - 查看往月绩效数据
+样式与绩效计算页面统一，支持行选择查看明细
 """
 import streamlit as st
 import pandas as pd
@@ -11,45 +12,39 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from app.data_manager import get_regions, load_json, unlock_calculation
 
 
-def display_employee_detail(result: dict, regions: list):
-    """显示单个员工的计算明细"""
-    emp_name = result.get("employee_name", "")
-    total_salary = result.get("total_salary", 0)
+def display_region_detail(region: dict, rd: dict, result: dict):
+    """显示单个区域的明细 - 紧凑横向布局"""
+    region_id = region["id"]
 
-    st.markdown(f"### 📋 {emp_name} 的计算明细")
+    score = rd.get("score", 0)
+    skill_salary = rd.get("skill_salary", 0)
+    ladder_bonus = rd.get("ladder_bonus", 0)
+    skill_details = rd.get("skill_details", [])
 
-    detail_lines = []
-    total_parts = []
+    # 使用小号字体的样式
+    st.markdown('<style>.small-text { font-size: 0.85em; }</style>', unsafe_allow_html=True)
 
-    for region in regions:
-        region_id = region["id"]
-        region_name = region["name"]
-
-        if region_id in result.get("regions", {}):
-            rd = result["regions"][region_id]
-            score = rd.get("score", 0)
-            skill_salary = rd.get("skill_salary", 0)
-            ladder_bonus = rd.get("ladder_bonus", 0)
-            total = rd.get("total", 0)
-
-            if total > 0:
-                status = "在岗" if rd.get("is_on_duty") else "不在岗"
-                detail_lines.append(
-                    f"**{region_name}小计** {total:.0f} = 技能工资 {skill_salary:.0f} + 阶梯奖金 {ladder_bonus:.0f}（绩效 {score:,.0f}，{status}）"
-                )
-                total_parts.append(f"{region_name} {total:.0f}")
-            else:
-                detail_lines.append(f"**{region_name}小计** 0（无绩效）")
-
-    for line in detail_lines:
-        st.markdown(line)
-
-    st.markdown("---")
-    if total_parts:
-        total_formula = " + ".join(total_parts)
-        st.markdown(f"**总工资 {total_salary:.2f}** = {total_formula}")
+    # 技能工资 - 横向排列
+    st.markdown('<p class="small-text"><b>【技能工资】</b></p>', unsafe_allow_html=True)
+    if skill_details:
+        # 构建横向显示：A:200 + B:100 = 300元
+        parts = [f"{sd['name']}:{sd['salary']:.0f}" for sd in skill_details]
+        skill_line = " + ".join(parts) + f" = **{skill_salary:.0f}元**"
+        st.markdown(f'<p class="small-text">{skill_line}</p>', unsafe_allow_html=True)
     else:
-        st.markdown("**总工资 0**")
+        st.markdown('<p class="small-text">无技能 = 0元</p>', unsafe_allow_html=True)
+
+    # 绩效工资 - 一行显示
+    st.markdown('<p class="small-text"><b>【绩效工资】</b></p>', unsafe_allow_html=True)
+    if region_id == "region_002":
+        # 印中特殊：显示图纸+数码
+        mid_detail = result.get("mid_detail", {})
+        drawing = mid_detail.get("drawing", 0)
+        digital = mid_detail.get("digital", 0)
+        perf_line = f"图纸:{drawing:,.0f}分 + 数码:{digital:,.0f}分 = {score:,.0f}分 → 阶梯奖金:**{ladder_bonus:.0f}元**"
+    else:
+        perf_line = f"绩效分:{score:,.0f}分 → 阶梯奖金:**{ladder_bonus:.0f}元**"
+    st.markdown(f'<p class="small-text">{perf_line}</p>', unsafe_allow_html=True)
 
 
 def render():
@@ -66,191 +61,223 @@ def render():
         return
 
     # 按月份排序
-    calculations.sort(key=lambda x: x.get("month", ""), reverse=True)
+    calculations.sort(key=lambda x: x.get("month", "") or x.get("period", ""), reverse=True)
 
-    # 显示历史记录概览
-    st.subheader("计算历史")
+    # 获取月份列表（兼容month和period字段）
+    months = []
+    for c in calculations:
+        month = c.get("month") or c.get("period", "")
+        if month:
+            months.append(month)
 
-    overview_data = []
-    for calc in calculations:
-        is_locked = calc.get("locked", False)
-        locked_at = calc.get("locked_at", "")
-        overview_data.append({
-            "状态": "🔒 已锁定" if is_locked else "📝 未锁定",
-            "月份": calc.get("month", ""),
-            "计算时间": calc.get("calculated_at", ""),
-            "锁定时间": locked_at if is_locked else "-",
-            "员工人数": calc.get("employee_count", 0),
-            "工资总额": f"{calc.get('total_salary', 0):,.2f}"
-        })
+    # 选择月份
+    selected_month = st.selectbox("选择月份", options=months)
 
-    overview_df = pd.DataFrame(overview_data)
-    st.dataframe(overview_df, use_container_width=True, hide_index=True)
+    # 获取选中月份的数据（兼容month和period字段）
+    selected_calc = next(
+        (c for c in calculations if (c.get("month") or c.get("period")) == selected_month),
+        None
+    )
+
+    if not selected_calc:
+        st.warning("未找到该月份数据")
+        return
+
+    # 显示锁定状态和解锁按钮
+    is_locked = selected_calc.get("locked", False)
+
+    # 初始化解锁确认状态
+    if "confirm_unlock_month" not in st.session_state:
+        st.session_state.confirm_unlock_month = None
+
+    if is_locked:
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            st.success(f"🔒 「{selected_month}」已锁定（锁定时间：{selected_calc.get('locked_at', '')}）")
+        with col2:
+            if st.button("🔓 解锁", key="unlock_btn"):
+                st.session_state.confirm_unlock_month = selected_month
+
+        # 显示确认对话框
+        if st.session_state.confirm_unlock_month == selected_month:
+            st.warning("⚠️ 解锁后该月数据可被重新计算覆盖，确定要解锁吗？")
+            col_yes, col_no = st.columns(2)
+            with col_yes:
+                if st.button("确认解锁", key="confirm_unlock", type="primary"):
+                    if unlock_calculation(selected_month):
+                        st.session_state.confirm_unlock_month = None
+                        st.success("✅ 已解锁")
+                        st.rerun()
+                    else:
+                        st.error("解锁失败")
+            with col_no:
+                if st.button("取消", key="cancel_unlock"):
+                    st.session_state.confirm_unlock_month = None
+                    st.rerun()
+    else:
+        st.info(f"📝 「{selected_month}」未锁定，可在【绩效计算】页面重新计算")
 
     st.markdown("---")
 
-    # 选择查看详情
-    st.subheader("查看详情")
+    results = selected_calc.get("results", [])
+    regions = get_regions()
 
-    months = [c.get("month", "") for c in calculations]
-    selected_month = st.selectbox("选择月份", options=months)
+    if results:
+        # 弹窗宽度样式
+        st.markdown("""
+        <style>
+        /* 扩大弹窗宽度 */
+        div[data-testid="stModal"] > div {
+            max-width: 90vw !important;
+            width: 90vw !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
 
-    # 获取选中月份的数据
-    selected_calc = next((c for c in calculations if c.get("month") == selected_month), None)
+        # 构建表格数据
+        table_data = []
+        for r in results:
+            row = {
+                "期间": selected_month,
+                "员工ID": r.get("employee_id", ""),
+                "姓名": r.get("employee_name", ""),
+            }
 
-    if selected_calc:
-        # 显示锁定状态和解锁按钮
-        is_locked = selected_calc.get("locked", False)
+            for region in regions:
+                region_id = region["id"]
+                region_name = region["name"]
+                if region_id in r.get("regions", {}):
+                    rd = r["regions"][region_id]
+                    row[f"{region_name}绩效"] = round(rd.get("score", 0))
+                    row[f"{region_name}金额"] = round(rd.get("total", 0))
+                else:
+                    row[f"{region_name}绩效"] = 0
+                    row[f"{region_name}金额"] = 0
 
-        # 初始化解锁确认状态
-        if "confirm_unlock_month" not in st.session_state:
-            st.session_state.confirm_unlock_month = None
+            row["总金额"] = round(r.get("total_salary", 0))
+            table_data.append(row)
 
-        if is_locked:
-            col1, col2 = st.columns([3, 1])
-            with col1:
-                st.success(f"🔒 「{selected_month}」已锁定（锁定时间：{selected_calc.get('locked_at', '')}）")
-            with col2:
-                if st.button("🔓 解锁", key="unlock_btn"):
-                    st.session_state.confirm_unlock_month = selected_month
+        df = pd.DataFrame(table_data)
 
-            # 显示确认对话框
-            if st.session_state.confirm_unlock_month == selected_month:
-                st.warning("⚠️ 解锁后该月数据可被重新计算覆盖，确定要解锁吗？")
-                col_yes, col_no = st.columns(2)
-                with col_yes:
-                    if st.button("确认解锁", key="confirm_unlock", type="primary"):
-                        if unlock_calculation(selected_month):
-                            st.session_state.confirm_unlock_month = None
-                            st.success("✅ 已解锁")
-                            st.rerun()
-                        else:
-                            st.error("解锁失败")
-                with col_no:
-                    if st.button("取消", key="cancel_unlock"):
-                        st.session_state.confirm_unlock_month = None
-                        st.rerun()
-        else:
-            st.info(f"📝 「{selected_month}」未锁定，可在【绩效计算】页面重新计算")
+        # 使用 st.dataframe 的行选择功能
+        st.markdown("**选择一行查看明细：**")
+        selection = st.dataframe(
+            df,
+            use_container_width=True,
+            hide_index=True,
+            on_select="rerun",
+            selection_mode="single-row"
+        )
 
-        results = selected_calc.get("results", [])
-        regions = get_regions()
+        # 处理行选择事件
+        if selection and selection.selection and selection.selection.rows:
+            row_idx = selection.selection.rows[0]
+            selected_result = results[row_idx]
+            emp_name = selected_result.get("employee_name", "")
 
-        if results:
-            # 构建表格数据
-            display_data = []
-            for r in results:
-                row = {"姓名": r.get("employee_name", "")}
-                for region in regions:
-                    region_id = region["id"]
-                    region_name = region["name"]
-                    if region_id in r.get("regions", {}):
-                        rd = r["regions"][region_id]
-                        row[f"{region_name}绩效分"] = rd.get("score", 0)
-                        row[f"{region_name}小计"] = rd.get("total", 0)
-                row["总工资"] = r.get("total_salary", 0)
-                display_data.append(row)
-
-            df = pd.DataFrame(display_data)
-
-            # 使用原生表格显示
-            st.dataframe(df, use_container_width=True, hide_index=True)
-
-            # 展开查看详情
             st.markdown("---")
-            st.subheader("查看明细")
+            st.markdown(f"### 📋 {emp_name} 的工资明细")
 
-            emp_names = [r.get("employee_name", "") for r in results]
-            selected_emp = st.selectbox("选择员工", options=emp_names, key="history_detail_emp")
+            # 显示区域选择和明细
+            region_options = ["总金额构成"] + [r["name"] for r in regions]
+            selected_region_name = st.selectbox("查看区域", options=region_options, key="history_region_select")
 
-            if selected_emp:
-                result = next((r for r in results if r.get("employee_name") == selected_emp), None)
-                if result:
-                    with st.expander(f"📋 {selected_emp} 的计算明细", expanded=True):
-                        detail_data = []
-                        total_parts = []
-                        for region in regions:
-                            region_id = region["id"]
-                            region_name = region["name"]
-                            if region_id in result.get("regions", {}):
-                                rd = result["regions"][region_id]
-                                score = rd.get("score", 0)
-                                skill_salary = rd.get("skill_salary", 0)
-                                ladder_bonus = rd.get("ladder_bonus", 0)
-                                total = rd.get("total", 0)
-                                status = "在岗" if rd.get("is_on_duty") else "不在岗"
-
-                                if total > 0:
-                                    detail_data.append({
-                                        "项目": f"{region_name}小计",
-                                        "计算公式": f"技能 {skill_salary:.0f} + 阶梯 {ladder_bonus:.0f}",
-                                        "绩效分": f"{score:,.0f}",
-                                        "状态": status,
-                                        "金额": f"{total:.0f}"
-                                    })
-                                    total_parts.append(f"{region_name} {total:.0f}")
-
-                        if detail_data:
-                            detail_df = pd.DataFrame(detail_data)
-                            st.dataframe(detail_df, use_container_width=True, hide_index=True)
-
-                            total_formula = " + ".join(total_parts)
-                            st.markdown(f"**总工资 {result.get('total_salary', 0):.2f}** = {total_formula}")
-                        else:
-                            st.info("该员工无绩效数据")
-
-            # 统计信息
-            col1, col2, col3 = st.columns(3)
-            total = sum(r.get("total_salary", 0) for r in results)
-            with col1:
-                st.metric("总人数", len(results))
-            with col2:
-                st.metric("工资总额", f"{total:,.2f}")
-            with col3:
-                avg = total / len(results) if results else 0
-                st.metric("人均工资", f"{avg:,.2f}")
-
-            # 导出功能
-            st.markdown("---")
-
-            # 准备导出数据
-            export_data = []
-            for r in results:
-                row = {
-                    "员工ID": r.get("employee_id", ""),
-                    "姓名": r.get("employee_name", ""),
-                    "月份": selected_month,
-                }
-
+            if selected_region_name == "总金额构成":
+                # 显示总金额构成
+                total_salary = selected_result.get("total_salary", 0)
+                parts = []
                 for region in regions:
-                    region_id = region["id"]
-                    region_name = region["name"]
-                    if region_id in r.get("regions", {}):
-                        rd = r["regions"][region_id]
-                        row[f"{region_name}_绩效分"] = rd.get("score", 0)
-                        row[f"{region_name}_在岗"] = "是" if rd.get("is_on_duty") else "否"
-                        row[f"{region_name}_技能工资"] = rd.get("skill_salary", 0)
-                        row[f"{region_name}_阶梯奖金"] = rd.get("ladder_bonus", 0)
-                        row[f"{region_name}_小计"] = rd.get("total", 0)
+                    rd = selected_result.get("regions", {}).get(region["id"], {})
+                    amount = rd.get("total", 0)
+                    if amount > 0:
+                        parts.append(f"{region['name']}:{amount:.0f}")
+                if parts:
+                    line = " + ".join(parts) + f" = **{total_salary:.0f}元**"
+                    st.markdown(line)
+                st.markdown(f"**总计：¥{total_salary:,.2f}**")
+            else:
+                # 显示指定区域的明细
+                region = next((r for r in regions if r["name"] == selected_region_name), None)
+                if region:
+                    rd = selected_result.get("regions", {}).get(region["id"], {})
+                    region_total = rd.get("total", 0)
+                    display_region_detail(region, rd, selected_result)
+                    st.markdown("---")
+                    st.markdown(f"**{selected_region_name}合计：¥{region_total:,.2f}**")
 
-                row["总工资"] = r.get("total_salary", 0)
-                export_data.append(row)
+        # 统计信息
+        st.markdown("---")
+        col1, col2, col3 = st.columns(3)
+        total = sum(r.get("total_salary", 0) for r in results)
+        with col1:
+            st.metric("总人数", len(results))
+        with col2:
+            st.metric("工资总额", f"¥{total:,.2f}")
+        with col3:
+            avg = total / len(results) if results else 0
+            st.metric("人均工资", f"¥{avg:,.2f}")
 
-            export_df = pd.DataFrame(export_data)
+        # 导出功能
+        st.markdown("---")
 
-            # 生成Excel
-            buffer = io.BytesIO()
-            with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
-                export_df.to_excel(writer, sheet_name=f'{selected_month}绩效工资', index=False)
+        # 准备导出数据
+        export_data = []
+        for r in results:
+            row = {
+                "员工ID": r.get("employee_id", ""),
+                "姓名": r.get("employee_name", ""),
+                "月份": selected_month,
+            }
 
-            buffer.seek(0)
+            for region in regions:
+                region_id = region["id"]
+                region_name = region["name"]
+                if region_id in r.get("regions", {}):
+                    rd = r["regions"][region_id]
+                    row[f"{region_name}_绩效分"] = rd.get("score", 0)
+                    row[f"{region_name}_在岗"] = "是" if rd.get("is_on_duty") else "否"
+                    row[f"{region_name}_技能工资"] = rd.get("skill_salary", 0)
+                    row[f"{region_name}_阶梯奖金"] = rd.get("ladder_bonus", 0)
+                    row[f"{region_name}_小计"] = rd.get("total", 0)
 
-            st.download_button(
-                label="📥 导出Excel",
-                data=buffer,
-                file_name=f"绩效工资_{selected_month}.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            )
+            row["总工资"] = r.get("total_salary", 0)
+            export_data.append(row)
+
+        export_df = pd.DataFrame(export_data)
+
+        # 生成Excel
+        buffer = io.BytesIO()
+        with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
+            export_df.to_excel(writer, sheet_name=f'{selected_month}绩效工资', index=False)
+
+        buffer.seek(0)
+
+        st.download_button(
+            label="📥 导出Excel",
+            data=buffer,
+            file_name=f"绩效工资_{selected_month}.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+
+    # 计算历史（折叠面板）
+    st.markdown("---")
+    with st.expander(f"📋 计算历史（共{len(calculations)}条）", expanded=False):
+        overview_data = []
+        for calc in calculations:
+            is_locked_item = calc.get("locked", False)
+            locked_at = calc.get("locked_at", "")
+            month = calc.get("month") or calc.get("period", "")
+            overview_data.append({
+                "状态": "🔒 已锁定" if is_locked_item else "📝 未锁定",
+                "月份": month,
+                "计算时间": calc.get("calculated_at", ""),
+                "锁定时间": locked_at if is_locked_item else "-",
+                "员工人数": calc.get("employee_count", 0),
+                "工资总额": f"{calc.get('total_salary', 0):,.2f}"
+            })
+
+        overview_df = pd.DataFrame(overview_data)
+        st.dataframe(overview_df, use_container_width=True, hide_index=True)
 
     # 月度对比功能
     st.markdown("---")
@@ -270,8 +297,8 @@ def render():
             )
 
         if compare_month1 and compare_month2 and compare_month1 != compare_month2:
-            calc1 = next((c for c in calculations if c.get("month") == compare_month1), None)
-            calc2 = next((c for c in calculations if c.get("month") == compare_month2), None)
+            calc1 = next((c for c in calculations if (c.get("month") or c.get("period")) == compare_month1), None)
+            calc2 = next((c for c in calculations if (c.get("month") or c.get("period")) == compare_month2), None)
 
             if calc1 and calc2:
                 col1, col2, col3 = st.columns(3)
