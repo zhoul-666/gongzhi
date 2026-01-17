@@ -43,122 +43,80 @@ def render():
         st.info("暂无方案，请点击上方创建新方案")
         return
 
-    for scheme in schemes:
+    # 两列布局
+    cols = st.columns(2)
+    for idx, scheme in enumerate(schemes):
         is_active = scheme.get("is_active", False)
         scheme_id = scheme["id"]
 
-        # 方案卡片
-        with st.container():
-            # 标题行
-            col1, col2, col3 = st.columns([4, 2, 2])
-
-            with col1:
+        with cols[idx % 2]:
+            with st.container(border=True):
+                # 标题和状态
                 status_icon = "✅" if is_active else "○"
-                st.markdown(f"#### {status_icon} {scheme['name']}")
+                st.markdown(f"**{status_icon} {scheme['name']}**")
+
+                if is_active:
+                    st.caption("当前使用中")
                 if scheme.get("description"):
                     st.caption(scheme["description"])
 
-            with col2:
-                st.caption(f"创建：{scheme.get('created_at', '-')[:10]}")
-                st.caption(f"更新：{scheme.get('updated_at', '-')[:10]}")
+                st.caption(f"更新: {scheme.get('updated_at', '-')[:10]}")
 
-            with col3:
+                # 按钮行
                 if is_active:
-                    st.markdown('<span style="color: #4caf50; font-weight: bold;">当前使用中</span>', unsafe_allow_html=True)
+                    c1, c2 = st.columns(2)
+                    with c1:
+                        if st.button("更新快照", key=f"update_{scheme_id}", use_container_width=True):
+                            update_scheme_snapshot(scheme_id)
+                            st.success("快照已更新")
+                            st.rerun()
+                    with c2:
+                        if st.button("重命名", key=f"rename_{scheme_id}", use_container_width=True):
+                            st.session_state[f"editing_{scheme_id}"] = True
+                else:
+                    c1, c2, c3 = st.columns(3)
+                    with c1:
+                        if st.button("切换", key=f"switch_{scheme_id}", use_container_width=True):
+                            load_scheme_to_current(scheme_id)
+                            st.success(f"已切换到：{scheme['name']}")
+                            st.rerun()
+                    with c2:
+                        if st.button("重命名", key=f"rename_{scheme_id}", use_container_width=True):
+                            st.session_state[f"editing_{scheme_id}"] = True
+                    with c3:
+                        if st.button("删除", key=f"delete_{scheme_id}", use_container_width=True):
+                            st.session_state[f"confirm_delete_{scheme_id}"] = True
 
-            # 操作按钮
-            col1, col2, col3, col4 = st.columns(4)
-
-            with col1:
-                if not is_active:
-                    if st.button("切换到此方案", key=f"switch_{scheme_id}"):
-                        load_scheme_to_current(scheme_id)
-                        st.success(f"已切换到：{scheme['name']}")
-                        st.rerun()
-
-            with col2:
-                if st.button("重命名", key=f"rename_{scheme_id}"):
-                    st.session_state[f"editing_{scheme_id}"] = True
-
-            with col3:
-                if is_active:
-                    if st.button("更新快照", key=f"update_{scheme_id}", help="将当前配置保存到此方案"):
-                        update_scheme_snapshot(scheme_id)
-                        st.success("快照已更新")
-                        st.rerun()
-
-            with col4:
-                if not is_active:
-                    if st.button("删除", key=f"delete_{scheme_id}"):
-                        st.session_state[f"confirm_delete_{scheme_id}"] = True
-
-            # 重命名对话框
-            if st.session_state.get(f"editing_{scheme_id}"):
-                with st.container():
+                # 重命名对话框
+                if st.session_state.get(f"editing_{scheme_id}"):
                     new_name = st.text_input("新名称", value=scheme["name"], key=f"new_name_{scheme_id}")
                     new_desc = st.text_input("新描述", value=scheme.get("description", ""), key=f"new_desc_{scheme_id}")
-                    col1, col2 = st.columns(2)
-                    with col1:
-                        if st.button("确定", key=f"confirm_rename_{scheme_id}"):
+                    bc1, bc2 = st.columns(2)
+                    with bc1:
+                        if st.button("确定", key=f"confirm_rename_{scheme_id}", use_container_width=True):
                             update_scheme_info(scheme_id, {"name": new_name, "description": new_desc})
                             st.session_state[f"editing_{scheme_id}"] = False
                             st.success("已更新")
                             st.rerun()
-                    with col2:
-                        if st.button("取消", key=f"cancel_rename_{scheme_id}"):
+                    with bc2:
+                        if st.button("取消", key=f"cancel_rename_{scheme_id}", use_container_width=True):
                             st.session_state[f"editing_{scheme_id}"] = False
                             st.rerun()
 
-            # 删除确认对话框
-            if st.session_state.get(f"confirm_delete_{scheme_id}"):
-                st.warning(f"确定要删除方案「{scheme['name']}」吗？此操作不可恢复！")
-                col1, col2 = st.columns(2)
-                with col1:
-                    if st.button("确定删除", key=f"do_delete_{scheme_id}"):
-                        delete_scheme(scheme_id)
-                        st.session_state[f"confirm_delete_{scheme_id}"] = False
-                        st.success("已删除")
-                        st.rerun()
-                with col2:
-                    if st.button("取消", key=f"cancel_delete_{scheme_id}"):
-                        st.session_state[f"confirm_delete_{scheme_id}"] = False
-                        st.rerun()
-
-            # 方案详情预览
-            with st.expander("查看方案详情", expanded=False):
-                snapshot = scheme.get("snapshot")
-                if snapshot:
-                    col1, col2, col3 = st.columns(3)
-
-                    with col1:
-                        st.markdown("**技能工资设置**")
-                        skills = snapshot.get("skills", [])
-                        if skills:
-                            for skill in skills[:5]:
-                                st.caption(f"• {skill['name']}: {skill.get('salary_on_duty', 0)}/{skill.get('salary_off_duty', 0)}")
-                            if len(skills) > 5:
-                                st.caption(f"...共 {len(skills)} 项")
-                        else:
-                            st.caption("无数据")
-
-                    with col2:
-                        st.markdown("**区域阶梯规则**")
-                        regions = snapshot.get("regions", [])
-                        if regions:
-                            for region in regions:
-                                rules = region.get("ladder_rules", [])
-                                st.caption(f"• {region['name']}: {len(rules)} 条规则")
-                        else:
-                            st.caption("无数据")
-
-                    with col3:
-                        st.markdown("**员工技能指派**")
-                        emp_skills = snapshot.get("employee_skills", [])
-                        st.caption(f"共 {len(emp_skills)} 条指派记录")
-                else:
-                    st.caption("此方案尚未保存快照")
-
-            st.markdown("---")
+                # 删除确认对话框
+                if st.session_state.get(f"confirm_delete_{scheme_id}"):
+                    st.warning(f"确定删除「{scheme['name']}」？")
+                    dc1, dc2 = st.columns(2)
+                    with dc1:
+                        if st.button("确定删除", key=f"do_delete_{scheme_id}", use_container_width=True):
+                            delete_scheme(scheme_id)
+                            st.session_state[f"confirm_delete_{scheme_id}"] = False
+                            st.success("已删除")
+                            st.rerun()
+                    with dc2:
+                        if st.button("取消", key=f"cancel_delete_{scheme_id}", use_container_width=True):
+                            st.session_state[f"confirm_delete_{scheme_id}"] = False
+                            st.rerun()
 
     # 使用说明
     with st.expander("💡 使用说明", expanded=False):
