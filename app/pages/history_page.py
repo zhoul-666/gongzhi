@@ -1,12 +1,13 @@
 """
 历史查询页面 - 查看往月绩效数据
-样式与绩效计算页面统一，支持行选择查看明细
+样式与绩效计算页面统一，支持单元格点击查看明细
 """
 import streamlit as st
 import pandas as pd
 import io
 import sys
 from pathlib import Path
+from st_table_select_cell import st_table_select_cell
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from app.data_manager import get_regions, load_json, unlock_calculation
@@ -45,6 +46,55 @@ def display_region_detail(region: dict, rd: dict, result: dict):
     else:
         perf_line = f"绩效分:{score:,.0f}分 → 阶梯奖金:**{ladder_bonus:.0f}元**"
     st.markdown(f'<p class="small-text">{perf_line}</p>', unsafe_allow_html=True)
+
+
+@st.dialog("绩效明细", width="small")
+def show_detail_dialog():
+    """显示员工指定区域的工资明细弹窗 - 紧凑版"""
+    result = st.session_state.get("dialog_result", {})
+    clicked_region = st.session_state.get("dialog_region")
+    regions = get_regions()
+
+    emp_name = result.get("employee_name", "")
+    region = next((r for r in regions if r["id"] == clicked_region), None)
+
+    if region:
+        rd = result.get("regions", {}).get(clicked_region, {})
+        region_total = rd.get("total", 0)
+
+        st.markdown(f"**{emp_name} - {region['name']}**")
+        display_region_detail(region, rd, result)
+        st.markdown("---")
+        st.markdown(f"**合计：¥{region_total:,.2f}**")
+
+
+@st.dialog("总金额明细", width="small")
+def show_total_dialog():
+    """显示员工总金额构成弹窗 - 紧凑版"""
+    result = st.session_state.get("dialog_result", {})
+    regions = get_regions()
+
+    emp_name = result.get("employee_name", "")
+    total_salary = result.get("total_salary", 0)
+
+    st.markdown(f"**{emp_name} - 总金额构成**")
+
+    # 构建横向显示，只显示金额>0的区域
+    parts = []
+    for region in regions:
+        rd = result.get("regions", {}).get(region["id"], {})
+        amount = rd.get("total", 0)
+        if amount > 0:
+            parts.append(f"{region['name']}:{amount:.0f}")
+
+    if parts:
+        line = " + ".join(parts) + f" = **{total_salary:.0f}元**"
+        st.markdown(f'<p style="font-size:0.9em;">{line}</p>', unsafe_allow_html=True)
+    else:
+        st.markdown("无数据")
+
+    st.markdown("---")
+    st.markdown(f"**总计：¥{total_salary:,.2f}**")
 
 
 def render():
@@ -93,7 +143,9 @@ def render():
     if is_locked:
         col1, col2 = st.columns([3, 1])
         with col1:
-            st.success(f"🔒 「{selected_month}」已锁定（锁定时间：{selected_calc.get('locked_at', '')}）")
+            locked_scheme = selected_calc.get('locked_scheme_name', '')
+            scheme_info = f"，方案：{locked_scheme}" if locked_scheme else ""
+            st.success(f"🔒 「{selected_month}」已锁定（锁定时间：{selected_calc.get('locked_at', '')}{scheme_info}）")
         with col2:
             if st.button("🔓 解锁", key="unlock_btn"):
                 st.session_state.confirm_unlock_month = selected_month
@@ -159,51 +211,51 @@ def render():
 
         df = pd.DataFrame(table_data)
 
-        # 使用 st.dataframe 的行选择功能
-        st.markdown("**选择一行查看明细：**")
-        selection = st.dataframe(
-            df,
-            use_container_width=True,
-            hide_index=True,
-            on_select="rerun",
-            selection_mode="single-row"
-        )
+        # 使用 st_table_select_cell 支持单元格点击
+        st.markdown("**点击金额列查看该区域明细：**")
 
-        # 处理行选择事件
-        if selection and selection.selection and selection.selection.rows:
-            row_idx = selection.selection.rows[0]
-            selected_result = results[row_idx]
-            emp_name = selected_result.get("employee_name", "")
+        # 构建列名到区域ID的映射
+        col_to_region = {}
+        for region in regions:
+            col_to_region[f"{region['name']}金额"] = region["id"]
+        col_to_region["总金额"] = "total"
 
-            st.markdown("---")
-            st.markdown(f"### 📋 {emp_name} 的工资明细")
+        # 获取所有列名
+        columns = df.columns.tolist()
 
-            # 显示区域选择和明细
-            region_options = ["总金额构成"] + [r["name"] for r in regions]
-            selected_region_name = st.selectbox("查看区域", options=region_options, key="history_region_select")
+        # 使用 st_table_select_cell 组件
+        cell_clicked = st_table_select_cell(df)
 
-            if selected_region_name == "总金额构成":
-                # 显示总金额构成
-                total_salary = selected_result.get("total_salary", 0)
-                parts = []
-                for region in regions:
-                    rd = selected_result.get("regions", {}).get(region["id"], {})
-                    amount = rd.get("total", 0)
-                    if amount > 0:
-                        parts.append(f"{region['name']}:{amount:.0f}")
-                if parts:
-                    line = " + ".join(parts) + f" = **{total_salary:.0f}元**"
-                    st.markdown(line)
-                st.markdown(f"**总计：¥{total_salary:,.2f}**")
-            else:
-                # 显示指定区域的明细
-                region = next((r for r in regions if r["name"] == selected_region_name), None)
-                if region:
-                    rd = selected_result.get("regions", {}).get(region["id"], {})
-                    region_total = rd.get("total", 0)
-                    display_region_detail(region, rd, selected_result)
-                    st.markdown("---")
-                    st.markdown(f"**{selected_region_name}合计：¥{region_total:,.2f}**")
+        # 处理单元格点击事件 - 使用 session_state 避免重复触发
+        if cell_clicked:
+            # 生成唯一标识符来判断是否是新的点击
+            click_key = f"{cell_clicked.get('rowId')}_{cell_clicked.get('colIndex')}_{selected_month}"
+            last_click_key = st.session_state.get("history_last_click_key")
+
+            # 只有当是新的点击时才触发弹窗
+            if click_key != last_click_key:
+                st.session_state.history_last_click_key = click_key
+
+                row_idx = int(cell_clicked.get("rowId", 0))
+                col_idx = cell_clicked.get("colIndex")
+
+                if col_idx is not None and row_idx < len(results):
+                    col_name = columns[col_idx] if col_idx < len(columns) else None
+
+                    # 只有点击金额列才弹窗
+                    if col_name in col_to_region:
+                        selected_result = results[row_idx]
+                        clicked_region_id = col_to_region[col_name]
+
+                        # 存储数据到 session_state
+                        st.session_state.dialog_result = selected_result
+                        st.session_state.dialog_region = clicked_region_id
+
+                        # 调用弹窗
+                        if clicked_region_id == "total":
+                            show_total_dialog()
+                        else:
+                            show_detail_dialog()
 
         # 统计信息
         st.markdown("---")

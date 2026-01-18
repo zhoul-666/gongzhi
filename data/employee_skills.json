@@ -161,28 +161,248 @@
       "created_at": "2026-01-03 16:14:48"
     },
     {
-      "employee_id": "emp_0002",
-      "skill_id": "skill_016",
-      "passed_exam": false,
-      "use_system_threshold": true,
-      "custom_threshold": null,
-      "created_at": "2026-01-03 16:32:26"
-    },
-    {
-      "employee_id": "emp_0002",
-      "skill_id": "skill_011",
-      "passed_exam": false,
-      "use_system_threshold": true,
-      "custom_threshold": null,
-      "created_at": "2026-01-03 16:34:21"
-    },
-    {
       "employee_id": "emp_0001",
       "skill_id": "skill_030",
-      "passed_exam": false,
+      "passed_exam": true,
       "use_system_threshold": false,
       "custom_threshold": 30000,
       "created_at": "2026-01-03 17:16:47"
+    },
+    {
+      "employee_id": "emp_0001",
+      "skill_id": "skill_031",
+      "passed_exam": true,
+      "use_system_threshold": true,
+      "custom_threshold": null,
+      "created_at": "2026-01-05 20:12:20",
+      "use_system_price": true,
+      "custom_price_on_duty": null
+    },
+    {
+      "employee_id": "emp_0001",
+      "skill_id": "skill_033",
+      "passed_exam": true,
+      "use_system_threshold": true,
+      "custom_threshold": null,
+      "created_at": "2026-01-05 20:12:21"
+    },
+    {
+      "employee_id": "emp_0001",
+      "skill_id": "skill_032",
+      "passed_exam": false,
+      "use_system_threshold": true,
+      "custom_threshold": null,
+      "created_at": "2026-01-05 20:12:22"
+    },
+    {
+      "employee_id": "emp_0001",
+      "skill_id": "skill_034",
+      "passed_exam": false,
+      "use_system_threshold": true,
+      "custom_threshold": null,
+      "created_at": "2026-01-05 20:12:23"
+    },
+    {
+      "employee_id": "emp_0001",
+      "skill_id": "skill_036",
+      "passed_exam": false,
+      "use_system_threshold": true,
+      "custom_threshold": null,
+      "created_at": "2026-01-05 20:12:24"
+    },
+    {
+      "employee_id": "emp_0001",
+      "skill_id": "skill_040",
+      "passed_exam": false,
+      "use_system_threshold": true,
+      "custom_threshold": null,
+      "created_at": "2026-01-05 20:12:25"
+    },
+    {
+      "employee_id": "emp_0001",
+      "skill_id": "skill_035",
+      "passed_exam": false,
+      "use_system_threshold": true,
+      "custom_threshold": null,
+      "created_at": "2026-01-05 22:57:24"
+    },
+    {
+      "employee_id": "emp_0001",
+      "skill_id": "skill_037",
+      "passed_exam": false,
+      "use_system_threshold": false,
+      "custom_threshold": 30000,
+      "created_at": "2026-01-05 22:57:25"
+    },
+    {
+      "employee_id": "emp_0001",
+      "skill_id": "skill_038",
+      "passed_exam": false,
+      "use_system_threshold": true,
+      "custom_threshold": null,
+      "created_at": "2026-01-05 22:57:28"
+    },
+    {
+      "employee_id": "emp_0001",
+      "skill_id": "skill_039",
+      "passed_exam": false,
+      "use_system_threshold": true,
+      "custom_threshold": null,
+      "created_at": "2026-01-05 22:57:28"
+    },
+    {
+      "employee_id": "emp_0001",
+      "skill_id": "skill_041",
+      "passed_exam": false,
+      "use_system_threshold": true,
+      "custom_threshold": null,
+      "created_at": "2026-01-05 22:57:28"
+    },
+    {
+      "employee_id": "emp_0001",
+      "skill_id": "skill_042",
+      "passed_exam": false,
+      "use_system_threshold": false,
+      "custom_threshold": 50000,
+      "created_at": "2026-01-05 22:57:28"
+    },
+    {
+      "employee_id": "emp_0001",
+      "skill_id": "skill_043",
+      "passed_exam": false,
+      "use_system_threshold": true,
+      "custom_threshold": null,
+      "created_at": "2026-01-05 22:57:28"
+    },
+    {
+      "employee_id": "emp_0001",
+      "skill_id": "skill_044",
+      "passed_exam": false,
+      "use_system_threshold": true,
+      "custom_threshold": null,
+      "created_at": "2026-01-05 22:57:28"
+    },
+    {
+      "employee_id": "emp_0001",
+      "skill_id": "skill_045",
+      "passed_exam": false,
+      "use_system_threshold": true,
+      "custom_threshold": null,
+      "created_at": "2026-01-05 22:57:28"
+    },
+    {
+      "employee_id": "emp_0001",
+      "skill_id": "skill_046",
+      "passed_exam": false,
+      "use_system_threshold": true,
+      "custom_threshold": null,
+      "created_at": "2026-01-05 22:57:28"
+    },
+    {
+      "employee_id": "emp_0001",
+      "skill_id": "skill_047",
+      "passed_exam": false,
+      "use_system_threshold": true,
+      "custom_threshold": null,
+      "created_at": "2026-01-05 22:57:28"
+    },
+    {
+      "employee_id": "emp_0001",
+      "skill_id": "skill_048",
+      "passed_exam": true,
+      "use_system_threshold": false,
+      "custom_threshold": 0,
+      "created_at": "2026-01-05 22:57:28"
+    },
+    {
+      "employee_id": "emp_0005",
+      "skill_id": "skill_001",
+      "passed_exam": false,
+      "use_system_threshold": true,
+      "custom_threshold": null,
+      "use_system_price": true,
+      "custom_price_on_duty": null,
+      "created_at": "2026-01-05 23:26:14"
+    },
+    {
+      "employee_id": "emp_0003",
+      "skill_id": "skill_012",
+      "passed_exam": false,
+      "use_system_threshold": true,
+      "custom_threshold": null,
+      "use_system_price": true,
+      "custom_price_on_duty": null,
+      "created_at": "2026-01-05 23:29:18"
+    },
+    {
+      "employee_id": "emp_0005",
+      "skill_id": "skill_002",
+      "passed_exam": false,
+      "use_system_threshold": true,
+      "custom_threshold": null,
+      "use_system_price": true,
+      "custom_price_on_duty": null,
+      "created_at": "2026-01-07 22:56:49"
+    },
+    {
+      "employee_id": "emp_0005",
+      "skill_id": "skill_003",
+      "passed_exam": false,
+      "use_system_threshold": true,
+      "custom_threshold": null,
+      "use_system_price": true,
+      "custom_price_on_duty": null,
+      "created_at": "2026-01-07 22:56:53"
+    },
+    {
+      "employee_id": "emp_0004",
+      "skill_id": "skill_021",
+      "passed_exam": false,
+      "use_system_threshold": true,
+      "custom_threshold": null,
+      "use_system_price": true,
+      "custom_price_on_duty": null,
+      "created_at": "2026-01-12 22:56:41"
+    },
+    {
+      "employee_id": "emp_0004",
+      "skill_id": "skill_022",
+      "passed_exam": false,
+      "use_system_threshold": true,
+      "custom_threshold": null,
+      "use_system_price": true,
+      "custom_price_on_duty": null,
+      "created_at": "2026-01-12 22:56:41"
+    },
+    {
+      "employee_id": "emp_0004",
+      "skill_id": "skill_024",
+      "passed_exam": false,
+      "use_system_threshold": true,
+      "custom_threshold": null,
+      "use_system_price": true,
+      "custom_price_on_duty": null,
+      "created_at": "2026-01-12 22:56:41"
+    },
+    {
+      "employee_id": "emp_0004",
+      "skill_id": "skill_025",
+      "passed_exam": false,
+      "use_system_threshold": true,
+      "custom_threshold": null,
+      "use_system_price": true,
+      "custom_price_on_duty": null,
+      "created_at": "2026-01-12 22:56:41"
+    },
+    {
+      "employee_id": "emp_0004",
+      "skill_id": "skill_028",
+      "passed_exam": false,
+      "use_system_threshold": true,
+      "custom_threshold": null,
+      "use_system_price": true,
+      "custom_price_on_duty": null,
+      "created_at": "2026-01-12 22:56:41"
     }
   ]
 }

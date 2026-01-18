@@ -7,6 +7,7 @@ import sys
 import io
 from pathlib import Path
 from datetime import datetime
+from st_table_select_cell import st_table_select_cell
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from app.data_manager import (
@@ -382,51 +383,43 @@ def display_results_v3(results: list, period: str):
 
     df = pd.DataFrame(table_data)
 
-    # 使用 st.dataframe 的行选择功能
-    st.markdown("**选择一行查看明细：**")
-    selection = st.dataframe(
-        df,
-        use_container_width=True,
-        hide_index=True,
-        on_select="rerun",
-        selection_mode="single-row"
-    )
+    # 使用 st_table_select_cell 支持单元格点击
+    st.markdown("**点击金额列查看该区域明细：**")
 
-    # 处理行选择事件
-    if selection and selection.selection and selection.selection.rows:
-        row_idx = selection.selection.rows[0]
-        selected_result = results[row_idx]
-        emp_name = selected_result.get("employee_name", "")
+    # 构建列名到区域ID的映射
+    col_to_region = {}
+    for region in regions:
+        col_to_region[f"{region['name']}金额"] = region["id"]
+    col_to_region["总金额"] = "total"
 
-        st.markdown("---")
-        st.markdown(f"### 📋 {emp_name} 的工资明细")
+    # 获取所有列名
+    columns = df.columns.tolist()
 
-        # 显示区域选择和明细
-        region_options = ["总金额构成"] + [r["name"] for r in regions]
-        selected_region_name = st.selectbox("查看区域", options=region_options, key="calc_region_select")
+    # 使用 st_table_select_cell 组件
+    cell_clicked = st_table_select_cell(df)
 
-        if selected_region_name == "总金额构成":
-            # 显示总金额构成
-            total_salary = selected_result.get("total_salary", 0)
-            parts = []
-            for region in regions:
-                rd = selected_result.get("regions", {}).get(region["id"], {})
-                amount = rd.get("total", 0)
-                if amount > 0:
-                    parts.append(f"{region['name']}:{amount:.0f}")
-            if parts:
-                line = " + ".join(parts) + f" = **{total_salary:.0f}元**"
-                st.markdown(line)
-            st.markdown(f"**总计：¥{total_salary:,.2f}**")
-        else:
-            # 显示指定区域的明细
-            region = next((r for r in regions if r["name"] == selected_region_name), None)
-            if region:
-                rd = selected_result.get("regions", {}).get(region["id"], {})
-                region_total = rd.get("total", 0)
-                display_region_detail(region, rd, selected_result)
-                st.markdown("---")
-                st.markdown(f"**{selected_region_name}合计：¥{region_total:,.2f}**")
+    # 处理单元格点击事件
+    if cell_clicked:
+        row_idx = int(cell_clicked.get("rowId", 0))
+        col_idx = cell_clicked.get("colIndex")
+
+        if col_idx is not None and row_idx < len(results):
+            col_name = columns[col_idx] if col_idx < len(columns) else None
+
+            # 只有点击金额列才弹窗
+            if col_name in col_to_region:
+                selected_result = results[row_idx]
+                clicked_region_id = col_to_region[col_name]
+
+                # 存储数据到 session_state
+                st.session_state.dialog_result = selected_result
+                st.session_state.dialog_region = clicked_region_id
+
+                # 调用弹窗
+                if clicked_region_id == "total":
+                    show_total_dialog()
+                else:
+                    show_detail_dialog()
 
     # 导出Excel
     st.markdown("---")

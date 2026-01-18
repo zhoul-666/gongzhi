@@ -629,7 +629,8 @@ def is_calculation_locked(month: str) -> bool:
     calculations = data.get("calculations", [])
 
     for calc in calculations:
-        if calc.get("month") == month:
+        # 兼容 month 和 period 字段
+        if calc.get("month") == month or calc.get("period") == month:
             return calc.get("locked", False)
     return False
 
@@ -643,14 +644,18 @@ def lock_calculation(month: str) -> bool:
     calculations = data.get("calculations", [])
 
     for calc in calculations:
-        if calc.get("month") == month:
+        # 兼容 month 和 period 字段
+        if calc.get("month") == month or calc.get("period") == month:
             calc["locked"] = True
             calc["locked_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            active_scheme = get_active_scheme()
+            if active_scheme:
+                calc["locked_scheme_name"] = active_scheme.get("name", "")
             save_json("calculation_history.json", data, backup=False)
-            print(f"[锁定] 已锁定月份: {month}")
+            print(f"[锁定] 已锁定: {month}")
             return True
 
-    print(f"[错误] 未找到该月份记录: {month}")
+    print(f"[错误] 未找到记录: {month}")
     return False
 
 
@@ -663,14 +668,15 @@ def unlock_calculation(month: str) -> bool:
     calculations = data.get("calculations", [])
 
     for calc in calculations:
-        if calc.get("month") == month:
+        # 兼容 month 和 period 字段
+        if calc.get("month") == month or calc.get("period") == month:
             calc["locked"] = False
             calc.pop("locked_at", None)
             save_json("calculation_history.json", data, backup=False)
-            print(f"[解锁] 已解锁月份: {month}")
+            print(f"[解锁] 已解锁: {month}")
             return True
 
-    print(f"[错误] 未找到该月份记录: {month}")
+    print(f"[错误] 未找到记录: {month}")
     return False
 
 
