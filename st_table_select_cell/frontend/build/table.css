@@ -1,0 +1,35 @@
+/* 使用 Streamlit 主题变量，自动适配浅色/深色主题 */
+table {
+    font-family: var(--font, "Trebuchet MS", Arial, Helvetica, sans-serif);
+    border-collapse: collapse;
+    width: 100%;
+    padding-bottom: 12px;
+    background-color: var(--background-color, #ffffff);
+    color: var(--text-color, #000000);
+}
+
+table td,
+table th {
+    border: 1px solid var(--secondary-background-color, #ddd);
+    padding: 8px;
+    color: var(--text-color, #000000);
+    background-color: var(--background-color, #ffffff);
+}
+
+table tr:nth-child(even) td {
+    background-color: var(--secondary-background-color, #f2f2f2);
+}
+
+table tr:hover td {
+    background-color: var(--secondary-background-color, #ddd);
+    filter: brightness(0.95);
+}
+
+table th,
+tfoot td {
+    padding-top: 6px;
+    padding-bottom: 6px;
+    text-align: center;
+    background-color: var(--primary-color, #4caf50);
+    color: white;
+}

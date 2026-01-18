@@ -4,5 +4,4 @@ openpyxl>=3.0.0
 lxml>=4.9.0
 xlrd>=2.0.0
 streamlit-aggrid>=0.3.4
-# streamlit-table-select-cell>=0.3.4  # 原版有白底白字问题
-git+https://github.com/zhoul-666/st-table-select-cell.git
+# streamlit-table-select-cell>=0.3.4  # 原版有白底白字问题，已使用本地修复版
