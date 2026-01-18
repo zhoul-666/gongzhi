@@ -11,6 +11,47 @@
 """
 __version__ = "2.0.0"
 
+# ==================== 修复第三方库样式问题 ====================
+import os
+
+def fix_table_select_cell_style():
+    """修复 streamlit-table-select-cell 组件的白底白字问题
+
+    该组件在打包时硬编码了白色背景，导致在深色主题下不可见。
+    此函数在应用启动时自动检测并修复。
+    """
+    try:
+        import st_table_select_cell
+        js_dir = os.path.join(os.path.dirname(st_table_select_cell.__file__),
+                              'frontend/build/static/js')
+
+        # 查找 main.*.js 文件
+        for filename in os.listdir(js_dir):
+            if filename.startswith('main.') and filename.endswith('.js'):
+                js_path = os.path.join(js_dir, filename)
+
+                with open(js_path, 'r') as f:
+                    content = f.read()
+
+                # 检查是否已经修复过
+                if 'var(--background-color' in content:
+                    return  # 已修复
+
+                # 执行替换
+                content = content.replace('"white"', '"var(--background-color,white)"')
+                content = content.replace('#bbb', 'var(--secondary-background-color,#bbb)')
+                content = content.replace('"yellow"', '"#666"')
+
+                with open(js_path, 'w') as f:
+                    f.write(content)
+
+    except Exception as e:
+        pass  # 静默失败，不影响应用启动
+
+# 应用启动时执行修复
+fix_table_select_cell_style()
+
+# ==================== 主程序导入 ====================
 import streamlit as st
 import sys
 from pathlib import Path
