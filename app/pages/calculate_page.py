@@ -14,7 +14,9 @@ from app.data_manager import (
     get_employees, get_regions, get_skills,
     get_employee_skills, get_mode_by_id,
     save_json, load_json,
-    is_calculation_locked, lock_calculation
+    is_calculation_locked, lock_calculation,
+    get_roles, get_role_by_id, get_employee_threshold,
+    get_external_data, get_income_rules, get_bonus_pools
 )
 
 
@@ -46,18 +48,61 @@ def calculate_ladder_bonus(score: float, ladder_rules: list) -> float:
     return round(total_bonus, 2)
 
 
-def calculate_employee_salary(emp_id: str, emp_name: str, scores: dict, mid_detail: dict,
-                               regions: list, skills: list, emp_skills: list) -> dict:
+def get_employee_role_info(emp_id: str, employees: list) -> dict:
+    """获取员工的角色信息"""
+    emp = next((e for e in employees if e["id"] == emp_id), None)
+    if not emp:
+        return None
+
+    role_id = emp.get("role_id")
+    if not role_id:
+        return None
+
+    return get_role_by_id(role_id)
+
+
+def calculate_employee_threshold(emp_id: str, region_id: str, base_threshold: float, employees: list) -> float:
     """
-    计算单个员工的绩效工资
+    计算员工在指定区域的个性化达标线
+    优先级：员工自定义 > 角色倍率 > 区域默认值
+    """
+    emp = next((e for e in employees if e["id"] == emp_id), None)
+    if not emp:
+        return base_threshold
+
+    # 检查员工是否有自定义达标线
+    custom_settings = emp.get("custom_settings", {})
+    if custom_settings.get("custom_threshold"):
+        custom = custom_settings.get("thresholds", {}).get(region_id)
+        if custom is not None:
+            return custom
+
+    # 检查角色倍率
+    role_id = emp.get("role_id")
+    if role_id:
+        role = get_role_by_id(role_id)
+        if role:
+            multiplier = role.get("threshold_multiplier", 1.0)
+            return base_threshold * multiplier
+
+    return base_threshold
+
+
+def calculate_employee_salary(emp_id: str, emp_name: str, scores: dict, mid_detail: dict,
+                               regions: list, skills: list, emp_skills: list,
+                               employees: list = None, external_data: dict = None) -> dict:
+    """
+    计算单个员工的绩效工资（支持角色达标线和多元收入）
 
     返回:
     {
         "employee_id": ...,
         "employee_name": ...,
+        "role_name": ...,  # 新增：角色名称
         "regions": {
             "region_001": {
                 "score": 绩效分,
+                "threshold": 个性化达标线,  # 新增
                 "is_on_duty": 是否在岗,
                 "skill_salary": 技能工资,
                 "skill_details": [{"name": ..., "on_duty": ..., "salary": ...}],
@@ -67,14 +112,33 @@ def calculate_employee_salary(emp_id: str, emp_name: str, scores: dict, mid_deta
             ...
         },
         "mid_detail": {"drawing": ..., "digital": ...},
+        "extra_income": {...},  # 新增：额外收入明细
         "total_salary": 总工资
     }
     """
+    employees = employees or get_employees()
+    emp = next((e for e in employees if e["id"] == emp_id), None)
+
+    # 获取角色信息
+    role = None
+    role_name = "未指定"
+    income_types = ["skill_salary", "ladder_bonus"]  # 默认收入类型
+    role_settings = {}
+
+    if emp and emp.get("role_id"):
+        role = get_role_by_id(emp["role_id"])
+        if role:
+            role_name = role.get("name", "未指定")
+            income_types = role.get("income_types", income_types)
+            role_settings = role.get("settings", {})
+
     result = {
         "employee_id": emp_id,
         "employee_name": emp_name,
+        "role_name": role_name,
         "regions": {},
         "mid_detail": mid_detail or {"drawing": 0, "digital": 0},
+        "extra_income": {},
         "total_salary": 0
     }
 
@@ -86,8 +150,11 @@ def calculate_employee_salary(emp_id: str, emp_name: str, scores: dict, mid_deta
     for region in regions:
         region_id = region["id"]
         score = scores.get(region_id, 0)
-        threshold = region.get("threshold", 30000)
+        base_threshold = region.get("threshold", 30000)
         ladder_rules = region.get("ladder_rules", [])
+
+        # 计算个性化达标线
+        threshold = calculate_employee_threshold(emp_id, region_id, base_threshold, employees)
 
         # 判断是否在岗
         is_on_duty = score >= threshold
@@ -95,29 +162,33 @@ def calculate_employee_salary(emp_id: str, emp_name: str, scores: dict, mid_deta
         # 计算技能工资（记录明细）
         skill_salary = 0
         skill_details = []
-        region_skills = [s for s in skills if s.get("region_id") == region_id]
 
-        for skill in region_skills:
-            if skill["id"] in my_skill_ids:
-                es = next((e for e in my_skills if e["skill_id"] == skill["id"]), None)
-                if es and es.get("passed_exam", False):
-                    if is_on_duty:
-                        if es.get("use_system_price", True):
-                            salary = skill.get("salary_on_duty", 200)
+        if "skill_salary" in income_types:
+            region_skills = [s for s in skills if s.get("region_id") == region_id]
+
+            for skill in region_skills:
+                if skill["id"] in my_skill_ids:
+                    es = next((e for e in my_skills if e["skill_id"] == skill["id"]), None)
+                    if es and es.get("passed_exam", False):
+                        if is_on_duty:
+                            if es.get("use_system_price", True):
+                                salary = skill.get("salary_on_duty", 200)
+                            else:
+                                salary = es.get("custom_price_on_duty") or skill.get("salary_on_duty", 200)
                         else:
-                            salary = es.get("custom_price_on_duty") or skill.get("salary_on_duty", 200)
-                    else:
-                        salary = skill.get("salary_off_duty", 100)
+                            salary = skill.get("salary_off_duty", 100)
 
-                    skill_salary += salary
-                    skill_details.append({
-                        "name": skill["name"],
-                        "on_duty": is_on_duty,
-                        "salary": salary
-                    })
+                        skill_salary += salary
+                        skill_details.append({
+                            "name": skill["name"],
+                            "on_duty": is_on_duty,
+                            "salary": salary
+                        })
 
         # 计算阶梯奖金
-        ladder_bonus = calculate_ladder_bonus(score, ladder_rules)
+        ladder_bonus = 0
+        if "ladder_bonus" in income_types:
+            ladder_bonus = calculate_ladder_bonus(score, ladder_rules)
 
         # 区域小计
         region_total = skill_salary + ladder_bonus
@@ -125,6 +196,7 @@ def calculate_employee_salary(emp_id: str, emp_name: str, scores: dict, mid_deta
         result["regions"][region_id] = {
             "name": region["name"],
             "score": score,
+            "threshold": threshold,
             "is_on_duty": is_on_duty,
             "skill_salary": skill_salary,
             "skill_details": skill_details,
@@ -134,6 +206,46 @@ def calculate_employee_salary(emp_id: str, emp_name: str, scores: dict, mid_deta
 
         result["total_salary"] += region_total
 
+    # 计算额外收入（基于角色配置）
+    extra_income = {}
+
+    # 开单奖励
+    if "order_bonus" in income_types and external_data:
+        order_count = external_data.get("order_count", 0)
+        bonus_per_unit = role_settings.get("order_bonus_per_unit", 2)
+        order_bonus = order_count * bonus_per_unit
+        extra_income["order_bonus"] = {
+            "name": "开单奖励",
+            "count": order_count,
+            "unit_price": bonus_per_unit,
+            "amount": order_bonus
+        }
+        result["total_salary"] += order_bonus
+
+    # 管理津贴
+    if "management_allowance" in income_types:
+        allowance = role_settings.get("management_allowance", 0)
+        if allowance > 0:
+            extra_income["management_allowance"] = {
+                "name": "管理津贴",
+                "amount": allowance
+            }
+            result["total_salary"] += allowance
+
+    # 业绩提成
+    if "revenue_commission" in income_types and external_data:
+        revenue = external_data.get("store_revenue", 0)
+        rate = role_settings.get("commission_rate", 0.01)
+        commission = revenue * rate
+        extra_income["revenue_commission"] = {
+            "name": "业绩提成",
+            "revenue": revenue,
+            "rate": rate,
+            "amount": commission
+        }
+        result["total_salary"] += commission
+
+    result["extra_income"] = extra_income
     result["total_salary"] = round(result["total_salary"], 2)
     return result
 
@@ -217,11 +329,105 @@ def render():
                 st.error("锁定失败，请稍后重试")
 
 
+def calculate_ranking_bonus(results: list, employees: list) -> list:
+    """
+    计算排名奖金
+    根据奖金池配置，按排名分配奖金
+    """
+    bonus_pools = get_bonus_pools()
+
+    for pool in bonus_pools:
+        if not pool.get("enabled", True):
+            continue
+
+        pool_name = pool.get("name", "排名奖金")
+        ranking_basis = pool.get("ranking_basis", "total_score")
+        filter_roles = pool.get("filter_roles", [])
+        distribution_rules = pool.get("distribution_rules", [])
+
+        if not distribution_rules:
+            continue
+
+        # 筛选参与排名的员工
+        eligible_results = []
+        for r in results:
+            emp_id = r["employee_id"]
+            emp = next((e for e in employees if e["id"] == emp_id), None)
+
+            # 检查角色筛选
+            if filter_roles:
+                emp_role = emp.get("role_id") if emp else None
+                if emp_role not in filter_roles:
+                    continue
+
+            # 计算排名分数
+            if ranking_basis == "total_score":
+                # 绩效总分
+                score = sum(rd.get("score", 0) for rd in r.get("regions", {}).values())
+            elif ranking_basis == "total_salary":
+                # 工资总额（不含排名奖金）
+                score = r.get("total_salary", 0) - sum(
+                    v.get("amount", 0) for k, v in r.get("extra_income", {}).items()
+                    if k == "ranking_bonus"
+                )
+            elif ranking_basis.startswith("region_"):
+                # 指定区域绩效
+                score = r.get("regions", {}).get(ranking_basis, {}).get("score", 0)
+            else:
+                score = 0
+
+            eligible_results.append({
+                "result": r,
+                "score": score
+            })
+
+        # 按分数排序
+        eligible_results.sort(key=lambda x: x["score"], reverse=True)
+
+        # 分配奖金
+        for rule in distribution_rules:
+            rank = rule.get("rank", 0)
+            amount = rule.get("amount", 0)
+            desc = rule.get("description", f"第{rank}名")
+
+            if rank <= 0 or rank > len(eligible_results):
+                continue
+
+            winner = eligible_results[rank - 1]["result"]
+
+            # 添加排名奖金到额外收入
+            if "ranking_bonus" not in winner["extra_income"]:
+                winner["extra_income"]["ranking_bonus"] = {
+                    "name": "排名奖金",
+                    "details": [],
+                    "amount": 0
+                }
+
+            winner["extra_income"]["ranking_bonus"]["details"].append({
+                "pool_name": pool_name,
+                "rank": rank,
+                "description": desc,
+                "amount": amount
+            })
+            winner["extra_income"]["ranking_bonus"]["amount"] += amount
+            winner["total_salary"] += amount
+            winner["total_salary"] = round(winner["total_salary"], 2)
+
+    return results
+
+
 def do_calculate(period_records: list, period: str) -> list:
-    """执行计算"""
+    """执行计算（支持角色达标线和多元收入）"""
     regions = get_regions()
     skills = get_skills()
     emp_skills = get_employee_skills()
+    employees = get_employees()
+
+    # 获取外部数据（如果有）
+    external_records = get_external_data(period)
+    external_data_map = {}
+    for ext in external_records:
+        external_data_map[ext.get("employee_id")] = ext
 
     results = []
 
@@ -231,12 +437,20 @@ def do_calculate(period_records: list, period: str) -> list:
         scores = record.get("scores", {})
         mid_detail = record.get("mid_detail", {"drawing": 0, "digital": 0})
 
+        # 获取该员工的外部数据
+        ext_data = external_data_map.get(emp_id)
+
         result = calculate_employee_salary(
             emp_id, emp_name, scores, mid_detail,
-            regions, skills, emp_skills
+            regions, skills, emp_skills,
+            employees=employees,
+            external_data=ext_data
         )
         result["period"] = period
         results.append(result)
+
+    # 计算排名奖金（在基础工资计算完成后）
+    results = calculate_ranking_bonus(results, employees)
 
     # 按总工资排序
     results.sort(key=lambda x: x["total_salary"], reverse=True)
@@ -249,12 +463,18 @@ def display_region_detail(region: dict, rd: dict, result: dict):
     region_id = region["id"]
 
     score = rd.get("score", 0)
+    threshold = rd.get("threshold", region.get("threshold", 30000))
+    is_on_duty = rd.get("is_on_duty", False)
     skill_salary = rd.get("skill_salary", 0)
     ladder_bonus = rd.get("ladder_bonus", 0)
     skill_details = rd.get("skill_details", [])
 
     # 使用小号字体的样式
     st.markdown('<style>.small-text { font-size: 0.85em; }</style>', unsafe_allow_html=True)
+
+    # 达标线状态
+    duty_status = "✅ 在岗" if is_on_duty else "⚠️ 不在岗"
+    st.markdown(f'<p class="small-text"><b>【达标线】</b> {threshold:,.0f}分 | {duty_status}</p>', unsafe_allow_html=True)
 
     # 技能工资 - 横向排列
     st.markdown('<p class="small-text"><b>【技能工资】</b></p>', unsafe_allow_html=True)
@@ -301,28 +521,47 @@ def show_detail_dialog():
 
 @st.dialog("总金额明细", width="small")
 def show_total_dialog():
-    """显示员工总金额构成弹窗 - 紧凑版"""
+    """显示员工总金额构成弹窗 - 紧凑版（支持额外收入）"""
     result = st.session_state.get("dialog_result", {})
     regions = get_regions()
 
     emp_name = result.get("employee_name", "")
+    role_name = result.get("role_name", "未指定")
     total_salary = result.get("total_salary", 0)
+    extra_income = result.get("extra_income", {})
 
-    st.markdown(f"**{emp_name} - 总金额构成**")
+    st.markdown(f"**{emp_name}** ({role_name})")
 
-    # 构建横向显示，只显示金额>0的区域
+    # 区域收入
+    st.markdown("**【区域收入】**")
     parts = []
+    region_total = 0
     for region in regions:
         rd = result.get("regions", {}).get(region["id"], {})
         amount = rd.get("total", 0)
         if amount > 0:
             parts.append(f"{region['name']}:{amount:.0f}")
+            region_total += amount
 
     if parts:
-        line = " + ".join(parts) + f" = **{total_salary:.0f}元**"
+        line = " + ".join(parts) + f" = **{region_total:.0f}元**"
         st.markdown(f'<p style="font-size:0.9em;">{line}</p>', unsafe_allow_html=True)
     else:
-        st.markdown("无数据")
+        st.markdown("无区域收入")
+
+    # 额外收入
+    if extra_income:
+        st.markdown("**【额外收入】**")
+        extra_parts = []
+        for key, value in extra_income.items():
+            name = value.get("name", key)
+            amount = value.get("amount", 0)
+            if amount > 0:
+                extra_parts.append(f"{name}:{amount:.0f}")
+
+        if extra_parts:
+            extra_line = " + ".join(extra_parts)
+            st.markdown(f'<p style="font-size:0.9em;">{extra_line}</p>', unsafe_allow_html=True)
 
     st.markdown("---")
     st.markdown(f"**总计：¥{total_salary:,.2f}**")
@@ -365,6 +604,7 @@ def display_results_v3(results: list, period: str):
             "期间": period,
             "员工ID": r["employee_id"],
             "姓名": r["employee_name"],
+            "角色": r.get("role_name", "未指定"),
         }
 
         for region in regions:
@@ -377,6 +617,14 @@ def display_results_v3(results: list, period: str):
             else:
                 row[f"{region_name}绩效"] = 0
                 row[f"{region_name}金额"] = 0
+
+        # 额外收入
+        extra_income = r.get("extra_income", {})
+        extra_total = sum(v.get("amount", 0) for v in extra_income.values())
+        if extra_total > 0:
+            row["额外收入"] = round(extra_total)
+        else:
+            row["额外收入"] = 0
 
         row["总金额"] = round(r["total_salary"])
         table_data.append(row)

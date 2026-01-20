@@ -784,8 +784,8 @@ def render_home():
     # 功能卡片
     st.markdown("### 🚀 功能入口")
 
-    # 第一行：4个卡片
-    col1, col2, col3, col4 = st.columns(4)
+    # 第一行：5个卡片（基础配置）
+    col1, col2, col3, col4, col5 = st.columns(5)
 
     with col1:
         if st.button("👥\n\n员工管理", key="btn_employee", use_container_width=True, help="添加、编辑、删除员工信息"):
@@ -793,22 +793,27 @@ def render_home():
             st.rerun()
 
     with col2:
+        if st.button("🎭\n\n角色管理", key="btn_role", use_container_width=True, help="配置岗位角色和达标线"):
+            st.session_state.current_page = "role"
+            st.rerun()
+
+    with col3:
         if st.button("🗺️\n\n工作区域", key="btn_region", use_container_width=True, help="配置区域的阶梯规则"):
             st.session_state.current_page = "region"
             st.rerun()
 
-    with col3:
+    with col4:
         if st.button("🔧\n\n工作技能", key="btn_skill", use_container_width=True, help="管理技能和工资标准"):
             st.session_state.current_page = "skill"
             st.rerun()
 
-    with col4:
+    with col5:
         if st.button("📋\n\n技能指派", key="btn_assignment", use_container_width=True, help="给员工分配技能"):
             st.session_state.current_page = "assignment"
             st.rerun()
 
-    # 第二行：4个卡片
-    col1, col2, col3, col4 = st.columns(4)
+    # 第二行：6个卡片（数据导入和计算）
+    col1, col2, col3, col4, col5, col6 = st.columns(6)
 
     with col1:
         if st.button("📥\n\n绩效导入", key="btn_import", use_container_width=True, help="从ERP导入绩效数据"):
@@ -816,16 +821,26 @@ def render_home():
             st.rerun()
 
     with col2:
+        if st.button("📊\n\n外部数据", key="btn_external", use_container_width=True, help="导入营业额、开单量等"):
+            st.session_state.current_page = "external"
+            st.rerun()
+
+    with col3:
+        if st.button("🏆\n\n奖金池", key="btn_bonus", use_container_width=True, help="配置排名奖金分配"):
+            st.session_state.current_page = "bonus_pool"
+            st.rerun()
+
+    with col4:
         if st.button("🧮\n\n绩效计算", key="btn_calculate", use_container_width=True, help="一键计算绩效工资"):
             st.session_state.current_page = "calculate"
             st.rerun()
 
-    with col3:
+    with col5:
         if st.button("📜\n\n历史查询", key="btn_history", use_container_width=True, help="查看往月计算数据"):
             st.session_state.current_page = "history"
             st.rerun()
 
-    with col4:
+    with col6:
         if st.button("📁\n\n方案管理", key="btn_scheme", use_container_width=True, help="管理配置方案"):
             st.session_state.current_page = "scheme"
             st.rerun()
@@ -902,6 +917,21 @@ elif current_page == "scheme":
     render_back_button()
     from app.pages import scheme_page
     scheme_page.render()
+
+elif current_page == "role":
+    render_back_button()
+    from app.pages import role_page
+    role_page.render()
+
+elif current_page == "external":
+    render_back_button()
+    from app.pages import external_data_page
+    external_data_page.render()
+
+elif current_page == "bonus_pool":
+    render_back_button()
+    from app.pages import bonus_pool_page
+    bonus_pool_page.render()
 
 else:
     st.session_state.current_page = "home"

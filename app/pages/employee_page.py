@@ -1,5 +1,5 @@
 """
-员工管理页面
+员工管理页面 - 支持角色选择和门店分配
 """
 import streamlit as st
 import pandas as pd
@@ -9,7 +9,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from app.data_manager import (
     get_employees, add_employee, update_employee, delete_employee,
-    get_modes, get_mode_by_id
+    get_modes, get_mode_by_id, get_roles, get_role_by_id
 )
 
 
@@ -20,28 +20,50 @@ def render():
     # 获取数据
     employees = get_employees()
     modes = get_modes()
+    roles = get_roles()
     mode_options = {m["id"]: m["name"] for m in modes}
+    role_options = {"": "未指定"} | {r["id"]: r["name"] for r in roles}
 
     # 添加员工区域
     with st.expander("➕ 添加新员工", expanded=False):
-        col1, col2, col3 = st.columns(3)
+        col1, col2 = st.columns(2)
 
         with col1:
             new_name = st.text_input("姓名", key="new_emp_name")
         with col2:
             new_no = st.text_input("工号（可选）", key="new_emp_no")
-        with col3:
+
+        col1, col2, col3 = st.columns(3)
+
+        with col1:
             new_mode = st.selectbox(
                 "所属模式",
                 options=list(mode_options.keys()),
                 format_func=lambda x: mode_options.get(x, x),
                 key="new_emp_mode"
             )
+        with col2:
+            new_role = st.selectbox(
+                "岗位角色",
+                options=list(role_options.keys()),
+                format_func=lambda x: role_options.get(x, "未指定"),
+                key="new_emp_role"
+            )
+        with col3:
+            new_store = st.text_input("所属门店（可选）", key="new_emp_store", placeholder="如：总店")
 
         if st.button("添加员工", type="primary"):
             if new_name:
                 result = add_employee(new_name, new_no or None, new_mode)
                 if result:
+                    # 更新角色和门店信息
+                    updates = {}
+                    if new_role:
+                        updates["role_id"] = new_role
+                    if new_store:
+                        updates["store_id"] = new_store
+                    if updates:
+                        update_employee(result["id"], updates)
                     st.success(f"添加成功：{new_name}")
                     st.rerun()
             else:
@@ -67,7 +89,7 @@ def render():
 
             # 使用 st.form 包装编辑区域
             with st.form(key=f"form_{selected_emp_id}"):
-                col1, col2, col3 = st.columns(3)
+                col1, col2 = st.columns(2)
 
                 with col1:
                     edit_name = st.text_input(
@@ -81,7 +103,10 @@ def render():
                         value=selected_emp.get("employee_no", ""),
                         key=f"no_{selected_emp_id}"
                     )
-                with col3:
+
+                col1, col2, col3 = st.columns(3)
+
+                with col1:
                     mode_ids = list(mode_options.keys())
                     mode_names = list(mode_options.values())
                     current_mode_id = selected_emp.get("mode_id", mode_ids[0])
@@ -95,6 +120,33 @@ def render():
                     )
                     edit_mode_id = mode_ids[mode_names.index(edit_mode_name)]
 
+                with col2:
+                    role_ids = list(role_options.keys())
+                    role_names = list(role_options.values())
+                    current_role_id = selected_emp.get("role_id", "")
+                    current_role_idx = role_ids.index(current_role_id) if current_role_id in role_ids else 0
+
+                    edit_role_name = st.selectbox(
+                        "岗位角色",
+                        options=role_names,
+                        index=current_role_idx,
+                        key=f"role_{selected_emp_id}"
+                    )
+                    edit_role_id = role_ids[role_names.index(edit_role_name)]
+
+                with col3:
+                    edit_store = st.text_input(
+                        "所属门店",
+                        value=selected_emp.get("store_id", ""),
+                        key=f"store_{selected_emp_id}"
+                    )
+
+                # 显示角色信息
+                if edit_role_id:
+                    role = get_role_by_id(edit_role_id)
+                    if role:
+                        st.info(f"📋 角色说明：{role.get('description', '-')} | 达标线倍率：{role.get('threshold_multiplier', 1.0)}x")
+
                 # 操作按钮
                 col1, col2 = st.columns(2)
                 with col1:
@@ -107,7 +159,9 @@ def render():
                 updates = {
                     "name": edit_name,
                     "employee_no": edit_no,
-                    "mode_id": edit_mode_id
+                    "mode_id": edit_mode_id,
+                    "role_id": edit_role_id if edit_role_id else None,
+                    "store_id": edit_store if edit_store else None
                 }
                 if update_employee(selected_emp_id, updates):
                     st.success(f"已保存修改: {edit_name}")
@@ -134,29 +188,75 @@ def render():
         return
 
     # 筛选功能
-    mode_filter_options = ["全部"] + list(mode_options.values())
-    filter_mode = st.radio(
-        "按模式筛选",
-        options=mode_filter_options,
-        index=0,
-        key="filter_mode",
-        horizontal=True
-    )
+    col1, col2 = st.columns(2)
+    with col1:
+        mode_filter_options = ["全部"] + list(mode_options.values())
+        filter_mode = st.radio(
+            "按模式筛选",
+            options=mode_filter_options,
+            index=0,
+            key="filter_mode",
+            horizontal=True
+        )
 
-    # 转换为DataFrame显示（只保留3列：工号、姓名、所属模式）
+    with col2:
+        role_filter_options = ["全部", "未指定角色"] + [r["name"] for r in roles]
+        filter_role = st.radio(
+            "按角色筛选",
+            options=role_filter_options,
+            index=0,
+            key="filter_role",
+            horizontal=True
+        )
+
+    # 转换为DataFrame显示
     df_data = []
     for emp in employees:
         mode = get_mode_by_id(emp.get("mode_id", ""))
+        role = get_role_by_id(emp.get("role_id", "")) if emp.get("role_id") else None
+
+        mode_name = mode["name"] if mode else "未指定"
+        role_name = role["name"] if role else "未指定"
+        multiplier = role.get("threshold_multiplier", 1.0) if role else 1.0
+
         df_data.append({
             "工号": emp.get("employee_no", ""),
             "姓名": emp["name"],
-            "所属模式": mode["name"] if mode else "未指定"
+            "所属模式": mode_name,
+            "岗位角色": role_name,
+            "达标线倍率": f"{multiplier}x",
+            "所属门店": emp.get("store_id", "-") or "-"
         })
 
     df = pd.DataFrame(df_data)
 
+    # 应用筛选
     if filter_mode != "全部":
         df = df[df["所属模式"] == filter_mode]
 
+    if filter_role == "未指定角色":
+        df = df[df["岗位角色"] == "未指定"]
+    elif filter_role != "全部":
+        df = df[df["岗位角色"] == filter_role]
+
     # 显示表格（使用st.table让页面整体滚动）
     st.table(df)
+
+    # 统计信息
+    st.markdown("---")
+    st.subheader("📊 统计信息")
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric("总员工数", len(employees))
+
+    with col2:
+        assigned_count = sum(1 for e in employees if e.get("role_id"))
+        st.metric("已分配角色", f"{assigned_count}/{len(employees)}")
+
+    with col3:
+        unassigned_count = len(employees) - assigned_count
+        if unassigned_count > 0:
+            st.warning(f"⚠️ {unassigned_count} 人未分配角色")
+        else:
+            st.success("✅ 所有员工已分配角色")

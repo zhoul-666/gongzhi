@@ -1,0 +1,10 @@
+{
+  "records": [],
+  "stores": [
+    {
+      "id": "store_001",
+      "name": "总店",
+      "description": "主营业门店"
+    }
+  ]
+}

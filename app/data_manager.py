@@ -680,6 +680,245 @@ def unlock_calculation(month: str) -> bool:
     return False
 
 
+# ============ 角色管理 ============
+
+def get_roles() -> list:
+    """获取所有角色"""
+    data = load_json("roles.json")
+    return data.get("roles", [])
+
+
+def get_role_by_id(role_id: str) -> dict:
+    """根据ID获取角色"""
+    roles = get_roles()
+    for role in roles:
+        if role["id"] == role_id:
+            return role
+    return None
+
+
+def add_role(name: str, description: str = "", threshold_multiplier: float = 1.0,
+             income_types: list = None, settings: dict = None) -> dict:
+    """添加新角色"""
+    data = load_json("roles.json")
+    roles = data.get("roles", [])
+    next_id = data.get("next_id", 1)
+
+    new_role = {
+        "id": f"role_{next_id:03d}",
+        "name": name,
+        "description": description,
+        "threshold_multiplier": threshold_multiplier,
+        "income_types": income_types or ["skill_salary", "ladder_bonus"],
+        "settings": settings or {},
+        "created_at": datetime.now().strftime("%Y-%m-%d")
+    }
+
+    roles.append(new_role)
+    data["roles"] = roles
+    data["next_id"] = next_id + 1
+
+    save_json("roles.json", data)
+    print(f"[添加] 新增角色: {name}")
+    return new_role
+
+
+def update_role(role_id: str, updates: dict) -> bool:
+    """更新角色信息"""
+    data = load_json("roles.json")
+    roles = data.get("roles", [])
+
+    for role in roles:
+        if role["id"] == role_id:
+            role.update(updates)
+            role["updated_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            save_json("roles.json", data)
+            print(f"[更新] 已更新角色: {role['name']}")
+            return True
+
+    return False
+
+
+def delete_role(role_id: str) -> bool:
+    """删除角色"""
+    data = load_json("roles.json")
+    roles = data.get("roles", [])
+
+    for i, role in enumerate(roles):
+        if role["id"] == role_id:
+            deleted = roles.pop(i)
+            save_json("roles.json", data)
+            print(f"[删除] 已删除角色: {deleted['name']}")
+            return True
+
+    return False
+
+
+# ============ 外部数据管理 ============
+
+def get_external_data(month: str = None) -> list:
+    """获取外部数据（营业额、开单量等）"""
+    data = load_json("external_data.json")
+    records = data.get("records", [])
+
+    if month:
+        return [r for r in records if r.get("month") == month]
+    return records
+
+
+def save_external_data(records: list, month: str) -> bool:
+    """保存外部数据"""
+    data = load_json("external_data.json")
+    if not data:
+        data = {"records": []}
+
+    existing = data.get("records", [])
+    # 移除该月的旧数据
+    existing = [r for r in existing if r.get("month") != month]
+    # 添加新数据
+    existing.extend(records)
+
+    data["records"] = existing
+    return save_json("external_data.json", data)
+
+
+# ============ 收入规则管理 ============
+
+def get_income_rules() -> list:
+    """获取所有收入类型规则"""
+    data = load_json("income_rules.json")
+    return data.get("rules", [])
+
+
+def get_income_rule_by_type(income_type: str) -> dict:
+    """根据类型获取收入规则"""
+    rules = get_income_rules()
+    for rule in rules:
+        if rule["type"] == income_type:
+            return rule
+    return None
+
+
+# ============ 奖金池管理 ============
+
+def get_bonus_pools() -> list:
+    """获取所有奖金池配置"""
+    data = load_json("bonus_pools.json")
+    return data.get("pools", [])
+
+
+def get_bonus_pool_by_id(pool_id: str) -> dict:
+    """根据ID获取奖金池"""
+    pools = get_bonus_pools()
+    for pool in pools:
+        if pool["id"] == pool_id:
+            return pool
+    return None
+
+
+def add_bonus_pool(name: str, total_amount: float, distribution_rules: list) -> dict:
+    """添加奖金池"""
+    data = load_json("bonus_pools.json")
+    if not data:
+        data = {"pools": [], "next_id": 1}
+
+    pools = data.get("pools", [])
+    next_id = data.get("next_id", 1)
+
+    new_pool = {
+        "id": f"pool_{next_id:03d}",
+        "name": name,
+        "total_amount": total_amount,
+        "distribution_rules": distribution_rules,
+        "created_at": datetime.now().strftime("%Y-%m-%d")
+    }
+
+    pools.append(new_pool)
+    data["pools"] = pools
+    data["next_id"] = next_id + 1
+
+    save_json("bonus_pools.json", data)
+    print(f"[添加] 新增奖金池: {name}")
+    return new_pool
+
+
+def update_bonus_pool(pool_id: str, updates: dict) -> bool:
+    """更新奖金池"""
+    data = load_json("bonus_pools.json")
+    if not data:
+        return False
+
+    pools = data.get("pools", [])
+
+    for pool in pools:
+        if pool["id"] == pool_id:
+            pool.update(updates)
+            pool["updated_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            save_json("bonus_pools.json", data)
+            print(f"[更新] 已更新奖金池: {pool['name']}")
+            return True
+
+    return False
+
+
+def delete_bonus_pool(pool_id: str) -> bool:
+    """删除奖金池"""
+    data = load_json("bonus_pools.json")
+    if not data:
+        return False
+
+    pools = data.get("pools", [])
+
+    for i, pool in enumerate(pools):
+        if pool["id"] == pool_id:
+            deleted = pools.pop(i)
+            save_json("bonus_pools.json", data)
+            print(f"[删除] 已删除奖金池: {deleted['name']}")
+            return True
+
+    return False
+
+
+# ============ 员工达标线计算 ============
+
+def get_employee_threshold(emp_id: str, region_id: str) -> float:
+    """
+    获取员工在指定区域的达标线
+    优先级：员工自定义 > 角色倍率 > 区域默认值
+    """
+    from app.data_manager import get_employees, get_role_by_id, get_region_by_id
+
+    # 获取区域默认达标线
+    region = get_region_by_id(region_id)
+    if not region:
+        return 30000  # 默认值
+
+    base_threshold = region.get("threshold", 30000)
+
+    # 查找员工
+    employees = get_employees()
+    emp = next((e for e in employees if e["id"] == emp_id), None)
+    if not emp:
+        return base_threshold
+
+    # 检查员工是否有自定义达标线
+    custom_settings = emp.get("custom_settings", {})
+    if custom_settings.get("custom_threshold"):
+        custom = custom_settings.get("thresholds", {}).get(region_id)
+        if custom is not None:
+            return custom
+
+    # 检查角色倍率
+    role_id = emp.get("role_id")
+    if role_id:
+        role = get_role_by_id(role_id)
+        if role:
+            multiplier = role.get("threshold_multiplier", 1.0)
+            return base_threshold * multiplier
+
+    return base_threshold
+
+
 if __name__ == "__main__":
     # 测试
     print("=== 数据管理模块测试 ===")
@@ -687,3 +926,4 @@ if __name__ == "__main__":
     print(f"备份目录: {BACKUP_DIR}")
     print(f"模式列表: {get_modes()}")
     print(f"区域列表: {get_regions()}")
+    print(f"角色列表: {get_roles()}")

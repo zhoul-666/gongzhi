@@ -1,0 +1,47 @@
+{
+  "roles": [
+    {
+      "id": "role_001",
+      "name": "生产人员",
+      "description": "负责印前、印中、印后生产工作",
+      "threshold_multiplier": 1.0,
+      "income_types": ["skill_salary", "ladder_bonus"],
+      "settings": {},
+      "created_at": "2026-01-20"
+    },
+    {
+      "id": "role_002",
+      "name": "前台文员",
+      "description": "负责前台接待、开单等工作",
+      "threshold_multiplier": 0.4,
+      "income_types": ["skill_salary", "ladder_bonus", "order_bonus"],
+      "settings": {
+        "order_bonus_per_unit": 2
+      },
+      "created_at": "2026-01-20"
+    },
+    {
+      "id": "role_003",
+      "name": "实习主管",
+      "description": "实习期主管，负责协助管理工作",
+      "threshold_multiplier": 1.0,
+      "income_types": ["skill_salary", "ladder_bonus", "management_allowance"],
+      "settings": {
+        "management_allowance": 500
+      },
+      "created_at": "2026-01-20"
+    },
+    {
+      "id": "role_004",
+      "name": "正式主管",
+      "description": "正式主管，负责门店或区域管理",
+      "threshold_multiplier": 1.0,
+      "income_types": ["skill_salary", "ladder_bonus", "revenue_commission"],
+      "settings": {
+        "commission_rate": 0.01
+      },
+      "created_at": "2026-01-20"
+    }
+  ],
+  "next_id": 5
+}

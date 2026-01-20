@@ -1,0 +1,20 @@
+{
+  "pools": [
+    {
+      "id": "pool_001",
+      "name": "月度绩效排名奖",
+      "description": "根据员工月度绩效总分排名发放奖金",
+      "total_amount": 1000,
+      "ranking_basis": "total_score",
+      "distribution_rules": [
+        {"rank": 1, "amount": 500, "description": "第一名"},
+        {"rank": 2, "amount": 300, "description": "第二名"},
+        {"rank": 3, "amount": 200, "description": "第三名"}
+      ],
+      "filter_roles": [],
+      "enabled": true,
+      "created_at": "2026-01-20"
+    }
+  ],
+  "next_id": 2
+}

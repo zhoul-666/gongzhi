@@ -1,0 +1,55 @@
+{
+  "rules": [
+    {
+      "type": "skill_salary",
+      "name": "技能工资",
+      "description": "根据员工掌握的技能累加计算",
+      "calculation": "sum",
+      "data_source": "employee_skills",
+      "enabled": true
+    },
+    {
+      "type": "ladder_bonus",
+      "name": "阶梯奖金",
+      "description": "根据绩效分按区域阶梯规则计算",
+      "calculation": "ladder",
+      "data_source": "performance",
+      "enabled": true
+    },
+    {
+      "type": "order_bonus",
+      "name": "开单奖励",
+      "description": "开单数 × 单价",
+      "calculation": "multiply",
+      "data_source": "external_data.order_count",
+      "default_unit_price": 2,
+      "enabled": true
+    },
+    {
+      "type": "management_allowance",
+      "name": "管理津贴",
+      "description": "固定金额，按角色配置",
+      "calculation": "fixed",
+      "data_source": "role_settings.management_allowance",
+      "default_amount": 500,
+      "enabled": true
+    },
+    {
+      "type": "revenue_commission",
+      "name": "业绩提成",
+      "description": "门店营业额 × 提成比例",
+      "calculation": "percentage",
+      "data_source": "external_data.store_revenue",
+      "default_rate": 0.01,
+      "enabled": true
+    },
+    {
+      "type": "ranking_bonus",
+      "name": "排名奖金",
+      "description": "奖池按排名分配",
+      "calculation": "ranking",
+      "data_source": "bonus_pools",
+      "enabled": true
+    }
+  ]
+}
